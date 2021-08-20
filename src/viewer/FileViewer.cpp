@@ -58,7 +58,7 @@
 
 using namespace robogen;
 
-#ifdef EMSCRIPTEN
+#ifdef EMSCRIPTEN // Emscripten is only defined for the web version
 #include <vector>
 #include <boost/lexical_cast.hpp>
 #include "emscripten.h"
@@ -168,9 +168,9 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 }
 
 
-#else
+#else   // else, if using the desktop version
 #include "viewer/Viewer.h"
-#endif
+#endif  // Common functionality to both desktop and web versions
 
 // ODE World
 dWorldID odeWorld;
@@ -191,6 +191,15 @@ bool fixed_is_directory(std::string path) {
 	}
 }
 
+/**
+ * Prints out the help information and various params
+ *
+ * These are printed out if you call `./robogen-file-viewer`
+ * without specifying the arguments correctly
+ *
+ * @param argv The commandline arguments.
+ * @return void 
+ */
 void printUsage(char *argv[]) {
 	std::cout << std::endl << "USAGE: " << std::endl << "      "
 			<< std::string(argv[0]) << " <ROBOT_FILE, STRING> "
@@ -256,26 +265,33 @@ void printHelp() {
 /**
  * Decodes a robot saved on file and visualize it
  */
-#ifndef EMSCRIPTEN
+#ifndef EMSCRIPTEN // only for the desktop version
 int main(int argc, char *argv[]) {
+    // TODO: What does this do? It only seems to link to `src/Robogen.cpp`
+    // where there's just one line: 
+    //
+	//  GOOGLE_PROTOBUF_VERIFY_VERSION;
+    //
 	startRobogen();
 
 #ifdef QT5_ENABLED
 	QCoreApplication a(argc, argv);
 #endif
 
+    // Check if the user's asking for help
 	if (argc > 1 && std::string(argv[1]) == "--help") {
 		printUsage(argv);
 		printHelp();
 		exitRobogen(EXIT_SUCCESS);
 	}
 
+    // Check the user supplied the correct number of arguments
 	if (argc < 3) {
 		printUsage(argv);
 		exitRobogen(EXIT_FAILURE);
 	}
 
-	// Decode configuration file
+	// Decode configuration file from the second CLI argument
 	boost::shared_ptr<RobogenConfig> configuration =
 			ConfigurationReader::parseConfigurationFile(std::string(argv[2]));
 	if (configuration == NULL) {
@@ -296,6 +312,7 @@ int main(int argc, char *argv[]) {
 	bool writeWebGL = false;
 	bool overwrite = false;
 
+    // Go through all the commandline arguments and parse them
 	int currentArg = 3;
 	if (argc >= 4 && !boost::starts_with(argv[3], "--")) {
 		std::stringstream ss(argv[3]);
@@ -320,6 +337,8 @@ int main(int argc, char *argv[]) {
 	double speed = 1.0;
 	bool debug = false;
 	int seed = -1;
+    // Not sure why this is structured with an if..for, but this
+    // for loop continues the work that the if statement above started
 	for (; currentArg < argc; currentArg++) {
 		if (std::string("--help").compare(argv[currentArg]) == 0) {
 			printUsage(argv);
@@ -404,9 +423,12 @@ int main(int argc, char *argv[]) {
 		} else if (std::string("--overwrite").compare(argv[currentArg]) == 0) {
 			overwrite = true;
 		}
-
 	}
 
+    // ------------------------------------------------------------------
+    // Check that the commandline arguments given don't conflict with one
+    // another in some way
+    // ------------------------------------------------------------------
 	if (recording && !visualize) {
 		std::cerr << "Cannot record without visualization enabled!" <<
 				std::endl;
@@ -435,9 +457,10 @@ int main(int argc, char *argv[]) {
 	if (seed != -1)
 		rng.seed(seed);
 
-	// ---------------------------------------
-	// Robot decoding
-	// ---------------------------------------
+    // ------------------------------------------------------------------------
+    // Create a robot from the robot file string argv[1]. If the robot fails to
+    // be created, then exit
+    // ------------------------------------------------------------------------
 	robogenMessage::Robot robotMessage;
 	std::string robotFileString(argv[1]);
 
@@ -474,9 +497,10 @@ int main(int argc, char *argv[]) {
 						writeWebGL));
 	}
 
-	// ---------------------------------------
-	// Run simulations
-	// ---------------------------------------
+	// --------------------------------------------------------------------
+	// Start running the actual simulation using the variables instantiated
+    // above.
+	// --------------------------------------------------------------------
 	IViewer *viewer = NULL;
 	if (visualize) {
 		viewer = new Viewer(startPaused, debug,
@@ -484,6 +508,7 @@ int main(int argc, char *argv[]) {
 				recordDirectoryName);
 	}
 
+    // The true boolean indicates to only complete one simulation
 	unsigned int simulationResult = runSimulations(scenario, configuration,
 			robotMessage, viewer, rng, true, log);
 

@@ -41,7 +41,6 @@ public:
 	KeyboardHandler(bool startPaused, bool geoms, bool meshes/*, bool transparent*/)
 		: osgGA::GUIEventHandler(), paused_(startPaused), geoms_(geoms),
 		  meshes_(meshes), /*transparent_(transparent),*/ quit_(false)  {
-
 	}
 
 	virtual bool handle(const osgGA::GUIEventAdapter& ea,
@@ -50,9 +49,7 @@ public:
 		osgGA::GUIEventAdapter::EventType eventType = ea.getEventType();
 
 		if (eventType == osgGA::GUIEventAdapter::KEYDOWN) {
-
 			switch (ea.getKey()) {
-
 			// Toggle Pause Simulation
 			case 'p':
 				paused_ = !paused_;
@@ -83,11 +80,8 @@ public:
 				return false;
 
 			}
-
 		}
-
 		return false;
-
 	}
 #if OSG_VERSION_LESS_OR_EQUAL(3, 2, 0)
 	//think this can safely be removed complete, but will wrap in this check
@@ -97,9 +91,7 @@ public:
 	}
 #endif
 
-	/**
-	 * Check if the pause button was pressed
-	 */
+	// Check if the pause button was pressed
 	bool isPaused() {
 		return paused_;
 	}

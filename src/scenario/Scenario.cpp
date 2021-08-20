@@ -47,6 +47,14 @@ Scenario::~Scenario() {
 
 }
 
+/**
+ * Creates a scenario which contains lights, robot(s), obstacles, etc
+ *
+ * @param odeWorld a dynamics world, that contains all the simulation data
+ * @param odeSpace a collision space, used to organize and speed up collision tests
+ * @param robot The robot to place into the scenario.
+ * @return true if the scenario was created successfully, false otherwise
+ */
 bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 		boost::shared_ptr<Robot> robot) {
 
@@ -94,7 +102,9 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 			<< minZ << ", " << maxZ << ")" << std::endl;
 	std::cout << "Obstacles in this range will not be generated" << std::endl << std::endl;
 
+	// ---------------
 	// Setup obstacles
+	// ---------------
 	boost::shared_ptr<ObstaclesConfig> obstacles =
 			robogenConfig_->getObstaclesConfig();
 
@@ -109,6 +119,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 
 	double overlapMaxZ=minZ;
 
+    // Go through every obstacle and attempt to create it in the environment
 	for (unsigned int i = 0; i < obstacleCoordinates.size(); ++i) {
 		boost::shared_ptr<BoxObstacle> obstacle(
 									new BoxObstacle(odeWorld, odeSpace,
@@ -156,7 +167,9 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 
 	}
 
+	// -------------------
 	// Setup light sources
+	// -------------------
 	boost::shared_ptr<LightSourcesConfig> lightSourcesConfig =
 			robogenConfig_->getLightSourcesConfig();
 
@@ -167,6 +180,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 	std::vector<float> lightSourcesIntensities =
 				lightSourcesConfig->getIntensities();
 
+    // Loop through each light source and attempt to create it
 	for (unsigned int i = 0; i < lightSourcesCoordinates.size(); ++i) {
 		double lMinX = lightSourcesCoordinates[i].x() - LightSource::RADIUS;
 		double lMaxX = lightSourcesCoordinates[i].x() + LightSource::RADIUS;
@@ -218,18 +232,14 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 	}
 	environment_->setLightSources(lightSources);
 
-
-
+    // If the user asked that the robot be lifted up when there's an overlap, 
+    // then raise the robot upwards.
 	if (robogenConfig_->getObstacleOverlapPolicy() ==
 			RobogenConfig::ELEVATE_ROBOT) {
-
 		robot->translateRobot(
 				osg::Vec3(startingPosition.x(), startingPosition.y(),
 						overlapMaxZ + inMm(2) - minZ));
 	}
-
-
-
 
 	// optimize the physics!  replace all fixed joints with composite bodies
 	robot->optimizePhysics();

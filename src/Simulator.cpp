@@ -77,8 +77,11 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		osg::Vec3 gravity = configuration->getGravity();
 		dWorldSetGravity(odeWorld, gravity.x(), gravity.y(), gravity.z());
 
+        // ERP controls how much error correction is done each time step
 		dWorldSetERP(odeWorld, 0.1);
+        // Set the global CFM (constraint force mixing) value
 		dWorldSetCFM(odeWorld, 10e-6);
+        // Set auto disable flag for newly created bodies. 
 		dWorldSetAutoDisableFlag(odeWorld, 1);
 
 		// Create collision world
@@ -121,17 +124,12 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		std::cout << "total mass is " << totalMass * 1000. << "g" << std::endl;
 #endif
 
-
-
 		if (log) {
 			if (!log->init(robot, configuration)) {
 				std::cout << "Problem initializing log!" << std::endl;
 				return SIMULATION_FAILURE;
 			}
 		}
-
-
-
 
 		std::cout << "Evaluating individual " << robot->getId()
 				<< ", trial: " << scenario->getCurTrial()
@@ -158,7 +156,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		for(unsigned int i=0; i< motors.size(); i++) {
 			motors[i]->setMaxDirectionShiftsPerSecond(
 						configuration->getMaxDirectionShiftsPerSecond());
-
 		}
 
 		// Register brain and body parts
@@ -211,8 +208,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
         										scenario));
         }
 
-
-
 		//setup vectors for keeping velocities
 		dReal previousLinVel[3];
 		dReal previousAngVel[3];
@@ -221,7 +216,9 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		// Main Loop
 		// ---------------------------------------
 
+        // Number of iterations since start of simulation
 		int count = 0;
+        // Amount of time elapsed since start of simulation, in seconds
 		double t = 0;
 
 		boost::shared_ptr<CollisionData> collisionData(
@@ -244,6 +241,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 				break;
 			}
 
+            // Send a full stop every 500 iterations
 			if ((count++) % 500 == 0) {
 				std::cout << "." << std::flush;
 			}
@@ -318,6 +316,10 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 				}
 			}
 
+            // Only evaluate the NN on some iterations of the main loop.
+            // IRL the microcontroller will have an upper limit on how
+            // frequently it can take in the inputs, feed them through the
+            // Neural Network, and actuate the outputs.
 			if(((count - 1) % configuration->getActuationPeriod()) == 0) {
 				// Feed neural network
 				for (unsigned int i = 0; i < sensors.size(); ++i) {
@@ -336,6 +338,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 				}
 
 
+                // Initialise `neuralNetwork` with networkInput[0]
 				::feed(neuralNetwork.get(), &networkInput[0]);
 
 				// Step the neural network
@@ -359,6 +362,9 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 					}
 
 
+                    // Motors can either take in desired positions
+                    // (ServoMotor), or they can take in desired speeds
+                    // (RotationMotor)
 					if (boost::dynamic_pointer_cast<
 							RotationMotor>(motors[i])) {
 						boost::dynamic_pointer_cast<RotationMotor>(motors[i]
@@ -369,6 +375,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 						boost::dynamic_pointer_cast<ServoMotor>(motors[i]
 						   )->setDesiredPosition(networkOutputs[i], step *
 								configuration->getActuationPeriod());
+                        // TODO: This commented out code doesn't need to be here
 						//motor->setPosition(networkOutputs[i], step *
 						//		configuration->getActuationPeriod());
 					}
@@ -380,6 +387,8 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 				}
 			}
 
+            // Check if any of the motors have been sent commands so frequently
+            // that we need to simulate them burning out
 			bool motorBurntOut = false;
 			for (unsigned int i = 0; i < motors.size(); ++i) {
 				motors[i]->step( step ) ; //* configuration->getActuationPeriod() );
@@ -392,7 +401,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 					motorBurntOut = true;
 					//constraintViolated = true;
 				}
-
 			}
 
 			if(constraintViolated || motorBurntOut) {
@@ -460,5 +468,4 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		return CONSTRAINT_VIOLATED;
 	return SIMULATION_SUCCESS;
 }
-
 }

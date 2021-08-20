@@ -51,8 +51,13 @@ public:
 	void setSnapImageOnNextFrame(bool flag) { _snapImageOnNextFrame = flag; }
 	bool getSnapImageOnNextFrame() const { return _snapImageOnNextFrame; }
 
-	virtual void operator () (const osg::Camera& camera) const
-	{
+    /**
+     * I _think_ this is just used to save the current image on the 
+     * screen to a file.
+     *
+     * @return void
+     */
+	virtual void operator () (const osg::Camera& camera) const {
 		if (!_snapImageOnNextFrame) return;
 
 		int x,y,width,height;
@@ -73,11 +78,8 @@ public:
 	}
 
 protected:
-
 	std::string _filename;
 	mutable bool _snapImageOnNextFrame;
-
-
 };
 
 void Viewer::init(bool startPaused, bool debugActive, double speedFactor,
@@ -107,8 +109,8 @@ void Viewer::init(bool startPaused, bool debugActive, double speedFactor,
 	this->tick1 = boost::posix_time::microsec_clock::universal_time();
 	this->elapsedWallTime = 0.0;
 	this->timeSinceLastFrame = 0.0;
-	// Initialize recording (if recording == true)
 
+	// Initialize recording (if recording == true)
 	this->recording = recording;
 	if (recording) {
 		this->frameCount = 0;
@@ -140,8 +142,6 @@ Viewer::Viewer(bool startPaused, bool debugActive, double speedFactor,
 		std::string recordDirectoryName) {
 	this->init(startPaused, debugActive, speedFactor,
 			recording, recordFrequency, recordDirectoryName);
-
-
 }
 
 Viewer::~Viewer() {
@@ -151,7 +151,7 @@ Viewer::~Viewer() {
 bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 		boost::shared_ptr<Scenario> scenario) {
 
-
+    // Attempt to render all the body parts into models
 	for (unsigned int i = 0; i < bodyParts.size(); ++i) {
 		boost::shared_ptr<RenderModel> renderModel =
 				RobogenUtils::createRenderModel(bodyParts[i]);
@@ -201,6 +201,7 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 	}
 
 
+    // Render the light sources
 	for(unsigned int i = 0;
 			i < scenario->getEnvironment()->getLightSources().size(); i++) {
 
@@ -212,11 +213,10 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 		root->addChild(lightSourceRender->getRootNode());
 	}
 
+    // If in debug mode, show global axis at origin
 	if(debugActive) {
-		// show global axis at origin
 		osg::ref_ptr<osg::PositionAttitudeTransform> pat(
 					new osg::PositionAttitudeTransform());
-
 
 		root->addChild(pat);
 		RenderModel::attachAxis(pat);
@@ -230,6 +230,7 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 
 	this->viewer->realize();
 
+    // Allow the camera to be moved by the mouse
 	if (!this->viewer->getCameraManipulator()
 			&& this->viewer->getCamera()->getAllowEventFocus()) {
 		this->viewer->setCameraManipulator(
@@ -238,6 +239,7 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 
 	this->viewer->setReleaseContextAtEndOfFrameHint(false);
 
+    // If in debug mode, show some extra help for keyboard shortcuts
 	if(this->debugActive) {
 		std::cout << "Press M to show/hide meshes." << std::endl;
 		std::cout << "Press G to show/hide geoms." << std::endl;
@@ -245,9 +247,7 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 	std::cout << "Press P to pause/unpause the simulation." << std::endl;
 	std::cout << "Press Q to quit the visualizer." << std::endl;
 
-
 	return true;
-
 }
 
 bool Viewer::done() {

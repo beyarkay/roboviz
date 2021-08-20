@@ -36,9 +36,9 @@ namespace robogen {
 
 /**
  * Racing Scenario.
- * The robot that can cover the longer distance in the given simulation time wins.
- * The distance is computed as the euclidean distance from the starting to the ending position computed using as
- * reference the core component.
+ * The robot that can cover the longer distance in the given simulation time
+ * wins.  The distance is computed as the euclidean distance from the starting
+ * to the ending position computed using as reference the core component.
  */
 class RacingScenario: public Scenario {
 
