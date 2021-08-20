@@ -235,6 +235,12 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 			&& this->viewer->getCamera()->getAllowEventFocus()) {
 		this->viewer->setCameraManipulator(
 				new osgGA::TrackballManipulator());
+        Vec3d eye( 10.0, 10.0, 10.0 );
+        Vec3d center( 0.0, 0.0, 0.0 );
+        Vec3d up( 0.0, 0.0, 1.0 );
+
+        this->viewer->getCamera()->setViewMatrixAsLookAt( eye, center, up );
+
 	}
 
 	this->viewer->setReleaseContextAtEndOfFrameHint(false);
