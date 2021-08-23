@@ -230,17 +230,10 @@ bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
 
 	this->viewer->realize();
 
-    // Allow the camera to be moved by the mouse
 	if (!this->viewer->getCameraManipulator()
 			&& this->viewer->getCamera()->getAllowEventFocus()) {
 		this->viewer->setCameraManipulator(
 				new osgGA::TrackballManipulator());
-        osg::Vec3d eye( 10.0, 10.0, 10.0 );
-        osg::Vec3d center( 0.0, 0.0, 0.0 );
-        osg::Vec3d up( 0.0, 0.0, 1.0 );
-
-        this->viewer->getCamera()->setViewMatrixAsLookAt( eye, center, up );
-
 	}
 
 	this->viewer->setReleaseContextAtEndOfFrameHint(false);
