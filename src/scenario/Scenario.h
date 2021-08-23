@@ -40,6 +40,7 @@ namespace robogen {
 class BoxObstacle;
 class Environment;
 class RobogenConfig;
+// TODO class swarm should probably also be in here
 class Robot;
 class Terrain;
 
@@ -70,6 +71,7 @@ public:
 	 * @param odeSpace
 	 * @param robot
 	 */
+    // TODO this needs to accept a swarm, not just a robot.
 	virtual bool init(dWorldID odeWorld, dSpaceID odeSpace,
 			boost::shared_ptr<Robot> robot);
 
@@ -83,6 +85,7 @@ public:
 	/**
 	 * @return the robot
 	 */
+    // TODO this needs to return the swarm
 	boost::shared_ptr<Robot> getRobot();
 
 	/**
@@ -168,6 +171,7 @@ private:
 	/**
 	 * Robot
 	 */
+    // TODO this should define the member swarm variable
 	boost::shared_ptr<Robot> robot_;
 
 	/**

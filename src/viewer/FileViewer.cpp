@@ -267,11 +267,9 @@ void printHelp() {
  */
 #ifndef EMSCRIPTEN // only for the desktop version
 int main(int argc, char *argv[]) {
-    // TODO: What does this do? It only seems to link to `src/Robogen.cpp`
-    // where there's just one line: 
-    //
-	//  GOOGLE_PROTOBUF_VERIFY_VERSION;
-    //
+    // TODO: What does this below line do? It only seems to link to
+    // `src/Robogen.cpp` where there's just one line:
+	//  GOOGLE_PROTOBUF_VERIFY_VERSION
 	startRobogen();
 
 #ifdef QT5_ENABLED
@@ -291,7 +289,6 @@ int main(int argc, char *argv[]) {
 		exitRobogen(EXIT_FAILURE);
 	}
 
-	// Decode configuration file from the second CLI argument
 	boost::shared_ptr<RobogenConfig> configuration =
 			ConfigurationReader::parseConfigurationFile(std::string(argv[2]));
 	if (configuration == NULL) {
@@ -461,9 +458,11 @@ int main(int argc, char *argv[]) {
     // Create a robot from the robot file string argv[1]. If the robot fails to
     // be created, then exit
     // ------------------------------------------------------------------------
+    // TODO this needs to be converted to a swarm Message
 	robogenMessage::Robot robotMessage;
 	std::string robotFileString(argv[1]);
 
+    // TODO: This needs to be updated to return a swarm of robots
 	if(!RobotRepresentation::createRobotMessageFromFile(robotMessage,
 			robotFileString)) {
 		exitRobogen(EXIT_FAILURE);
@@ -509,6 +508,7 @@ int main(int argc, char *argv[]) {
 	}
 
     // The true boolean indicates to only complete one simulation
+    // TODO runSimulations needs to be updated to take in a swarm
 	unsigned int simulationResult = runSimulations(scenario, configuration,
 			robotMessage, viewer, rng, true, log);
 

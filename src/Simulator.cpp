@@ -97,6 +97,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		// ---------------------------------------
 		// Generate Robot
 		// ---------------------------------------
+        // TODO: This needs to be edited to generate a swarm of robots
 		boost::shared_ptr<Robot> robot(new Robot);
 		if (!robot->init(odeWorld, odeSpace, robotMessage)) {
 			std::cout << "Problems decoding the robot. Quit."
@@ -106,6 +107,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 
 #ifdef DEBUG_MASSES
 		float totalMass = 0;
+        // TODO This needs to loop through the body pars of the swarm
 		for (unsigned int i = 0; i < robot->getBodyParts().size(); ++i) {
 			float partMass = 0;
 			for (unsigned int j = 0;
@@ -124,6 +126,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		std::cout << "total mass is " << totalMass * 1000. << "g" << std::endl;
 #endif
 
+        // TODO This This needs to check log->init of the swarm
 		if (log) {
 			if (!log->init(robot, configuration)) {
 				std::cout << "Problem initializing log!" << std::endl;
@@ -131,10 +134,12 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 			}
 		}
 
+        // TODO this output message should output the evaluation of the swarm
 		std::cout << "Evaluating individual " << robot->getId()
 				<< ", trial: " << scenario->getCurTrial()
 				<< std::endl;
 
+        // TODO this needs to register sensors of the swarm
 		// Register sensors
 		std::vector<boost::shared_ptr<Sensor> > sensors =
 				robot->getSensors();
@@ -148,6 +153,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 			}
 		}
 
+        // TODO This should register the motors of the swarm
 		// Register robot motors
 		std::vector<boost::shared_ptr<Motor> > motors =
 				robot->getMotors();
@@ -158,12 +164,14 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 						configuration->getMaxDirectionShiftsPerSecond());
 		}
 
+        // TODO this should register the brain and body of every robot in the swarm
 		// Register brain and body parts
 		boost::shared_ptr<NeuralNetwork> neuralNetwork =
 				robot->getBrain();
 		std::vector<boost::shared_ptr<Model> > bodyParts =
 				robot->getBodyParts();
 
+        // TODO Scenario initialisation should take in a swarm of robots, not just one
 		// Initialize scenario
 		if (!scenario->init(odeWorld, odeSpace, robot)) {
 			std::cout << "Cannot initialize scenario. Quit."

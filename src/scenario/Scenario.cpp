@@ -32,6 +32,7 @@
 #include "model/objects/BoxObstacle.h"
 #include "scenario/Scenario.h"
 #include "scenario/Terrain.h"
+// TODO Need to #include swarm.h
 #include "Robot.h"
 #include "Environment.h"
 
@@ -55,6 +56,7 @@ Scenario::~Scenario() {
  * @param robot The robot to place into the scenario.
  * @return true if the scenario was created successfully, false otherwise
  */
+// TODO instead of taking in a robot, this should take in a swarm
 bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 		boost::shared_ptr<Robot> robot) {
 
@@ -68,8 +70,10 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 	stopSimulationNow_ = false;
 
 
+    // TODO this should be a member swarm variable, not a member robot variable
 	robot_ = robot;
 
+    // TODO this should be done for each member in the swarm
 	// Setup robot position
 	double minX = 0;
 	double maxX = 0;
@@ -78,6 +82,8 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 	double minZ = 0;
 	double maxZ = 0;
 
+    // TODO need a way of specifying the position and orientation of each member in the swarm
+    // TODO The swarm will need something like an array of robogenConfigs
 	// Starting position and orientation
 	osg::Vec2 startingPosition =
 			robogenConfig_->getStartingPos()->getStartPosition(
@@ -87,6 +93,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 	osg::Quat roboRot;
 	roboRot.makeRotate(osg::inDegrees(startingAzimuth), osg::Vec3(0,0,1));
 
+    // TODO apply rotations, min-max, translations to each robot in the swarm
 	robot->rotateRobot(roboRot);
 	robot->getAABB(minX, maxX, minY, maxY, minZ, maxZ);
 	robot->translateRobot(
@@ -96,6 +103,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 						+ inMm(2) - minZ));
 	robot->getAABB(minX, maxX, minY, maxY, minZ, maxZ);
 
+    // TODO output debug information about every robot in the swarm
 	std::cout
 			<< "The robot is enclosed in the AABB(minX, maxX, minY, maxY, minZ, maxZ) ("
 			<< minX << ", " << maxX << ", " << minY << ", " << maxY << ", "
@@ -129,6 +137,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 		double oMinX, oMaxX, oMinY, oMaxY, oMinZ, oMaxZ;
 		obstacle->getAABB(oMinX, oMaxX, oMinY, oMaxY, oMinZ, oMaxZ);
 
+        // TODO need to check the obstacle position against the position of every robot in the swarm
 		// Do not insert the obstacle if it is in the robot range
 		bool inRangeX = false;
 		if ((oMinX <= minX && oMaxX >= maxX) || (oMinX >= minX && oMinX <= maxX)
@@ -189,6 +198,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 		double lMinZ = lightSourcesCoordinates[i].z() - LightSource::RADIUS;
 		double lMaxZ = lightSourcesCoordinates[i].z() + LightSource::RADIUS;
 
+        // TODO we need to check for light source collisions with every robot in the swarm
 		// Do not insert the ligh source if it is in the robot range
 		bool inRangeX = false;
 		if ((lMinX <= minX && lMaxX >= maxX) || (lMinX >= minX && lMinX <= maxX)
@@ -232,6 +242,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 	}
 	environment_->setLightSources(lightSources);
 
+    // TODO need to perform this check with every robot in the swarm
     // If the user asked that the robot be lifted up when there's an overlap, 
     // then raise the robot upwards.
 	if (robogenConfig_->getObstacleOverlapPolicy() ==
@@ -241,6 +252,7 @@ bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
 						overlapMaxZ + inMm(2) - minZ));
 	}
 
+    // TODO: optimise the physics of every robot in the swarm
 	// optimize the physics!  replace all fixed joints with composite bodies
 	robot->optimizePhysics();
 
@@ -254,9 +266,11 @@ boost::shared_ptr<StartPosition> Scenario::getCurrentStartPosition() {
 
 void Scenario::prune(){
 	environment_.reset();
+    // TODO we'll need to reset every robot in the swarm
 	robot_.reset();
 }
 
+// TODO we'll need a Scenario::getSwarm method to get every robot from the swarm
 boost::shared_ptr<Robot> Scenario::getRobot() {
 	return robot_;
 }
