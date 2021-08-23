@@ -185,8 +185,53 @@ Important source files and descriptions
 - `src/arduino/` contains files for generating a `NeuralNetwork.h` file for use
   on Arduino.
 
+## When robogen-file-viewer is run
+1. `src/viewer/FileViewer.cpp:465` is where `argv[1]` is passed to be parsed
+    1. `src/evolution/representation/RobotRepresentation.cpp:1114` is the method
+    that does the parsing of json robot config files
+    2. `src/evolution/representation/RobotRepresentation.cpp:1133` is the call of
+    the json to protobuffer method to convert the json file to a protobuf
+    3. `src/utils/json2pb/json2pb.cpp:288` is a wrapper method
+    4. `src/utils/json2pb/json2pb.cpp:258` converts json to Proto Buffer
+2. `src/viewer/FileViewer.cpp:147` is the line that calls runSimulation with
+   one robot
+    1. `src/Simulator.cpp:101` is the line that generates the robot swarm
+    2. `src/Simulator.cpp:176` Initialises the simulator with one robot instead
+       of a swarm
+
 ## Useful information
 - Communication between the programs is done via sockets
     - Except for `robogen-server-sio`, which uses socket.io
 
+
+## TODOs related to swarm things
+- `src/Simulator.cpp:100`: // TODO: This needs to be edited to generate a swarm of robots
+- `src/Simulator.cpp:110`: // TODO This needs to loop through the body pars of the swarm
+- `src/Simulator.cpp:129`: // TODO This This needs to check log->init of the swarm
+- `src/Simulator.cpp:137`: // TODO this output message should output the evaluation of the swarm
+- `src/Simulator.cpp:142`: // TODO this needs to register sensors of the swarm
+- `src/Simulator.cpp:156`: // TODO This should register the motors of the swarm
+- `src/Simulator.cpp:167`: // TODO this should register the brain and body of every robot in the swarm
+- `src/Simulator.cpp:174`: // TODO Scenario initialisation should take in a swarm of robots, not just one
+- `src/scenario/Scenario.h:43`: // TODO class swarm should probably also be in here
+- `src/scenario/Scenario.h:74`: // TODO this needs to accept a swarm, not just a robot.
+- `src/scenario/Scenario.h:88`: // TODO this needs to return the swarm
+- `src/scenario/Scenario.h:174`: // TODO this should define the member swarm variable
+- `src/scenario/Scenario.cpp:35`: // TODO Need to #include swarm.h
+- `src/scenario/Scenario.cpp:59`: // TODO instead of taking in a robot, this should take in a swarm
+- `src/scenario/Scenario.cpp:73`: // TODO this should be a member swarm variable, not a member robot variable
+- `src/scenario/Scenario.cpp:76`: // TODO this should be done for each member in the swarm
+- `src/scenario/Scenario.cpp:85`: // TODO need a way of specifying the position and orientation of each member in the swarm
+- `src/scenario/Scenario.cpp:86`: // TODO The swarm will need something like an array of robogenConfigs
+- `src/scenario/Scenario.cpp:96`: // TODO apply rotations, min-max, translations to each robot in the swarm
+- `src/scenario/Scenario.cpp:106`: // TODO output debug information about every robot in the swarm
+- `src/scenario/Scenario.cpp:140`: // TODO need to check the obstacle position against the position of every robot in the swarm
+- `src/scenario/Scenario.cpp:201`: // TODO we need to check for light source collisions with every robot in the swarm
+- `src/scenario/Scenario.cpp:245`: // TODO need to perform this check with every robot in the swarm
+- `src/scenario/Scenario.cpp:255`: // TODO: optimise the physics of every robot in the swarm
+- `src/scenario/Scenario.cpp:269`: // TODO we'll need to reset every robot in the swarm
+- `src/scenario/Scenario.cpp:273`: // TODO we'll need a Scenario::getSwarm method to get every robot from the swarm
+- `src/viewer/FileViewer.cpp:461`: // TODO this needs to be converted to a swarm Message
+- `src/viewer/FileViewer.cpp:465`: // TODO: This needs to be updated to return a swarm of robots
+- `src/viewer/FileViewer.cpp:511`: // TODO runSimulations needs to be updated to take in a swarm
 
