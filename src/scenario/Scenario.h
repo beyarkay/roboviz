@@ -40,7 +40,7 @@ namespace robogen {
 class BoxObstacle;
 class Environment;
 class RobogenConfig;
-// TODO class swarm should probably also be in here
+class Swarm;
 class Robot;
 class Terrain;
 
@@ -69,24 +69,24 @@ public:
 	 *
 	 * @param odeWorld
 	 * @param odeSpace
-	 * @param robot
+	 * @param swarm
 	 */
-    // TODO this needs to accept a swarm, not just a robot.
 	virtual bool init(dWorldID odeWorld, dSpaceID odeSpace,
-			boost::shared_ptr<Robot> robot);
+			boost::shared_ptr<Swarm> swarm);
 
 	/**
-	 * Clears unused scenario (so that robot can be freed - joints need to be
+	 * Clears unused scenario (so that swarm can be freed - joints need to be
 	 * destroyed before the destruction of the world). Undoes what init() does
 	 * and avoids memory leaks over multiple starting positions.
 	 */
+    // TODO right now this frees the robot, but should free the whole swarm
 	void prune();
 
 	/**
-	 * @return the robot
+	 * @return the Swarm
 	 */
-    // TODO this needs to return the swarm
-	boost::shared_ptr<Robot> getRobot();
+    // TODO replace all instances of getRobot() with for robot in swarm: getSwarm().get(0);
+	boost::shared_ptr<Swarm> getSwarm();
 
 	/**
 	 * @return the robogen configuration
@@ -100,7 +100,7 @@ public:
 
 
 	inline bool wereObstaclesRemoved() {
-		return obstaclesRemoved_;
+		return obstaclesOrLightsRemoved_;
 	}
 
 	/**
@@ -169,10 +169,9 @@ public:
 private:
 
 	/**
-	 * Robot
+	 * Swarm
 	 */
-    // TODO this should define the member swarm variable
-	boost::shared_ptr<Robot> robot_;
+	boost::shared_ptr<Swarm> swarm_;
 
 	/**
 	 * Robogen config
@@ -189,7 +188,7 @@ private:
 	 */
 	boost::shared_ptr<Environment> environment_;
 
-	bool obstaclesRemoved_;
+	bool obstaclesOrLightsRemoved_;
 
 	bool stopSimulationNow_;
 

@@ -32,260 +32,321 @@
 #include "model/objects/BoxObstacle.h"
 #include "scenario/Scenario.h"
 #include "scenario/Terrain.h"
-// TODO Need to #include swarm.h
+#include "Swarm.h"
 #include "Robot.h"
 #include "Environment.h"
 
 namespace robogen {
 
-Scenario::Scenario(boost::shared_ptr<RobogenConfig> robogenConfig) :
-		robogenConfig_(robogenConfig), startPositionId_(0),
-		stopSimulationNow_(false) {
+  Scenario::Scenario(boost::shared_ptr<RobogenConfig> robogenConfig) :
+    robogenConfig_(robogenConfig), startPositionId_(0),
+    stopSimulationNow_(false) {
 
-}
+    }
 
-Scenario::~Scenario() {
+  Scenario::~Scenario() {
 
-}
+  }
 
-/**
- * Creates a scenario which contains lights, robot(s), obstacles, etc
- *
- * @param odeWorld a dynamics world, that contains all the simulation data
- * @param odeSpace a collision space, used to organize and speed up collision tests
- * @param robot The robot to place into the scenario.
- * @return true if the scenario was created successfully, false otherwise
- */
-// TODO instead of taking in a robot, this should take in a swarm
-bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
-		boost::shared_ptr<Robot> robot) {
+  /**
+   * Creates a scenario which contains lights, robot(s), obstacles, etc
+   *
+   * @param odeWorld a dynamics world, that contains all the simulation data
+   * @param odeSpace a collision space, used to organize and speed up collision tests
+   * @param robot The robot to place into the scenario.
+   * @return true if the scenario was created successfully, false otherwise
+   */
+  bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace,
+      boost::shared_ptr<Swarm> swarm) {
 
-	environment_ = boost::shared_ptr<Environment>(new
-			Environment(odeWorld, odeSpace, robogenConfig_));
+    environment_ = boost::shared_ptr<Environment>(new
+        Environment(odeWorld, odeSpace, robogenConfig_));
 
-	if(!environment_->init()) {
-		return false;
-	}
+    if(!environment_->init()) {
+      return false;
+    }
 
-	stopSimulationNow_ = false;
-
-
-    // TODO this should be a member swarm variable, not a member robot variable
-	robot_ = robot;
-
-    // TODO this should be done for each member in the swarm
-	// Setup robot position
-	double minX = 0;
-	double maxX = 0;
-	double minY = 0;
-	double maxY = 0;
-	double minZ = 0;
-	double maxZ = 0;
-
-    // TODO need a way of specifying the position and orientation of each member in the swarm
-    // TODO The swarm will need something like an array of robogenConfigs
-	// Starting position and orientation
-	osg::Vec2 startingPosition =
-			robogenConfig_->getStartingPos()->getStartPosition(
-					startPositionId_)->getPosition();
-	float startingAzimuth = robogenConfig_->getStartingPos()->getStartPosition(
-			startPositionId_)->getAzimuth();
-	osg::Quat roboRot;
-	roboRot.makeRotate(osg::inDegrees(startingAzimuth), osg::Vec3(0,0,1));
-
-    // TODO apply rotations, min-max, translations to each robot in the swarm
-	robot->rotateRobot(roboRot);
-	robot->getAABB(minX, maxX, minY, maxY, minZ, maxZ);
-	robot->translateRobot(
-			osg::Vec3(startingPosition.x(),
-					startingPosition.y(),
-					robogenConfig_->getTerrainConfig()->getHeight()
-						+ inMm(2) - minZ));
-	robot->getAABB(minX, maxX, minY, maxY, minZ, maxZ);
-
-    // TODO output debug information about every robot in the swarm
-	std::cout
-			<< "The robot is enclosed in the AABB(minX, maxX, minY, maxY, minZ, maxZ) ("
-			<< minX << ", " << maxX << ", " << minY << ", " << maxY << ", "
-			<< minZ << ", " << maxZ << ")" << std::endl;
-	std::cout << "Obstacles in this range will not be generated" << std::endl << std::endl;
-
-	// ---------------
-	// Setup obstacles
-	// ---------------
-	boost::shared_ptr<ObstaclesConfig> obstacles =
-			robogenConfig_->getObstaclesConfig();
-
-	// Instance the boxes above the maximum terrain height
-	const std::vector<osg::Vec3>& obstacleCoordinates = obstacles->getCoordinates();
-	const std::vector<osg::Vec3>& obstacleSizes = obstacles->getSizes();
-	const std::vector<float>& d = obstacles->getDensities();
-	const std::vector<osg::Vec3>& rotationAxis = obstacles->getRotationAxes();
-	const std::vector<float>& rotationAngles = obstacles->getRotationAngles();
-
-	obstaclesRemoved_ = false;
-
-	double overlapMaxZ=minZ;
-
-    // Go through every obstacle and attempt to create it in the environment
-	for (unsigned int i = 0; i < obstacleCoordinates.size(); ++i) {
-		boost::shared_ptr<BoxObstacle> obstacle(
-									new BoxObstacle(odeWorld, odeSpace,
-											obstacleCoordinates[i],
-											obstacleSizes[i], d[i], rotationAxis[i],
-											rotationAngles[i]));
-		double oMinX, oMaxX, oMinY, oMaxY, oMinZ, oMaxZ;
-		obstacle->getAABB(oMinX, oMaxX, oMinY, oMaxY, oMinZ, oMaxZ);
-
-        // TODO need to check the obstacle position against the position of every robot in the swarm
-		// Do not insert the obstacle if it is in the robot range
-		bool inRangeX = false;
-		if ((oMinX <= minX && oMaxX >= maxX) || (oMinX >= minX && oMinX <= maxX)
-				|| (oMaxX >= minX && oMaxX <= maxX)) {
-			inRangeX = true;
-		}
-
-		bool inRangeY = false;
-		if ((oMinY <= minY && oMaxY >= maxY) || (oMinY >= minY && oMinY <= maxY)
-				|| (oMaxY >= minY && oMaxY <= maxY)) {
-			inRangeY = true;
-		}
-
-		bool inRangeZ = false;
-		if ((oMinZ <= minZ && oMaxZ >= maxZ) || (oMinZ >= minZ && oMinZ <= maxZ)
-				|| (oMaxZ >= minZ && oMaxZ <= maxZ)) {
-			inRangeZ = true;
-		}
-
-		// Do not insert obstacles in the robot range
-		if (!(inRangeX && inRangeY && inRangeZ)) {
-			environment_->addObstacle(obstacle);
-		} else {
-			if (robogenConfig_->getObstacleOverlapPolicy() ==
-					RobogenConfig::ELEVATE_ROBOT) {
-
-				if (oMaxZ > overlapMaxZ)
-					overlapMaxZ = oMaxZ;
-				environment_->addObstacle(obstacle);
-
-			} else {
-				obstacle->remove();
-				obstaclesRemoved_ = true;
-			}
-		}
-
-	}
-
-	// -------------------
-	// Setup light sources
-	// -------------------
-	boost::shared_ptr<LightSourcesConfig> lightSourcesConfig =
-			robogenConfig_->getLightSourcesConfig();
-
-	std::vector<boost::shared_ptr<LightSource> > lightSources;
-
-	std::vector<osg::Vec3> lightSourcesCoordinates =
-			lightSourcesConfig->getCoordinates();
-	std::vector<float> lightSourcesIntensities =
-				lightSourcesConfig->getIntensities();
-
-    // Loop through each light source and attempt to create it
-	for (unsigned int i = 0; i < lightSourcesCoordinates.size(); ++i) {
-		double lMinX = lightSourcesCoordinates[i].x() - LightSource::RADIUS;
-		double lMaxX = lightSourcesCoordinates[i].x() + LightSource::RADIUS;
-		double lMinY = lightSourcesCoordinates[i].y() - LightSource::RADIUS;
-		double lMaxY = lightSourcesCoordinates[i].y() + LightSource::RADIUS;
-		double lMinZ = lightSourcesCoordinates[i].z() - LightSource::RADIUS;
-		double lMaxZ = lightSourcesCoordinates[i].z() + LightSource::RADIUS;
-
-        // TODO we need to check for light source collisions with every robot in the swarm
-		// Do not insert the ligh source if it is in the robot range
-		bool inRangeX = false;
-		if ((lMinX <= minX && lMaxX >= maxX) || (lMinX >= minX && lMinX <= maxX)
-				|| (lMaxX >= minX && lMaxX <= maxX)) {
-			inRangeX = true;
-		}
-
-		bool inRangeY = false;
-		if ((lMinY <= minY && lMaxY >= maxY) || (lMinY >= minY && lMinY <= maxY)
-				|| (lMaxY >= minY && lMaxY <= maxY)) {
-			inRangeY = true;
-		}
-
-		bool inRangeZ = false;
-		if ((lMinZ <= minZ && lMaxZ >= maxZ) || (lMinZ >= minZ && lMinZ <= maxZ)
-				|| (lMaxZ >= minZ && lMaxZ <= maxZ)) {
-			inRangeZ = true;
-		}
+    stopSimulationNow_ = false;
+    swarm_ = swarm;
 
 
-		if (!(inRangeX && inRangeY && inRangeZ)) {
-			lightSources.push_back(boost::shared_ptr<LightSource>(
-						new LightSource(odeSpace, lightSourcesCoordinates[i],
-								lightSourcesIntensities[i])));
-		} else {
-			if (robogenConfig_->getObstacleOverlapPolicy() ==
-					RobogenConfig::ELEVATE_ROBOT) {
+    // ===========================================================
+    // Build the robots in the environment
+    //
+    // Set their rotation, position, and log some debugging output
+    // about their Axis-Aligned-Bounding-Box
+    // ===========================================================
+    double overlapMaxZ = rMinZ;
+    std::vector<double> overlapMaxZ;
+    double rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ;
+    for (unsigned int i = 0; i < swarm.swarmSize(); i++) {
+      Robot currRobot = swarm.get(i);
+      rMinX = 0;
+      rMaxX = 0;
+      rMinY = 0;
+      rMaxY = 0;
+      rMinZ = 0;
+      rMaxZ = 0;
+      currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
+      // TODO The swarm will need something like an array of robogenConfigs
+      // Set up the starting orientation of the robot
+      float startingAzimuth =
+        robogenConfig_->getStartingPos(currRobot.getId())->getStartPosition(
+            startPositionId_)->getAzimuth();
+      osg::Quat robotRotation;
+      robotRotation.makeRotate(osg::inDegrees(startingAzimuth), osg::Vec3(0,0,1));
+      currRobot-->rotateRobot(robotRotation);
 
-				if (lMaxZ > overlapMaxZ)
-					overlapMaxZ = lMaxZ;
-				lightSources.push_back(boost::shared_ptr<LightSource>(
-						new LightSource(odeSpace, lightSourcesCoordinates[i],
-								lightSourcesIntensities[i])));
-			} else {
-				obstaclesRemoved_ = true;
-			}
-		}
+      // Set up the starting position of the robot
+      osg::Vec2 startingPosition =
+        robogenConfig_->getStartingPos(currRobot.getId())->getStartPosition(
+            startPositionId_)->getPosition();
+      currRobot->translateRobot(
+          osg::Vec3(startingPosition.x(),
+            startingPosition.y(),
+            robogenConfig_->getTerrainConfig()->getHeight()
+            + inMm(2) - rMinZ));
+      currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
+      overlapMaxZ.push_back(rMinZ);
 
 
+      // Log some debug information
+      std::cout
+        << "The " << i << "-th robot is enclosed in the"
+        << "Axis-Aligned-Bounding-Box(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ) ("
+        << rMinX << ", " << rMaxX << ", " << rMinY << ", " << rMaxY << ", "
+        << rMinZ << ", " << rMaxZ << ")" << std::endl; 
+      std::cout << "Obstacles in this range will not be generated" << std::endl
+        << std::endl;
+    }
 
-	}
-	environment_->setLightSources(lightSources);
+    // ==========================================================
+    // Create and attempt to add the obstacles to the environment
+    // 
+    // If an obstacle collides with a robot, either raise the 
+    // obstacle above the robot or remove the obstacle 
+    // completely
+    // ==========================================================
 
-    // TODO need to perform this check with every robot in the swarm
+    // -----------------------------------------------------
+    // Collect all the information from the obstacles config
+    // about the various obstacles
+    // -----------------------------------------------------
+    boost::shared_ptr<ObstaclesConfig> obstaclesConfig =
+      robogenConfig_->getObstaclesConfig();
+
+    // Get the coords of the obstacles
+    const std::vector<osg::Vec3>& obstaclesCoords =
+      obstaclesConfig->getCoordinates();
+    // Get the sizes of the obstacles
+    const std::vector<osg::Vec3>& obstacleSizes = obstaclesConfig->getSizes();
+    // Get the densities of the obstacles
+    const std::vector<float>& obstacleDensities = obstaclesConfig->getDensities();
+    // Get the rotation Axes of the obstacles
+    const std::vector<osg::Vec3>& rotationAxes =
+      obstaclesConfig->getRotationAxes();
+    // Get the rotation angles of the obstacles
+    const std::vector<float>& rotationAngles =
+      obstaclesConfig->getRotationAngles();
+
+    obstaclesOrLightsRemoved_ = false;
+
+    for (unsigned int i = 0; i < obstaclesCoords.size(); ++i) {
+      boost::shared_ptr<BoxObstacle> obstacle(new BoxObstacle(
+            odeWorld, odeSpace, 
+            obstaclesCoords[i], obstacleSizes[i],
+            obstacleDensities[i], rotationAxes[i], 
+            rotationAngles[i])
+          );
+      // Get the axis-aligned-bounding-box of the current obstacle
+      double oMinX, oMaxX, oMinY, oMaxY, oMinZ, oMaxZ;
+      obstacle->getAABB(oMinX, oMaxX, oMinY, oMaxY, oMinZ, oMaxZ);
+
+      // ----------------------------------------------------------
+      // Only add the obstacle if it doesn't collide with the robot
+      // ----------------------------------------------------------
+      double rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ;
+      for (unsigned int i = 0; i < swarm.swarmSize(); i++) {
+        Robot currRobot = swarm.get(i);
+        double rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ;
+        currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
+        // Check if the robot's AABB collides with the obstacles AABB in the X
+        // axis
+        bool collidesX = (oMinX <= rMinX && oMaxX >= rMaxX) || 
+          (oMinX >= rMinX && oMinX <= rMaxX) || 
+          (oMaxX >= rMinX && oMaxX <= rMaxX);
+        // Check if the robot's AABB collides with the obstacles AABB in the Y
+        // axis
+        bool collidesY = (oMinY <= rMinY && oMaxY >= rMaxY) || 
+          (oMinY >= rMinY && oMinY <= rMaxY) || 
+          (oMaxY >= rMinY && oMaxY <= rMaxY);
+        // Check if the robot's AABB collides with the obstacles AABB in the Z
+        // axis
+        bool collidesZ = (oMinZ <= rMinZ && oMaxZ >= rMaxZ) || 
+          (oMinZ >= rMinZ && oMinZ <= rMaxZ) || 
+          (oMaxZ >= rMinZ && oMaxZ <= rMaxZ);
+
+        // Only add obstacles if they don't collide with the robots
+        if (!(collidesX && collidesY && collidesZ)) {
+          environment_->addObstacle(obstacle);
+        } else {
+          if (robogenConfig_->getObstacleOverlapPolicy() ==
+              RobogenConfig::ELEVATE_ROBOT) {
+            // If the obstacle is above the world's height limit then lower it
+            // down to be below the height limit. Then add the obstacle to the
+            // world
+            if (oMaxZ > overlapMaxZ) {
+              overlapMaxZ = oMaxZ;
+            }
+            environment_->addObstacle(obstacle);
+          } else {
+            obstacle->remove();
+            obstaclesOrLightsRemoved_ = true;
+          }
+        }
+      }
+    }
+
+    // ==============================================================
+    // Create and attempt to add the light sources to the environment
+    //
+    // If an obstacle collides with a robot, either raise the 
+    // obstacle above the robot or remove the obstacle 
+    // completely
+    // ==============================================================
+
+    // ---------------------------------------------------------
+    // Collect all the information from the light sources config
+    // about the various obstacles
+    // ---------------------------------------------------------
+
+    // Load up the config for the light sources
+    boost::shared_ptr<LightSourcesConfig> lightSourcesConfig =
+      robogenConfig_->getLightSourcesConfig();
+
+    // Instantiate an empty vector of light source objects. We'll only add
+    // light sources to the vector once we know they don't collide with the
+    // robots
+    std::vector<boost::shared_ptr<LightSource>> lightSources;
+    // Load up the coords for the light sources
+    std::vector<osg::Vec3> lightSourcesCoords =
+      lightSourcesConfig->getCoordinates();
+    // Load up the intensities for the light sources
+    std::vector<float> lightSourcesIntensities =
+      lightSourcesConfig->getIntensities();
+
+    for (unsigned int i = 0; i < lightSourcesCoords.size(); ++i) {
+      double lMinX = lightSourcesCoords[i].x() - LightSource::RADIUS;
+      double lMaxX = lightSourcesCoords[i].x() + LightSource::RADIUS;
+      double lMinY = lightSourcesCoords[i].y() - LightSource::RADIUS;
+      double lMaxY = lightSourcesCoords[i].y() + LightSource::RADIUS;
+      double lMinZ = lightSourcesCoords[i].z() - LightSource::RADIUS;
+      double lMaxZ = lightSourcesCoords[i].z() + LightSource::RADIUS;
+
+      // --------------------------------------------------------------
+      // Only add the light source if it doesn't collide with the robot
+      // --------------------------------------------------------------
+      double rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ;
+      for (unsigned int i = 0; i < swarm.swarmSize(); i++) {
+        Robot currRobot = swarm.get(i);
+        double rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ;
+        currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
+
+        // Check if the robot's AABB collides with the light's AABB in the X
+        // axis
+        bool collidesX = (lMinX <= rMinX && lMaxX >= rMaxX) || 
+          (lMinX >= rMinX && lMinX <= rMaxX) || 
+          (lMaxX >= rMinX && lMaxX <= rMaxX);
+        // Check if the robot's AABB collides with the light's AABB in the Y
+        // axis
+        bool collidesY = (lMinY <= rMinY && lMaxY >= rMaxY) || 
+          (lMinY >= rMinY && lMinY <= rMaxY) || 
+          (lMaxY >= rMinY && lMaxY <= rMaxY);
+        // Check if the robot's AABB collides with the light's AABB in the Z
+        // axis
+        bool collidesZ = (lMinZ <= rMinZ && lMaxZ >= rMaxZ) || 
+          (lMinZ >= rMinZ && lMinZ <= rMaxZ) || 
+          (lMaxZ >= rMinZ && lMaxZ <= rMaxZ);
+
+        // Only add lights to the lightSources vector if they don't collide
+        // with the robots
+        if (!(inRangeX && inRangeY && inRangeZ)) {
+          lightSources.push_back(boost::shared_ptr<LightSource>(
+                new LightSource(odeSpace, lightSourcesCoords[i],
+                  lightSourcesIntensities[i])));
+        } else {
+          if (robogenConfig_->getObstacleOverlapPolicy() ==
+              RobogenConfig::ELEVATE_ROBOT) {
+
+            if (lMaxZ > overlapMaxZ) {
+              overlapMaxZ = lMaxZ;
+            }
+            lightSources.push_back(boost::shared_ptr<LightSource>(
+                  new LightSource(odeSpace, lightSourcesCoords[i],
+                    lightSourcesIntensities[i])));
+          } else {
+            obstaclesOrLightsRemoved_ = true;
+          }
+        }
+      }
+    }
+    // Now that we know non of the lights in lightSources collide with the
+    // robots, add those lightSources to the environment
+    environment_->setLightSources(lightSources);
+
     // If the user asked that the robot be lifted up when there's an overlap, 
     // then raise the robot upwards.
-	if (robogenConfig_->getObstacleOverlapPolicy() ==
-			RobogenConfig::ELEVATE_ROBOT) {
-		robot->translateRobot(
-				osg::Vec3(startingPosition.x(), startingPosition.y(),
-						overlapMaxZ + inMm(2) - minZ));
-	}
+    bool shouldElevate = (robogenConfig_->getObstacleOverlapPolicy() ==
+      RobogenConfig::ELEVATE_ROBOT);
+    for (int i = 0; i < swarm.swarmSize(); i++) {
+      Robot currRobot = swarm.get(i);
+      if (shouldElevate) {
+        currRobot->translateRobot(osg::Vec3(
+              startingPosition.x(), 
+              startingPosition.y(), 
+              overlapMaxZ.at(i) + inMm(2) - rMinZ
+              ));
+      }
+      // Physics optimisation: replace all fixed joints with composite bodies
+      currRobot->optimizePhysics();
+    }
+    return true;
+  }
 
-    // TODO: optimise the physics of every robot in the swarm
-	// optimize the physics!  replace all fixed joints with composite bodies
-	robot->optimizePhysics();
+  boost::shared_ptr<StartPosition> Scenario::getCurrentStartPosition() {
+    return robogenConfig_->getStartingPos()->getStartPosition(
+        startPositionId_);
+  }
 
-	return true;
-}
+  void Scenario::prune(){
+    environment_.reset();
+    for (int i = 0; i < swarm_.swarmSize(); i++) {
+      Robot currRobot = swarm_.get(i);
+      currRobot.reset();
+    }
+  }
 
-boost::shared_ptr<StartPosition> Scenario::getCurrentStartPosition() {
-	return robogenConfig_->getStartingPos()->getStartPosition(
-			startPositionId_);
-}
+  // TODO we'll need a Scenario::get Swarm method to get every robot from the
+  // swarm
+  boost::shared_ptr<Swarm> Scenario::getSwarm() {
+    return swarm_;
+  }
 
-void Scenario::prune(){
-	environment_.reset();
-    // TODO we'll need to reset every robot in the swarm
-	robot_.reset();
-}
+  boost::shared_ptr<Robot> Scenario::getRobot() {
+    std::cout << "WARNING: Something's trying to get a robot that doesn't exist"  
+      << std::endl;
+    return robot_;
+  }
 
-// TODO we'll need a Scenario::getSwarm method to get every robot from the swarm
-boost::shared_ptr<Robot> Scenario::getRobot() {
-	return robot_;
-}
+  boost::shared_ptr<RobogenConfig> Scenario::getRobogenConfig() {
+    return robogenConfig_;
+  }
 
-boost::shared_ptr<RobogenConfig> Scenario::getRobogenConfig() {
-	return robogenConfig_;
-}
+  void Scenario::setStartingPosition(int id) {
+    startPositionId_ = id;
+  }
 
-void Scenario::setStartingPosition(int id) {
-	startPositionId_ = id;
-}
-
-boost::shared_ptr<Environment> Scenario::getEnvironment() {
-	return environment_;
-}
-
-
+  boost::shared_ptr<Environment> Scenario::getEnvironment() {
+    return environment_;
+  }
 }
