@@ -85,14 +85,14 @@ public:
 	}
 
 	/**
-	 * @return the obstacle densities
+	 * @return the obstacle Rotation Axes
 	 */
 	const std::vector<osg::Vec3>& getRotationAxes() const{
 		return rotationAxes_;
 	}
 
 	/**
-	 * @return the obstacle densities
+	 * @return the obstacle rotation angles
 	 */
 	const std::vector<float>& getRotationAngles() const{
 		return rotationAngles_;
