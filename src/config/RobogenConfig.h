@@ -53,6 +53,7 @@ public:
 	/**
 	 * Initializes a robogen config object from configuration parameters
 	 */
+    // TODO This currently only accepts one starting position, but needs to accept starting positions for the whole swarm
 	RobogenConfig(std::string scenario, std::string scenarioFile,
 			unsigned int timeSteps,
 			float timeStepLength, int actuationPeriod,
@@ -256,9 +257,10 @@ public:
 		return disallowObstacleCollisions_;
 	}
 
-	/**
-	 * return if should disallow obstacle remove
-	 */
+    /**
+     * return if should disallow obstacle remove. One of 
+     * REMOVE_OBSTACLES, CONSTRAINT_VIOLATION, ELEVATE_ROBOT
+     */
 	unsigned int getObstacleOverlapPolicy() {
 		return obstacleOverlapPolicy_;
 	}
@@ -404,8 +406,9 @@ private:
 	bool disallowObstacleCollisions_;
 
 	/**
-	 * policy for handling the situation when an obstacle is in the robot's
-	 * initial AABB
+     * policy for handling the situation when an obstacle is in the robot's
+     * initial AABB. One of REMOVE_OBSTACLES, CONSTRAINT_VIOLATION,
+     * ELEVATE_ROBOT
 	 */
 	unsigned int obstacleOverlapPolicy_;
 };
