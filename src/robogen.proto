@@ -106,7 +106,17 @@ message SimulatorConf {
   required string terrainHeightFieldFileName = 22;
   required bool disallowObstacleCollisions = 23;
   required uint32 obstacleOverlapPolicy = 24;
-  
+  // Required parameters are strongly discouraged by the docs, 
+  // as they can never be removed in future versions. Use 
+  // optional parameters instead
+  optional uint32 swarmSize = 25;
+  optional float gatheringZonePosX = 26;
+  optional float gatheringZonePosY = 27;
+  optional float gatheringZonePosZ = 28;
+  optional float gatheringZoneSizeX = 29;
+  optional float gatheringZoneSizeY = 30;
+  optional float gatheringZoneSizeZ = 31;
+  optional string resourcesConfigFile = 32;
 }
 
 message EvaluationRequest {

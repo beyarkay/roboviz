@@ -119,7 +119,9 @@ You can find more information about the following things:
   `./robogen-evolver`.
 - `src/config`: Handles configuration given to RoboGen. Makes heavy use of
   [boost program
-  options](http://www.boost.org/doc/libs/1_58_0/doc/html/program_options.html).
+  options](https://www.boost.org/doc/libs/1_77_0/doc/html/program_options/tutorial.html)
+  which is something that makes it really easy to take input from either the
+  command line or from a configuration file in the form of key=value pairs
 - `src/evolution/representation` All the code for describing how robots are
   represented in RoboGen
     - `src/evolution/representation/RobotRepresentation` is the main component
@@ -177,7 +179,7 @@ Important source files and descriptions
 ### Other files
 - `src/robogen.proto` Defines what the protocol buffers look like, and is
   automatically converted to CPP code by the
-  [protobuf](https://developers.google.com/protocol-buffers/)  compiler.
+  [protobuf](https://developers.google.com/protocol-buffers/docs/cpptutorial)  compiler.
 - `src/utils/network/` Contains most of the code for socket-based communication
   between programs.
 - `src/utils/json2pb` Is used for converting protobuf messages to/from json

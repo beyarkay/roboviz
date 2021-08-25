@@ -54,44 +54,49 @@ public:
 	 * Initializes a robogen config object from configuration parameters
 	 */
     // TODO This currently only accepts one starting position, but needs to accept starting positions for the whole swarm
-	RobogenConfig(std::string scenario, std::string scenarioFile,
-			unsigned int timeSteps,
-			float timeStepLength, int actuationPeriod,
-			boost::shared_ptr<TerrainConfig> terrain,
-			boost::shared_ptr<ObstaclesConfig> obstacles,
-			std::string obstacleFile,
-			boost::shared_ptr<StartPositionConfig> startPositions,
-			std::string startPosFile,
-			boost::shared_ptr<LightSourcesConfig> lightSources,
-			std::string lightSourceFile,
-			float sensorNoiseLevel, float motorNoiseLevel,
-			bool capAcceleration, float maxLinearAcceleration,
-			float maxAngularAcceleration, int maxDirectionShiftsPerSecond,
-			osg::Vec3 gravity, bool disallowObstacleCollisions,
-			unsigned int obstacleOverlapPolicy) :
-				scenario_(scenario), scenarioFile_(scenarioFile),
-				timeSteps_(timeSteps),
-				timeStepLength_(timeStepLength),
-				actuationPeriod_(actuationPeriod),
-				terrain_(terrain), obstacles_(obstacles),
-				obstacleFile_(obstacleFile),
-				startPositions_(startPositions),
-				startPosFile_(startPosFile),
-				lightSources_(lightSources),
-				lightSourceFile_(lightSourceFile),
-				sensorNoiseLevel_(sensorNoiseLevel),
-				motorNoiseLevel_(motorNoiseLevel),
-				capAcceleration_(capAcceleration),
-				maxLinearAcceleration_(maxLinearAcceleration),
-				maxAngularAcceleration_(maxAngularAcceleration),
-				maxDirectionShiftsPerSecond_(maxDirectionShiftsPerSecond),
-				gravity_(gravity),
-				disallowObstacleCollisions_(disallowObstacleCollisions),
-				obstacleOverlapPolicy_(obstacleOverlapPolicy) {
+    RobogenConfig(std::string scenario, std::string scenarioFile,
+        unsigned int timeSteps,
+        float timeStepLength, int actuationPeriod,
+        boost::shared_ptr<TerrainConfig> terrain,
+        boost::shared_ptr<ObstaclesConfig> obstacles,
+        std::string obstacleFile,
+        boost::shared_ptr<StartPositionConfig> startPositions,
+        std::string startPosFile,
+        boost::shared_ptr<LightSourcesConfig> lightSources,
+        std::string lightSourceFile,
+        float sensorNoiseLevel, float motorNoiseLevel,
+        bool capAcceleration, float maxLinearAcceleration,
+        float maxAngularAcceleration, int maxDirectionShiftsPerSecond,
+        osg::Vec3 gravity, bool disallowObstacleCollisions,
+        unsigned int swarmSize, osg::Vec3 gatheringZoneSize,
+        osg::Vec3 gatheringZonePos, std::string resourcesConfigFile,
+        unsigned int obstacleOverlapPolicy) :
+      scenario_(scenario), scenarioFile_(scenarioFile),
+      timeSteps_(timeSteps),
+      timeStepLength_(timeStepLength),
+      actuationPeriod_(actuationPeriod),
+      terrain_(terrain), obstacles_(obstacles),
+      obstacleFile_(obstacleFile),
+      startPositions_(startPositions),
+      startPosFile_(startPosFile),
+      lightSources_(lightSources),
+      lightSourceFile_(lightSourceFile),
+      sensorNoiseLevel_(sensorNoiseLevel),
+      motorNoiseLevel_(motorNoiseLevel),
+      capAcceleration_(capAcceleration),
+      maxLinearAcceleration_(maxLinearAcceleration),
+      maxAngularAcceleration_(maxAngularAcceleration),
+      maxDirectionShiftsPerSecond_(maxDirectionShiftsPerSecond),
+      gravity_(gravity),
+      disallowObstacleCollisions_(disallowObstacleCollisions),
+      swarmSize_(swarmSize),
+      gatheringZoneSize_(gatheringZoneSize),
+      gatheringZonePos_(gatheringZonePos),
+      resourcesConfigFile_(resourcesConfigFile),
+      obstacleOverlapPolicy_(obstacleOverlapPolicy) {
 
-		simulationTime_ = timeSteps * timeStepLength;
-
-	}
+        simulationTime_ = timeSteps * timeStepLength;
+      }
 
 	/**
 	 * Initializes a robogen config object from a message
@@ -257,6 +262,45 @@ public:
 		return disallowObstacleCollisions_;
 	}
 
+	/**
+	 * @return the resources config file, which contains
+     * one resource definition per line as a list of space-separated
+     * floating point values. The order of the values is:
+     * x-pos y-pos z-pos x-magnitude y-magnitude z-magnitude unknown unknown
+     * 
+     * TODO what do the unknown values do?
+	 */
+	std::string getResourcesConfigFile(){
+		return resourcesConfigFile_;
+	}
+
+    /**
+     * @return the size of the gathering zone, as an osg::Vec3
+     * See also gatheringZonePos
+     */
+    osg::Vec3 getGatheringZoneSize() {
+		return gatheringZoneSize_;
+	}
+
+
+    /**
+     * @return the position of the gathering zone, as an osg::Vec3
+     * See also gatheringZoneSize
+     */
+    osg::Vec3 getGatheringZonePos() {
+		return gatheringZonePos_;
+	}
+
+
+    /**
+     * @return the size of the swarm as specified in the parameter
+     * file.
+     */
+	unsigned int getSwarmSize() {
+		return swarmSize_;
+	}
+
+
     /**
      * return if should disallow obstacle remove. One of 
      * REMOVE_OBSTACLES, CONSTRAINT_VIOLATION, ELEVATE_ROBOT
@@ -269,6 +313,7 @@ public:
 	 * Convert configuration into configuration message.
 	 */
 	robogenMessage::SimulatorConf serialize() const{
+      // TODO This needs to be update to work with swarmsize, gathering zone position, gathering zone size, and resourcesConfigFile
 		robogenMessage::SimulatorConf ret;
 
 		ret.set_ntimesteps(timeSteps_);
@@ -285,6 +330,14 @@ public:
 		ret.set_gravityy(gravity_.y());
 		ret.set_gravityz(gravity_.z());
 		ret.set_disallowobstaclecollisions(disallowObstacleCollisions_);
+        ret.set_swarmsize(swarmSize_);
+		ret.set_gatheringzonesizex(gatheringZoneSize_.x());
+		ret.set_gatheringzonesizey(gatheringZoneSize_.y());
+		ret.set_gatheringzonesizez(gatheringZoneSize_.z());
+		ret.set_gatheringzoneposx(gatheringZonePos_.x());
+		ret.set_gatheringzoneposy(gatheringZonePos_.y());
+		ret.set_gatheringzoneposz(gatheringZonePos_.z());
+        ret.set_resourcesconfigfile(resourcesConfigFile_);
 		ret.set_obstacleoverlappolicy(obstacleOverlapPolicy_);
 
 		terrain_->serialize(ret);
@@ -399,6 +452,27 @@ private:
 	 * Gravity
 	 */
 	osg::Vec3 gravity_;
+
+    /**
+     * Size of the swarm of robots to simulate in the world
+     */
+    unsigned int swarmSize_;
+
+    /**
+     * Position of the gathering zone where all robots congretate
+     */
+    osg::Vec3 gatheringZonePos_;
+
+    /** 
+     * Size of the gathering zone where all robots congretate
+     */
+    osg::Vec3 gatheringZoneSize_;
+
+    /** 
+     * The file in which the definitions of the different resources 
+     * can be found
+     */
+    std::string resourcesConfigFile_;
 
 	/**
 	 * flag to disallow obstacle collisions
