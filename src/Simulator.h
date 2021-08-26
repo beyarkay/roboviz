@@ -38,7 +38,7 @@
 #include "scenario/Scenario.h"
 #include "viewer/FileViewerLog.h"
 #include "viewer/IViewer.h"
-
+#include "Swarm.h"
 #define MIN_FITNESS (-10000.0)
 
 namespace robogen{

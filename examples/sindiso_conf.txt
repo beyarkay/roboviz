@@ -42,5 +42,5 @@ gatheringZonePosition=0,16,0
 
 #Gathering zone size.
 gatheringZoneSize=20,8,0.0005
-swarmSize=3
+swarmSize=1
 

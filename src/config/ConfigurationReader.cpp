@@ -148,17 +148,17 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
     ("swarmSize", boost::program_options::value<unsigned int>(),
      "The number of duplicate robots to include in the simulation"\
      ". Defaults to 1 if not specified")
-    ("gatheringZoneSize", 
+    ("gatheringZoneSize",
      boost::program_options::value<std::string>(),
      "The size as an 'x,y,z' string of the gathering zone, which"\
      " is an area highlighed in a special color, useful for"\
      " certain fitness functions")
-    ("gatheringZonePosition", 
+    ("gatheringZonePosition",
      boost::program_options::value<std::string>(),
      "The center as an 'x,y,z' string of the gathering zone,"\
      " which is an area  highlighed in a special color, "\
      " useful for certain fitness functions")
-    ("resourcesConfigFile", 
+    ("resourcesConfigFile",
      boost::program_options::value<std::string>(),
      "A config file containing a list of resources, with one resource"
      "per line. Each line must contain a list of space-separated "
@@ -197,7 +197,7 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
       << e.what() << std::endl;
     return boost::shared_ptr<RobogenConfig>();
   }
-  std::cout << "[I] Config file '" << fileName << "' parsed successfully" 
+  std::cout << "[I] Config file '" << fileName << "' parsed successfully"
     << std::endl;
 
   const boost::filesystem::path filePath(fileName);
@@ -542,7 +542,7 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   } else {
     swarmSize = 1;
   }
-  
+
   // -----------------------------------------
   // Read in the gathering zone configurations
   // -----------------------------------------
@@ -562,8 +562,8 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
         gatheringZonePos[i] = std::atof(gatheringZonePosOpts[i].c_str());
       }
     } else {
-      std::cerr << "'gatheringZonePosition' (" << gatheringZonePosString 
-        << ") from config file '" << fileName 
+      std::cerr << "'gatheringZonePosition' (" << gatheringZonePosString
+        << ") from config file '" << fileName
         << "' is not a set of 3 floating point values seperated by "
         "commas, for example: 1,2.0,3.4" << std::endl;
       return boost::shared_ptr<RobogenConfig>();
@@ -586,8 +586,8 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
         gatheringZoneSize[i] = std::atof(gatheringZoneSizeOpts[i].c_str());
       }
     } else {
-      std::cerr << "'gatheringZoneSize' (" << gatheringZoneSizeString 
-        << ") from config file '" << fileName 
+      std::cerr << "'gatheringZoneSize' (" << gatheringZoneSizeString
+        << ") from config file '" << fileName
         << "' is not a set of 3 floating point values seperated by "
         "commas, for example: 1,2.0,3.4" << std::endl;
       return boost::shared_ptr<RobogenConfig>();

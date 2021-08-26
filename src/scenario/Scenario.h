@@ -40,8 +40,8 @@ namespace robogen {
 class BoxObstacle;
 class Environment;
 class RobogenConfig;
-class Swarm;
 class Robot;
+class Swarm;
 class Terrain;
 
 /**
@@ -85,7 +85,6 @@ public:
 	/**
 	 * @return the Swarm
 	 */
-    // TODO replace all instances of getRobot() with for robot in swarm: getSwarm().get(0);
 	boost::shared_ptr<Swarm> getSwarm();
 
 	/**
