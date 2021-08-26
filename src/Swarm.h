@@ -1,26 +1,30 @@
 /*
- *Swarm.h
+ * Swarm.h
  *
  */
 
-#ifndef SWARM
-#define SWARM
+#ifndef ROBOGEN_SWARM_H_
+#define ROBOGEN_SWARM_H_
 
 #include "Robot.h"
 
-class Swarm
-{
+namespace robogen {
+  class Swarm {
     private:
-        std::vector< std::shared_ptr<Robot> > robotVector;
-        int swarmSize;
+      std::vector<boost::shared_ptr<Robot>> robotVector_;
+      int swarmSize_;
 
     public:
-        Swarm(); //no-argument constructor
-        Swarm(int swarmSize); //parameterized constructor
-        ~Swarm(); //destructor
+      Swarm(); //no-argument constructor
+      Swarm(int swarmSize); //parameterized constructor
+      ~Swarm(); //destructor
 
-        std::shared_ptr<Robot> getRobot(int i) const; //method to return a pointer to the i'th robot in the swarm
+      boost::shared_ptr<Robot> getRobot(int i) const; //method to return a pointer to the i'th robot in the swarm
 
-        void addRobot(std::shared_ptr<Robot> robot); //method to add a robot to the swarm
-};
-#endif
+      void addRobot(boost::shared_ptr<Robot> robot); //method to add a robot to the swarm
+
+      // Return the size of the swarm
+      int getSize();
+  };
+}
+#endif /* ROBOGEN_SWARM_H_ */

@@ -162,6 +162,7 @@ if(TARGET_JS) ############################## JS VERSION #####################
 		printing/*.cpp
 		utils/*.cpp
 		Robot.cpp
+        Swarm.cpp
 		Robogen.cpp
 		PartList.cpp
 		Simulator.cpp
@@ -317,6 +318,7 @@ else() ############################## C++ VERSION #####################
 		utils/*.cpp
 		viewer/*.cpp
 		Robot.cpp
+        Swarm.cpp
 		Robogen.cpp
 		PartList.cpp
 		Simulator.cpp
