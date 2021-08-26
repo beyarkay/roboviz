@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <string>
 
 #include "utils/RobogenUtils.h"
@@ -804,3 +805,33 @@ namespace robogen {
   }
 
 }
+=======
+/*
+ *Swarm.cpp
+ *
+ */
+
+#include "Swarm.h"
+
+Swarm::Swarm() : swarmSize(3)
+{}
+
+Swarm::Swarm(int swarmSize) : swarmSize(swarmSize)
+{}
+
+Swarm::~Swarm() 
+{
+    robotVector.clear();
+}
+
+std::shared_ptr<Robot> Swarm::getRobot(int i) const
+{
+    return robotVector.at(i);
+}
+
+void Swarm::addRobot(std::shared_ptr<Robot> robot);
+{
+    robotVector.push_back(robot);
+    swarmSize++;
+}
+>>>>>>> added method definitions and made getRobot const
