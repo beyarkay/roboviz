@@ -57,6 +57,8 @@
 
 namespace robogen{
 
+// TODO this currently accepts a robotFile, but should be changed to accept
+// a swarmFile
 FileViewerLog::FileViewerLog(std::string robotFile,
 		std::string confFile,
 		std::string obstacleFile,

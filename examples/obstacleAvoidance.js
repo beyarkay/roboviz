@@ -14,7 +14,8 @@
 
     // optional function called after each step of simulation
     afterSimulationStep: function() {
-	var sensors = this.getRobot().getSensors();
+    // FIXME this won't work for a swarm with more than one robot
+	var sensors = this.getSwarm().getRobot(0).getSensors();
 	var maxIr = 0
 
 	for (var i = 0; i < sensors.length; i++) {
@@ -28,7 +29,8 @@
 
 	this.maxIrVals.push(maxIr);
 
-	var motors = this.getRobot().getMotors();
+    // FIXME this won't work for a swarm with more than one robot
+	var motors = this.getSwarm().getRobot(0).getMotors();
 
 	var meanVelocity = (motors[1].getVelocity() - motors[0].getVelocity()) / (2.0 * 2.0 * Math.PI);
 	meanVelocity = (meanVelocity + 1)/2.0;

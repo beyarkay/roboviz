@@ -31,6 +31,7 @@
 #include "scenario/Environment.h"
 #include "scenario/RacingScenario.h"
 #include "Robot.h"
+#include "Swarm.h"
 #include "Models.h"
 
 namespace robogen {
@@ -61,7 +62,8 @@ bool RacingScenario::endSimulation() {
 
 	// Compute robot ending position from its closest part to the origin
 	double minDistance = std::numeric_limits<double>::max();
-	const std::vector<boost::shared_ptr<Model> >& bodyParts = this->getRobot()->getBodyParts();
+    // FIXME this won't work on swarms with more than one robot
+	const std::vector<boost::shared_ptr<Model> >& bodyParts = this->getSwarm()->getRobot(0)->getBodyParts();
 	for (unsigned int i = 0; i < bodyParts.size(); ++i) {
 		osg::Vec2 curBodyPos = osg::Vec2(bodyParts[i]->getRootPosition().x(), bodyParts[i]->getRootPosition().y());
 		osg::Vec2 curDistance = startPosition_[startPosition_.size()-1] - curBodyPos;

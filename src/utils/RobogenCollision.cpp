@@ -30,6 +30,7 @@
 #include "config/RobogenConfig.h"
 
 #include "Robot.h"
+#include "Swarm.h"
 #include "model/SimpleBody.h"
 
 #include <algorithm>
@@ -50,9 +51,9 @@ CollisionData::CollisionData(boost::shared_ptr<Scenario> scenario) :
 
 	//numCulled = 0;
 
-	for (size_t i=0; i<scenario->getRobot()->getBodyParts().size(); ++i) {
-		boost::shared_ptr<Model> model =
-				scenario->getRobot()->getBodyParts()[i];
+    // FIXME this won't work for a swarm with more than one robot
+	for (size_t i = 0; i < scenario->getSwarm()->getRobot(0)->getBodyParts().size(); ++i) {
+		boost::shared_ptr<Model> model = scenario->getSwarm()->getRobot(0)->getBodyParts()[i];
 		for(size_t j=0; j<model->getBodies().size(); ++j) {
 			geomModelMap_[model->getBodies()[j]->getGeom()] = model;
 		}

@@ -61,7 +61,7 @@ public:
 	virtual bool endSimulation();
 	virtual double getFitness();
 	virtual bool remainingTrials();
-	virtual bool init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Robot> robot);
+	virtual bool init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Swarm> swarm);
 	virtual int getCurTrial() const;
 
 private:

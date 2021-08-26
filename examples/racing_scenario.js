@@ -3,7 +3,8 @@
     distances : [],    
     // optional function called at the beginning of the simulation
     setupSimulation: function() {
-	this.startPos = this.getRobot().getCoreComponent().getRootPosition();
+    // FIXME this won't work for a swarm with more than one robot
+	this.startPos = this.getSwarm().getRobot(0).getCoreComponent().getRootPosition();
 	return true;
     },
 /*
@@ -18,7 +19,8 @@
 	// Compute robot ending position from its closest part to the origin
 	var minDistance = Number.MAX_VALUE;
 	        
-	bodyParts = this.getRobot().getBodyParts();
+    // FIXME this won't work for a swarm with more than one robot
+	bodyParts = this.getSwarm().getRobot(0).getBodyParts();
 	console.log(bodyParts.length + " body parts");
 	for (var i = 0; i < bodyParts.length; i++) {
 		var xDiff = (bodyParts[i].getRootPosition().x - this.startPos.x);

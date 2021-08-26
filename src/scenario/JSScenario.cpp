@@ -33,6 +33,7 @@
 #include "config/StartPositionConfig.h"
 #include "scenario/Environment.h"
 #include "Robot.h"
+#include "Swarm.h"
 #include "utils/JSUtils.h"
 
 #include <boost/uuid/uuid.hpp>            // uuid class
@@ -112,7 +113,8 @@ bool JSScenario::endSimulation() {
 }
 
 void JSScenario::printRobotPosition() {
-	osg::Vec3 pos = this->getRobot()->getCoreComponent()->getRootPosition();
+    // FIXME This won't work on swarms with more than one robot
+	osg::Vec3 pos = this->getSwarm()->getRobot(0)->getCoreComponent()->getRootPosition();
 	std::stringstream ss;
 	ss << "console.log(\"" << pos[0] << " " <<pos[1] << " " << pos[2] << "\")";
 	emscripten_run_script(ss.str().c_str());

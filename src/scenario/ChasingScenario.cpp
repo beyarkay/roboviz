@@ -31,6 +31,7 @@
 #include "scenario/ChasingScenario.h"
 #include "scenario/Environment.h"
 #include "Robot.h"
+#include "Swarm.h"
 #include "Models.h"
 
 namespace robogen {
@@ -51,9 +52,9 @@ bool ChasingScenario::setupSimulation() {
 
 }
 
-bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Robot> robot) {
+bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Swarm> swarm) {
 
-	Scenario::init(odeWorld, odeSpace, robot);
+	Scenario::init(odeWorld, odeSpace, swarm);
 
 
 	if(this->getEnvironment()->getLightSources().size() == 0) {
@@ -70,7 +71,10 @@ bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_p
 bool ChasingScenario::afterSimulationStep() {
 
 	// Compute distance from light source
-	osg::Vec3 curPos = this->getRobot()->getCoreComponent()->getRootPosition();
+    // FIXME This will break if there are more than one robots in the swarm
+    // but at this stage it is unclear how to calculate the fitness for a
+    // swarm instead of a robot
+	osg::Vec3 curPos = this->getSwarm()->getRobot(0)->getCoreComponent()->getRootPosition();
 	osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[0]->getPosition();
 
 	osg::Vec3 temp = curPos - lightSourcePos;

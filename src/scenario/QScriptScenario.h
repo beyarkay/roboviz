@@ -69,6 +69,7 @@ public:
 
 
 public slots:
+    // FIXME This won't work on swarms with more than 1 robot
 	QScriptValue getRobot() { return qRobot_; }
 	QScriptValue getEnvironment() { return qEnvironment_; }
 	virtual int getCurTrial() const;

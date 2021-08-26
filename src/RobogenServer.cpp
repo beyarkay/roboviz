@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 	if (argc < 2) {
 		std::cerr << "Please, provide server port." << std::endl;
 		exitRobogen(EXIT_FAILURE);
-	} 
+	}
 
 	// Parameters: <PORT>
 	int port = std::atoi(argv[1]);

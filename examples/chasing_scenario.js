@@ -19,7 +19,8 @@
     afterSimulationStep: function() {
 		// Compute distance from light source
 
-		var curPos = this.getRobot().getCoreComponent().getRootPosition();
+        // FIXME this won't work for a swarm with more than one robot
+		var curPos = this.getSwarm.getRobot(0).getCoreComponent().getRootPosition();
 
 		var lightSourcePos = this.getEnvironment().getLightSources()[0].getPosition();
 

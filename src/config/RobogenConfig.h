@@ -176,6 +176,9 @@ public:
 	/**
 	 * @return the robot starting positions
 	 */
+    // FIXME This needs to be updated to return starting positions
+    // for any of the robots as defined in the starting positions
+    // config file.
 	boost::shared_ptr<StartPositionConfig> getStartingPos() {
 		return startPositions_;
 	}
@@ -221,6 +224,7 @@ public:
 
 	/**
 	 * @return if acceleration is capped
+     * FIXME Why is the capped acceleration boolean named isCapAlleration? undo this.
 	 */
 	bool isCapAlleration() {
 		return capAcceleration_;

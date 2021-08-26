@@ -33,6 +33,7 @@
 #include "config/RobogenConfig.h"
 #include "config/StartPositionConfig.h"
 #include "scenario/Environment.h"
+#include "Swarm.h"
 #include "Robot.h"
 
 #ifdef WIN32
@@ -143,8 +144,10 @@ bool QScriptScenario::setupSimulation() {
 		return false;
 
 	// set up exposed stuff before user's setup
-	qRobot_ = engine_->newQObject(new qscript::QRobot(Scenario::getRobot()),
-			QScriptEngine::ScriptOwnership);
+    // FIXME This won't work for swarms with more than 1 robot
+    qRobot_ = engine_->newQObject(
+        new qscript::QRobot(Scenario::getSwarm()->getRobot(0)),
+        QScriptEngine::ScriptOwnership);
 	qEnvironment_ = engine_->newQObject(
 			new qscript::QEnvironment(Scenario::getEnvironment()),
 			QScriptEngine::ScriptOwnership);

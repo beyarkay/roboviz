@@ -51,7 +51,7 @@ public:
 
 	BodyConnectionVisitor(dWorldID& odeWorld,
 			dJointGroupID connectionJointGroup, Robot *robot) :
-			odeWorld_(odeWorld), 
+			odeWorld_(odeWorld),
 			connectionJointGroup_(connectionJointGroup), robot_(robot) {
 	}
 
