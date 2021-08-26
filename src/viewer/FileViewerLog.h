@@ -38,6 +38,7 @@
 #include <boost/timer/timer.hpp>
 #include <boost/shared_ptr.hpp>
 #include "Robot.h"
+#include "Swarm.h"
 #include "config/RobogenConfig.h"
 
 namespace robogen{

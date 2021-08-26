@@ -47,6 +47,7 @@
 #include "RenderModels.h"
 #include "Robogen.h"
 #include "Robot.h"
+#include "Swarm.h"
 #include "robogen.pb.h"
 #include "viewer/IViewer.h"
 
@@ -76,17 +77,17 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 		configuration = ConfigurationReader::parseConfigurationFile(configFile);
 	} catch (std::exception &e) { }
 	if (configuration == NULL) {
-		std::cerr << "Problems parsing the configuration file. Quit."
+		std::cerr << "[E]Problems parsing the configuration file. Quit."
 		<< std::endl;
 		return "{\"error\" : \"ConfError\"}";
 	}
-
+	
 	robogenMessage::Robot robotMessage;
 
 
-	if (startPosition
-			> configuration->getStartingPos()->getStartPosition().size()) {
-		std::cerr << "Specified desired starting position " << startPosition
+    std::cout << "Swarm Size as configured=" << configuration->getSwarmSize() << std::endl;
+	if (startPosition > configuration->getStartingPos()->getStartPosition().size()) {
+		std::cerr << "[E] Specified desired starting position " << startPosition
 				<< " does not index a starting position. Aborting..."
 				<< std::endl;
 		return "{\"error\" : \"ConfError\"}";
@@ -289,6 +290,9 @@ int main(int argc, char *argv[]) {
 		exitRobogen(EXIT_FAILURE);
 	}
 
+    // TODO For a homogeneous swarm, this configuration reader is okay. 
+    // But for a swarm with multiple different robots, we'll need some
+    // alternative way of defining all the different robots
 	boost::shared_ptr<RobogenConfig> configuration =
 			ConfigurationReader::parseConfigurationFile(std::string(argv[2]));
 	if (configuration == NULL) {
@@ -309,7 +313,7 @@ int main(int argc, char *argv[]) {
 	bool writeWebGL = false;
 	bool overwrite = false;
 
-    // Go through all the commandline arguments and parse them
+    // Go through all the command line arguments and parse them
 	int currentArg = 3;
 	if (argc >= 4 && !boost::starts_with(argv[3], "--")) {
 		std::stringstream ss(argv[3]);
@@ -423,7 +427,7 @@ int main(int argc, char *argv[]) {
 	}
 
     // ------------------------------------------------------------------
-    // Check that the commandline arguments given don't conflict with one
+    // Check that the command line arguments given don't conflict with one
     // another in some way
     // ------------------------------------------------------------------
 	if (recording && !visualize) {
@@ -458,11 +462,16 @@ int main(int argc, char *argv[]) {
     // Create a robot from the robot file string argv[1]. If the robot fails to
     // be created, then exit
     // ------------------------------------------------------------------------
-    // TODO this needs to be converted to a swarm Message
+
+    // TODO Right now we can do swarms, but every robot in the swarm is identical.
+    // So read in the robotFileString, convert it to a robotMessage, and then 
+    // later on in the file we'll use that same robotMessage to create multiple
+    // robots that all have the same body and brain. Later this should be expanded
+    // to allow for multiple different robots to be created (although every robot
+    // should be defined in the same file)
 	robogenMessage::Robot robotMessage;
 	std::string robotFileString(argv[1]);
 
-    // TODO: This needs to be updated to return a swarm of robots
 	if(!RobotRepresentation::createRobotMessageFromFile(robotMessage,
 			robotFileString)) {
 		exitRobogen(EXIT_FAILURE);
@@ -485,16 +494,18 @@ int main(int argc, char *argv[]) {
 
 	boost::shared_ptr<FileViewerLog> log;
 
-	if (writeLog) {
-		log.reset(
-				new FileViewerLog(std::string(argv[1]), std::string(argv[2]),
-						configuration->getObstacleFile(),
-						configuration->getStartPosFile(),
-						configuration->getLightSourceFile(),
-						configuration->getScenarioFile(),
-						std::string(outputDirectoryName), overwrite,
-						writeWebGL));
-	}
+    if (writeLog) {
+      log.reset(new FileViewerLog(
+            std::string(argv[1]), 
+            std::string(argv[2]),
+            configuration->getObstacleFile(),
+            configuration->getStartPosFile(),
+            configuration->getLightSourceFile(),
+            configuration->getScenarioFile(),
+            std::string(outputDirectoryName), 
+            overwrite,
+            writeWebGL));
+    }
 
 	// --------------------------------------------------------------------
 	// Start running the actual simulation using the variables instantiated
@@ -507,8 +518,12 @@ int main(int argc, char *argv[]) {
 				recordDirectoryName);
 	}
 
+    // TODO We're passing in a robotMessage here even if we're 
+    // creating a swarm, since for now all of the robots in our
+    // swarm are identical. Later on this should be updated to allow
+    // for multiple different robots in the same swarm
+
     // The true boolean indicates to only complete one simulation
-    // TODO runSimulations needs to be updated to take in a swarm
 	unsigned int simulationResult = runSimulations(scenario, configuration,
 			robotMessage, viewer, rng, true, log);
 
@@ -529,7 +544,7 @@ int main(int argc, char *argv[]) {
 	} else {
 		fitness = scenario->getFitness();
 	}
-	std::cout << "Fitness for the current solution: " << fitness << std::endl
+	std::cout << "[I] Fitness for the current solution: " << fitness << std::endl
 			<< std::endl;
 
 	exitRobogen(EXIT_SUCCESS);
