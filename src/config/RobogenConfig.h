@@ -32,6 +32,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include "config/ObstaclesConfig.h"
+#include "config/SwarmPositionsConfig.h"
 #include "config/StartPositionConfig.h"
 #include "config/TerrainConfig.h"
 #include "config/LightSourcesConfig.h"
@@ -53,10 +54,12 @@ public:
 	/**
 	 * Initializes a robogen config object from configuration parameters
 	 */
-    // TODO This currently only accepts one starting position, but needs to accept starting positions for the whole swarm
-    RobogenConfig(std::string scenario, std::string scenarioFile,
+    RobogenConfig(
+        std::string scenario,
+        std::string scenarioFile,
         unsigned int timeSteps,
-        float timeStepLength, int actuationPeriod,
+        float timeStepLength,
+        int actuationPeriod,
         boost::shared_ptr<TerrainConfig> terrain,
         boost::shared_ptr<ObstaclesConfig> obstacles,
         std::string obstacleFile,
@@ -64,18 +67,28 @@ public:
         std::string startPosFile,
         boost::shared_ptr<LightSourcesConfig> lightSources,
         std::string lightSourceFile,
-        float sensorNoiseLevel, float motorNoiseLevel,
-        bool capAcceleration, float maxLinearAcceleration,
-        float maxAngularAcceleration, int maxDirectionShiftsPerSecond,
-        osg::Vec3 gravity, bool disallowObstacleCollisions,
-        unsigned int swarmSize, osg::Vec3 gatheringZoneSize,
-        osg::Vec3 gatheringZonePos, std::string resourcesConfigFile,
+        float sensorNoiseLevel,
+        float motorNoiseLevel,
+        bool capAcceleration,
+        float maxLinearAcceleration,
+        float maxAngularAcceleration,
+        int maxDirectionShiftsPerSecond,
+        osg::Vec3 gravity,
+        bool disallowObstacleCollisions,
+        unsigned int swarmSize,
+        osg::Vec3 gatheringZoneSize,
+        osg::Vec3 gatheringZonePos,
+        std::string resourcesConfigFile,
+        boost::shared_ptr<SwarmPositionsConfig> swarmPositions,
+        std::string swarmPositionsFile,
         unsigned int obstacleOverlapPolicy) :
-      scenario_(scenario), scenarioFile_(scenarioFile),
+      scenario_(scenario),
+      scenarioFile_(scenarioFile),
       timeSteps_(timeSteps),
       timeStepLength_(timeStepLength),
       actuationPeriod_(actuationPeriod),
-      terrain_(terrain), obstacles_(obstacles),
+      terrain_(terrain),
+      obstacles_(obstacles),
       obstacleFile_(obstacleFile),
       startPositions_(startPositions),
       startPosFile_(startPosFile),
@@ -92,6 +105,10 @@ public:
       swarmSize_(swarmSize),
       gatheringZoneSize_(gatheringZoneSize),
       gatheringZonePos_(gatheringZonePos),
+      swarmPositionsFile_(swarmPositionsFile),
+      swarmPositions_(swarmPositions),
+//  TODO include this line to save the resources config into
+//      resourcesConfig_(resourcesConfig),
       resourcesConfigFile_(resourcesConfigFile),
       obstacleOverlapPolicy_(obstacleOverlapPolicy) {
 
@@ -174,11 +191,14 @@ public:
 	}
 
 	/**
+	 * @return the swarm positions config
+	 */
+	boost::shared_ptr<SwarmPositionsConfig> getSwarmPositionsConfig() {
+		return swarmPositions_;
+	}
+	/**
 	 * @return the robot starting positions
 	 */
-    // FIXME This needs to be updated to return starting positions
-    // for any of the robots as defined in the starting positions
-    // config file.
 	boost::shared_ptr<StartPositionConfig> getStartingPos() {
 		return startPositions_;
 	}
@@ -188,6 +208,13 @@ public:
 	 */
 	std::string getStartPosFile(){
 		return startPosFile_;
+	}
+
+	/**
+	 * @return the obstacle configuration file
+	 */
+	std::string getSwarmPositionsFile(){
+		return swarmPositionsFile_;
 	}
 
 	/**
@@ -224,7 +251,8 @@ public:
 
 	/**
 	 * @return if acceleration is capped
-     * FIXME Why is the capped acceleration boolean named isCapAlleration? undo this.
+     * TODO Why is the capped acceleration boolean named isCapAlleration? undo
+     * this.
 	 */
 	bool isCapAlleration() {
 		return capAcceleration_;
@@ -271,7 +299,7 @@ public:
      * one resource definition per line as a list of space-separated
      * floating point values. The order of the values is:
      * x-pos y-pos z-pos x-magnitude y-magnitude z-magnitude unknown unknown
-     * 
+     *
      * TODO what do the unknown values do?
 	 */
 	std::string getResourcesConfigFile(){
@@ -306,7 +334,7 @@ public:
 
 
     /**
-     * return if should disallow obstacle remove. One of 
+     * return if should disallow obstacle remove. One of
      * REMOVE_OBSTACLES, CONSTRAINT_VIOLATION, ELEVATE_ROBOT
      */
 	unsigned int getObstacleOverlapPolicy() {
@@ -317,7 +345,8 @@ public:
 	 * Convert configuration into configuration message.
 	 */
 	robogenMessage::SimulatorConf serialize() const{
-      // TODO This needs to be update to work with swarmsize, gathering zone position, gathering zone size, and resourcesConfigFile
+      // TODO Why aren't the files (lightSourceFile_, obstacleFile_, etc)
+      // serialized along with all the rest of the variables?
 		robogenMessage::SimulatorConf ret;
 
 		ret.set_ntimesteps(timeSteps_);
@@ -341,11 +370,11 @@ public:
 		ret.set_gatheringzoneposx(gatheringZonePos_.x());
 		ret.set_gatheringzoneposy(gatheringZonePos_.y());
 		ret.set_gatheringzoneposz(gatheringZonePos_.z());
-        ret.set_resourcesconfigfile(resourcesConfigFile_);
 		ret.set_obstacleoverlappolicy(obstacleOverlapPolicy_);
 
 		terrain_->serialize(ret);
 
+		swarmPositions_->serialize(ret);
 		obstacles_->serialize(ret);
 		startPositions_->serialize(ret);
 		lightSources_->serialize(ret);
@@ -384,6 +413,16 @@ private:
 	 * Terrain configuration
 	 */
 	boost::shared_ptr<TerrainConfig> terrain_;
+
+	/**
+	 * SwarmPositions configuration
+	 */
+	boost::shared_ptr<SwarmPositionsConfig> swarmPositions_;
+
+	/**
+	 * SwarmPostition configuration file location
+	 */
+	std::string swarmPositionsFile_;
 
 	/**
 	 * Obstacles configuration
@@ -467,13 +506,13 @@ private:
      */
     osg::Vec3 gatheringZonePos_;
 
-    /** 
+    /**
      * Size of the gathering zone where all robots congretate
      */
     osg::Vec3 gatheringZoneSize_;
 
-    /** 
-     * The file in which the definitions of the different resources 
+    /**
+     * The file in which the definitions of the different resources
      * can be found
      */
     std::string resourcesConfigFile_;

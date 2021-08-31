@@ -38,6 +38,7 @@
 
 #include "config/ConfigurationReader.h"
 #include "config/ObstaclesConfig.h"
+#include "config/SwarmPositionsConfig.h"
 #include "config/RobogenConfig.h"
 #include "config/StartPosition.h"
 #include "config/StartPositionConfig.h"
@@ -53,6 +54,12 @@
 
 namespace robogen {
 
+/**
+ * Convert a file name to that files absolute path
+ *
+ * @param fileName The name of the file to convert to an absolute path
+ * @param filePath The returned absolute file path
+ */
 void makeAbsolute(std::string &fileName,
 		const boost::filesystem::path &filePath) {
 	const boost::filesystem::path thisFilePath(fileName);
@@ -164,6 +171,10 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
      "per line. Each line must contain a list of space-separated "
      "floating point values defining the resource in the order:"
      "x-pos y-pos z-pos x-magnitude y-magnitude z-magnitude unknown unknown")
+    ("swarmPositionsConfigFile", boost::program_options::value<std::string>(),
+     "A configuration file containing the positions of each robot in the"
+     " swarm. Will take preference over anything specified in "
+     " startPositionFile")
     ("obstacleOverlapPolicy",
      boost::program_options::value<std::string>(),
      "Defines the policy for handling obstacles "
@@ -288,6 +299,28 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   }
 
   // ----------------------------
+  // Read swarmPositions configuration
+  // ----------------------------
+  boost::shared_ptr<SwarmPositionsConfig> swarmPositions;
+  std::string swarmPositionsConfigFile = "";
+  if (!var_map.count("swarmPositionsConfigFile")) {
+    swarmPositions.reset(new SwarmPositionsConfig());
+  } else {
+    swarmPositionsConfigFile =
+      var_map["swarmPositionsConfigFile"].as<std::string>();
+
+    // Convert the name of the swarm positions config file
+    // into an absolute pathname, stored in filePath
+    makeAbsolute(swarmPositionsConfigFile, filePath);
+
+    swarmPositions = parseSwarmPositionsFile(swarmPositionsConfigFile);
+    if (swarmPositions == NULL) {
+      std::cerr << "[E] Error parsing the swarmPositions in '" << fileName
+        << "'" << std::endl;
+      return boost::shared_ptr<RobogenConfig>();
+    }
+  }
+  // ----------------------------
   // Read obstacles configuration
   // ----------------------------
   boost::shared_ptr<ObstaclesConfig> obstacles;
@@ -327,6 +360,11 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
     startPositions.reset(new StartPositionConfig(startPositionVector));
 
   } else {
+    if (var_map.count("swarmPositionsConfigFile")) {
+      std::cout << "[W] both startPositionConfigFile and "
+        "swarmPositionsConfigFile have been specified, so only"
+        "swarmPositionsConfigFile will be used" << std::endl;
+    }
 
     startPositionFile = var_map["startPositionConfigFile"].as<std::string>();
 
@@ -535,6 +573,8 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   // ------------------------------------
   unsigned int swarmSize;
   if (var_map.count("swarmSize")){
+    // TODO Remove these warning messages when the relevant code has been
+    // implemented
     std::cout << "[W] parameter swarmSize has been "
       "specified but the code for using it has not been "
       "implemented yet. The value will be ignored." << std::endl;
@@ -549,6 +589,8 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   // Configure the gathering zone position
   osg::Vec3 gatheringZonePos(0,0,0);
   if(var_map.count("gatheringZonePosition")) {
+    // TODO Remove these warning messages when the relevant code has been
+    // implemented
     std::cout << "[W] parameter gatheringZonePos has been "
       "specified but the code for using it has not been "
       "implemented yet. The value will be ignored." << std::endl;
@@ -573,6 +615,8 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   // Configure the gathering zone size
   osg::Vec3 gatheringZoneSize(0,0,0);
   if(var_map.count("gatheringZoneSize")) {
+    // TODO Remove these warning messages when the relevant code has been
+    // implemented
     std::cout << "[W] parameter gatheringZoneSize has been "
       "specified but the code for using it has not been "
       "implemented yet. The value will be ignored." << std::endl;
@@ -599,23 +643,43 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   // --------------------------------
   std::string resourcesConfigFile = "";
   if (var_map.count("resourcesConfigFile")) {
+    // TODO Remove these warning messages when the relevant code has been
+    // implemented
     std::cout << "[W] parameter resourcesConfigFile has been "
       "specified but the code using it has not been "
       "implemented yet. The value will be ignored." << std::endl;
       resourcesConfigFile = var_map["resourcesConfigFile"].as<std::string>();
   }
 
-  return boost::shared_ptr<RobogenConfig>(
-      new RobogenConfig(scenario, scenarioFile, nTimeSteps,
-        timeStep, actuationPeriod, terrain,
-        obstacles, obstaclesConfigFile, startPositions,
-        startPositionFile, lightSources, lightSourcesFile,
-        sensorNoiseLevel,
-        motorNoiseLevel, capAcceleration, maxLinearAcceleration,
-        maxAngularAcceleration, maxDirectionShiftsPerSecond,
-        gravity, disallowObstacleCollisions,
-        swarmSize, gatheringZoneSize, gatheringZonePos, resourcesConfigFile,
-        obstacleOverlapPolicy));
+  return boost::shared_ptr<RobogenConfig>(new RobogenConfig(
+      scenario,
+      scenarioFile,
+      nTimeSteps,
+      timeStep,
+      actuationPeriod,
+      terrain,
+      obstacles,
+      obstaclesConfigFile,
+      startPositions,
+      startPositionFile,
+      lightSources,
+      lightSourcesFile,
+      sensorNoiseLevel,
+      motorNoiseLevel,
+      capAcceleration,
+      maxLinearAcceleration,
+      maxAngularAcceleration,
+      maxDirectionShiftsPerSecond,
+      gravity,
+      disallowObstacleCollisions,
+      swarmSize,
+      gatheringZoneSize,
+      gatheringZonePos,
+      resourcesConfigFile,
+      swarmPositions,
+      swarmPositionsConfigFile,
+      obstacleOverlapPolicy
+  ));
 }
 
 const std::string getMatchNFloatPattern(unsigned int n) {
@@ -629,6 +693,44 @@ const std::string getMatchNFloatPattern(unsigned int n) {
 	paternSS << "$";
 	return paternSS.str();
 }
+
+boost::shared_ptr<SwarmPositionsConfig>
+ConfigurationReader::parseSwarmPositionsFile( const std::string& fileName) {
+    // TODO Add in a check that the number of positions specified is equal to
+    // the size of the swarm.
+	std::ifstream swarmPositionsConfigFile(fileName.c_str());
+	if (!swarmPositionsConfigFile.is_open()) {
+		std::cout << "[W] Cannot find swarmPositions file: '"
+          << fileName << "'" << std::endl;
+		return boost::shared_ptr<SwarmPositionsConfig>();
+	}
+
+	// Match 3 floats: xpos, ypos, zpos
+	static const boost::regex swarmPositionRegex(getMatchNFloatPattern(3));
+	std::vector<osg::Vec3> coordinates;
+
+	std::string line;
+	int lineNum = 0;
+	while (!RobogenUtils::safeGetline(swarmPositionsConfigFile, line).eof()) {
+		lineNum++;
+		boost::cmatch match;
+		float x, y, z;
+        if (boost::regex_match(line.c_str(), match, swarmPositionRegex)){
+            x = std::atof(match[1].str().c_str());
+            y = std::atof(match[2].str().c_str());
+            y = std::atof(match[3].str().c_str());
+        } else {
+            std::cerr << "[E] Error parsing line " << lineNum
+              << " of swarmPositions file: '" << fileName
+              << "', line:" << std::endl << line.c_str() << std::endl;
+            return boost::shared_ptr<SwarmPositionsConfig>();
+        }
+		coordinates.push_back(osg::Vec3(x, y, z));
+	}
+    return boost::shared_ptr<SwarmPositionsConfig>(new
+        SwarmPositionsConfig(coordinates));
+}
+
 
 boost::shared_ptr<ObstaclesConfig> ConfigurationReader::parseObstaclesFile(
 		const std::string& fileName) {
@@ -804,8 +906,24 @@ boost::shared_ptr<StartPositionConfig> ConfigurationReader::parseStartPositionFi
 
 boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 		const robogenMessage::SimulatorConf& simulatorConf) {
+	// ---------------------
+	// Decode swarmPositions
+	// ---------------------
+	std::vector<osg::Vec3> swarmPositionsCoord;
+	for (int i = 0; i < simulatorConf.swarmpositions_size(); ++i) {
+        const robogenMessage::SwarmPosition& swarmPos = simulatorConf.swarmpositions(i);
+		swarmPositionsCoord.push_back(osg::Vec3(
+              swarmPos.x(),
+              swarmPos.y(),
+              swarmPos.z()
+        ));
+	}
+    boost::shared_ptr<SwarmPositionsConfig> swarmPositions(
+        new SwarmPositionsConfig(swarmPositionsCoord));
 
+	// ----------------
 	// Decode obstacles
+	// ----------------
 	std::vector<osg::Vec3> obstaclesCoord;
 	std::vector<osg::Vec3> obstaclesSize;
 	std::vector<float> obstaclesDensity;
@@ -822,12 +940,16 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 		obstaclesRotationAngle.push_back(o.rotationangle());
 
 	}
-	boost::shared_ptr<ObstaclesConfig> obstacles(
-			new ObstaclesConfig(obstaclesCoord, obstaclesSize,
-					obstaclesDensity, obstaclesRotationAxis,
-					obstaclesRotationAngle));
+    boost::shared_ptr<ObstaclesConfig> obstacles(new ObstaclesConfig(
+          obstaclesCoord,
+          obstaclesSize,
+          obstaclesDensity,
+          obstaclesRotationAxis,
+          obstaclesRotationAngle));
 
+	// --------------------
 	// Decode light sources
+	// --------------------
 	std::vector<osg::Vec3> lightSourcesCoords;
 	std::vector<float> lightSourcesIntensities;
 	for (int i = 0; i < simulatorConf.lightsources_size(); ++i) {
@@ -840,7 +962,9 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 						lightSourcesIntensities));
 
 
+	// ----------------------
 	// Decode start positions
+	// ----------------------
 	std::vector<boost::shared_ptr<StartPosition> > startPositions;
 	for (int i = 0; i < simulatorConf.startpositions_size(); ++i) {
 		const robogenMessage::StartPosition& s = simulatorConf.startpositions(
@@ -850,7 +974,9 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 		startPositions.push_back(newStartPos);
 	}
 
+	// ----------------------------
 	// Decode terrain configuration
+	// ----------------------------
 	boost::shared_ptr<TerrainConfig> terrain;
 	if(simulatorConf.terraintype() == TerrainConfig::EMPTY) {
 		terrain.reset(new TerrainConfig(simulatorConf.terrainfriction()));
@@ -867,7 +993,9 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 							simulatorConf.terrainfriction()));
 	}
 
+	// ------------------------------
 	// Decode simulator configuration
+	// ------------------------------
 	std::string scenario = simulatorConf.scenario();
 
 	//todo with js check!!
@@ -881,13 +1009,23 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 	float timeStepLength = simulatorConf.timestep();
 	int actuationPeriod = simulatorConf.actuationperiod();
 
+    // TODO Why are all the filenames passed in as empty strings?:
     return boost::shared_ptr<RobogenConfig>(
         new RobogenConfig(
-          scenario, "", timeSteps, timeStepLength,
-          actuationPeriod, terrain, obstacles, "",
-          boost::shared_ptr<StartPositionConfig>(
-            new StartPositionConfig(startPositions)), "",
-          lightSources, "", simulatorConf.sensornoiselevel(),
+          scenario,
+          "",               // scenarioFile
+          timeSteps,
+          timeStepLength,
+          actuationPeriod,
+          terrain,
+          obstacles,
+          "",               // obstaclesFile
+          boost::shared_ptr<StartPositionConfig>(new
+            StartPositionConfig(startPositions)),
+          "",               // startPosFile
+          lightSources,
+          "",               // lightSourceFile
+          simulatorConf.sensornoiselevel(),
           simulatorConf.motornoiselevel(),
           simulatorConf.capacceleration(),
           simulatorConf.maxlinearacceleration(),
@@ -908,9 +1046,9 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
               simulatorConf.gatheringzoneposy(),
               simulatorConf.gatheringzoneposz()),
           simulatorConf.resourcesconfigfile(),
+          swarmPositions,
+          "",               // swarmPositionsFile
           simulatorConf.obstacleoverlappolicy()
-            ));
-
+      ));
 }
-
 }

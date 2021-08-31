@@ -35,6 +35,7 @@
 namespace robogen {
 
 class ObstaclesConfig;
+class SwarmPositionsConfig;
 class RobogenConfig;
 class StartPositionConfig;
 class TerrainConfig;
@@ -66,11 +67,28 @@ public:
 	static boost::shared_ptr<RobogenConfig> parseConfigurationFile(
 			const std::string& fileName);
 
-	static boost::shared_ptr<RobogenConfig> parseRobogenMessage(
-				const robogenMessage::SimulatorConf& simulatorConf);
+    /**
+     * Accept a simulator configuration and parse it into
+     * a robogen Config. Primarily used in robogen server and
+     * Robogen JS
+     *
+     * @param simulatorConf The simulator Configuration object.
+     * @return a Robogen Config object
+     */
+    static boost::shared_ptr<RobogenConfig> parseRobogenMessage(
+            const robogenMessage::SimulatorConf& simulatorConf);
 
 private:
 
+    /**
+     * Read in the configuration file specifying swarm positions.
+     *
+     * @param fileName The name of the file where the swarm positions can be
+     * found.
+     * @return a Swarm Positions config object
+     */
+    static boost::shared_ptr<SwarmPositionsConfig> parseSwarmPositionsFile( 
+        const std::string& fileName);
 	/**
 	 * Reads the configuration file for obstacles.
 	 * The file contains on each line the coordinates and sizes of the obstacles, separated by a tab (\t)

@@ -77,7 +77,7 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 		configuration = ConfigurationReader::parseConfigurationFile(configFile);
 	} catch (std::exception &e) { }
 	if (configuration == NULL) {
-		std::cerr << "[E]Problems parsing the configuration file. Quit."
+		std::cerr << "[E] Problems parsing the configuration file. Quit."
 		<< std::endl;
 		return "{\"error\" : \"ConfError\"}";
 	}
@@ -85,7 +85,6 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 	robogenMessage::Robot robotMessage;
 
 
-    std::cout << "Swarm Size as configured=" << configuration->getSwarmSize() << std::endl;
 	if (startPosition > configuration->getStartingPos()->getStartPosition().size()) {
 		std::cerr << "[E] Specified desired starting position " << startPosition
 				<< " does not index a starting position. Aborting..."
@@ -110,8 +109,7 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 	// ---------------------------------------
 	boost::shared_ptr<Scenario> scenario = NULL;
 	try {
-		scenario = ScenarioFactory::createScenario(
-				configuration);
+		scenario = ScenarioFactory::createScenario(configuration);
 	}
 	catch (...) {}
 	if (scenario == NULL) {
@@ -199,7 +197,7 @@ bool fixed_is_directory(std::string path) {
  * without specifying the arguments correctly
  *
  * @param argv The commandline arguments.
- * @return void 
+ * @return void
  */
 void printUsage(char *argv[]) {
 	std::cout << std::endl << "USAGE: " << std::endl << "      "
@@ -290,13 +288,13 @@ int main(int argc, char *argv[]) {
 		exitRobogen(EXIT_FAILURE);
 	}
 
-    // TODO For a homogeneous swarm, this configuration reader is okay. 
+    // TODO For a homogeneous swarm, this configuration reader is okay.
     // But for a swarm with multiple different robots, we'll need some
     // alternative way of defining all the different robots
 	boost::shared_ptr<RobogenConfig> configuration =
 			ConfigurationReader::parseConfigurationFile(std::string(argv[2]));
 	if (configuration == NULL) {
-		std::cerr << "Problems parsing the configuration file. Quit."
+		std::cerr << "[E] Problems parsing the configuration file. Quit."
 				<< std::endl;
 		exitRobogen(EXIT_FAILURE);
 	}
@@ -313,6 +311,10 @@ int main(int argc, char *argv[]) {
 	bool writeWebGL = false;
 	bool overwrite = false;
 
+    // TODO Check here that the starting positions have been read correctly
+    // into the configurations object. Or ideally just log everything in the
+    // configurations object to the console for debugging purposes
+
     // Go through all the command line arguments and parse them
 	int currentArg = 3;
 	if (argc >= 4 && !boost::starts_with(argv[3], "--")) {
@@ -321,13 +323,13 @@ int main(int argc, char *argv[]) {
 		ss >> desiredStart;
 		--desiredStart; // -- accounts for parameter being 1..n
 		if (ss.fail()) {
-			std::cerr << "Specified desired starting position \"" << argv[3]
+			std::cerr << "[E] Specified desired starting position \"" << argv[3]
 					<< "\" is not an integer. Aborting..." << std::endl;
 			exitRobogen(EXIT_FAILURE);
 		}
 		if (desiredStart
 				>= configuration->getStartingPos()->getStartPosition().size()) {
-			std::cout << "Specified desired starting position " << argv[3]
+			std::cout << "[E] Specified desired starting position " << argv[3]
 					<< " does not index a starting position. Aborting..."
 					<< std::endl;
 			exitRobogen(EXIT_FAILURE);
@@ -464,7 +466,7 @@ int main(int argc, char *argv[]) {
     // ------------------------------------------------------------------------
 
     // TODO Right now we can do swarms, but every robot in the swarm is identical.
-    // So read in the robotFileString, convert it to a robotMessage, and then 
+    // So read in the robotFileString, convert it to a robotMessage, and then
     // later on in the file we'll use that same robotMessage to create multiple
     // robots that all have the same body and brain. Later this should be expanded
     // to allow for multiple different robots to be created (although every robot
@@ -481,8 +483,7 @@ int main(int argc, char *argv[]) {
 	// Setup environment
 	// ---------------------------------------
 
-	boost::shared_ptr<Scenario> scenario = ScenarioFactory::createScenario(
-			configuration);
+	boost::shared_ptr<Scenario> scenario = ScenarioFactory::createScenario(configuration);
 	if (scenario == NULL) {
 		exitRobogen(EXIT_FAILURE);
 	}
@@ -496,13 +497,13 @@ int main(int argc, char *argv[]) {
 
     if (writeLog) {
       log.reset(new FileViewerLog(
-            std::string(argv[1]), 
+            std::string(argv[1]),
             std::string(argv[2]),
             configuration->getObstacleFile(),
             configuration->getStartPosFile(),
             configuration->getLightSourceFile(),
             configuration->getScenarioFile(),
-            std::string(outputDirectoryName), 
+            std::string(outputDirectoryName),
             overwrite,
             writeWebGL));
     }
@@ -518,7 +519,7 @@ int main(int argc, char *argv[]) {
 				recordDirectoryName);
 	}
 
-    // TODO We're passing in a robotMessage here even if we're 
+    // TODO We're passing in a robotMessage here even if we're
     // creating a swarm, since for now all of the robots in our
     // swarm are identical. Later on this should be updated to allow
     // for multiple different robots in the same swarm
