@@ -332,8 +332,7 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
 
     makeAbsolute(obstaclesConfigFile, filePath);
 
-    obstacles = parseObstaclesFile(
-        obstaclesConfigFile);
+    obstacles = parseObstaclesFile(obstaclesConfigFile);
     if (obstacles == NULL) {
       return boost::shared_ptr<RobogenConfig>();
     }
@@ -698,6 +697,8 @@ boost::shared_ptr<SwarmPositionsConfig>
 ConfigurationReader::parseSwarmPositionsFile( const std::string& fileName) {
     // TODO Add in a check that the number of positions specified is equal to
     // the size of the swarm.
+    std::cout << "[I] Attempting to parse swarmPositions file: '"
+      << fileName << "'" << std::endl;
 	std::ifstream swarmPositionsConfigFile(fileName.c_str());
 	if (!swarmPositionsConfigFile.is_open()) {
 		std::cout << "[W] Cannot find swarmPositions file: '"
@@ -718,13 +719,17 @@ ConfigurationReader::parseSwarmPositionsFile( const std::string& fileName) {
         if (boost::regex_match(line.c_str(), match, swarmPositionRegex)){
             x = std::atof(match[1].str().c_str());
             y = std::atof(match[2].str().c_str());
-            y = std::atof(match[3].str().c_str());
+            z = std::atof(match[3].str().c_str());
         } else {
             std::cerr << "[E] Error parsing line " << lineNum
               << " of swarmPositions file: '" << fileName
               << "', line:" << std::endl << line.c_str() << std::endl;
             return boost::shared_ptr<SwarmPositionsConfig>();
         }
+        std::cout << "[D] SwarmPosition file line " << lineNum
+            << ": " << match[1].str().c_str()
+            << " " << match[2].str().c_str()
+            << " " << match[3].str().c_str() << std::endl;
 		coordinates.push_back(osg::Vec3(x, y, z));
 	}
     return boost::shared_ptr<SwarmPositionsConfig>(new

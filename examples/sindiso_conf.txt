@@ -13,8 +13,8 @@ actuationFrequency=25
 
 #Terrain
 terrainType=flat
-terrainLength=40
-terrainWidth=40
+terrainLength=10
+terrainWidth=10
 terrainFriction=1.0
 
 #Physics
@@ -44,3 +44,5 @@ gatheringZonePosition=0,16,0
 gatheringZoneSize=20,8,0.0005
 swarmSize=1
 
+# Define the swarm starting positions
+swarmPositionsConfigFile=sindiso_start_position.txt

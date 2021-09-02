@@ -58,8 +58,8 @@ namespace robogen {
    */
   bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Swarm> swarm) {
 
-    environment_ = boost::shared_ptr<Environment>(new
-        Environment(odeWorld, odeSpace, robogenConfig_));
+    environment_ = boost::shared_ptr<Environment>(new Environment(
+          odeWorld, odeSpace, robogenConfig_));
 
     if(!environment_->init()) {
       return false;
@@ -77,6 +77,8 @@ namespace robogen {
     // ===========================================================
     std::vector<double> overlapMaxZ;
     double rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ;
+    std::cout << "[D] Creating and adding " << swarm->getSize()
+      << " robots to the swarm" << std::endl;
     for (unsigned int i = 0; i < swarm->getSize(); ++i) {
       boost::shared_ptr<Robot> currRobot = swarm->getRobot(i);
       rMinX = 0;
@@ -86,41 +88,62 @@ namespace robogen {
       rMinZ = 0;
       rMaxZ = 0;
       currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
-      // TODO The swarm will need something like an array of robogenConfigs
-      // Set up the starting orientation of the robot
-      // FIXME this won't work for a swarm with more than one robot, as every robots'
-      // `robogenConfig_->getStartingPos()->getStartPosition(...`
-      // will be the same
-      float startingAzimuth =
-        robogenConfig_->getStartingPos()->getStartPosition(
+      // If the parameter `swarmPositionConfigFile` has been set and
+      // every member of the swarm has a location specified, then use
+      // those locations.
+      if (robogenConfig_->getSwarmPositionsConfig()->getCoordinates().size() > 0) {
+        std::cout << "[D] Using different xyz location for each robot"
+          << std::endl;
+        // Set up the starting orientation of the robot
+        osg::Vec3 startingPosition =
+          robogenConfig_->getSwarmPositionsConfig()->getCoordinates().at(i);
+        // If the user's specified a silly z-value, warn them of the fact
+        if (startingPosition.z() < robogenConfig_->getTerrainConfig()->getHeight()) {
+          std::cout << "[W] The specified starting z-value '"
+            << startingPosition.z()
+            << "' is less than the terrain height '"
+            << robogenConfig_->getTerrainConfig()->getHeight()
+            << "'. This might cause issues" << std::endl;
+        }
+        // Translate the robot to the correct starting position
+        currRobot->translateRobot(startingPosition);
+        currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
+        overlapMaxZ.push_back(rMinZ);
+        std::cout << "[D] Translating robot to: "
+          << "x=" << startingPosition.x()
+          << ", y= " << startingPosition.y()
+          << ", z=" << startingPosition.z() << std::endl;
+      } else {
+        // The parameter `swarmPositionsConfigFile` hasn't been set, so just
+        // use the location specified by the startPositionFile
+        std::cout << "[D] Using the same xy location and azimuth for each robot"
+          << std::endl;
+        // Rotate the robot around the z-axis by startingAzimuth degrees
+        float startingAzimuth = robogenConfig_->getStartingPos()->getStartPosition(
             startPositionId_)->getAzimuth();
-      osg::Quat robotRotation;
-      robotRotation.makeRotate(osg::inDegrees(startingAzimuth), osg::Vec3(0,0,1));
-      currRobot->rotateRobot(robotRotation);
+        osg::Quat robotRotation;
+        robotRotation.makeRotate(
+            osg::inDegrees(startingAzimuth), osg::Vec3(0,0,1));
+        currRobot->rotateRobot(robotRotation);
 
-      // Set up the starting position of the robot
-      // FIXME this won't work for a swarm with more than one robot, as every robots'
-      // `robogenConfig_->getStartingPos()->getStartPosition(...`
-      // will be the same
-      osg::Vec2 startingPosition =
-        robogenConfig_->getStartingPos()->getStartPosition(
-            startPositionId_)->getPosition();
-      currRobot->translateRobot(
-          osg::Vec3(startingPosition.x(),
-            startingPosition.y(),
-            robogenConfig_->getTerrainConfig()->getHeight()
-            + inMm(2) - rMinZ));
-      currRobot->getAABB(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ);
-      overlapMaxZ.push_back(rMinZ);
-
+        // Translate the robot to startingPosition
+        osg::Vec2 startingPosition =
+          robogenConfig_->getStartingPos()->getStartPosition(
+              startPositionId_)->getPosition();
+        currRobot->translateRobot(
+            osg::Vec3(startingPosition.x(),
+              startingPosition.y(),
+              robogenConfig_->getTerrainConfig()->getHeight()
+              + inMm(2) - rMinZ));
+      }
 
       // Log some debug information
       std::cout
-        << "The " << i << "-th robot is enclosed in the "
+        << "[I] The " << i << "-th robot is enclosed in the "
         << "Axis-Aligned-Bounding-Box(rMinX, rMaxX, rMinY, rMaxY, rMinZ, rMaxZ) ("
         << rMinX << ", " << rMaxX << ", " << rMinY << ", " << rMaxY << ", "
         << rMinZ << ", " << rMaxZ << ")" << std::endl;
-      std::cout << "Obstacles in this range will not be generated" << std::endl
+      std::cout << "[I] Obstacles in this range will not be generated"
         << std::endl;
     }
 
@@ -336,8 +359,6 @@ namespace robogen {
     }
   }
 
-  // TODO we'll need a Scenario::get Swarm method to get every robot from the
-  // swarm
   boost::shared_ptr<Swarm> Scenario::getSwarm() {
     return swarm_;
   }
