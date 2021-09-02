@@ -1,48 +1,55 @@
 {
     // here we define a variable for record keeping
-    distances : [],    
+    distances : [],
     // optional function called at the beginning of the simulation
     setupSimulation: function() {
-    // FIXME this won't work for a swarm with more than one robot
-	this.startPos = this.getSwarm().getRobot(0).getCoreComponent().getRootPosition();
-	return true;
+      this.startPositions = [];
+      for (let i = 0; i < this.getSwarm().getSize(); i++) {
+        this.startPositions.push(
+          this.getSwarm().getRobot(i).getCoreComponent().getRootPosition()
+        );
+      }
+      return true;
     },
 /*
     // optional function called after each step of simulation
     afterSimulationStep: function() {
-	return true;
+    return true;
     },
 */
     // optional function called at the end of the simulation
     endSimulation: function() {
 
-	// Compute robot ending position from its closest part to the origin
-	var minDistance = Number.MAX_VALUE;
-	        
-    // FIXME this won't work for a swarm with more than one robot
-	bodyParts = this.getSwarm().getRobot(0).getBodyParts();
-	console.log(bodyParts.length + " body parts");
-	for (var i = 0; i < bodyParts.length; i++) {
-		var xDiff = (bodyParts[i].getRootPosition().x - this.startPos.x);
-		var yDiff = (bodyParts[i].getRootPosition().y - this.startPos.y);
-		var dist = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2));
-                
-		if (dist < minDistance) {
-			minDistance = dist;
-		}
-	}
-	
-	this.distances.push(minDistance);
-	return true;
+      // Calculate the average distance that the swarm has moved away from the
+      // origin
+      let totalDistance = 0;
+      for (let i = 0; i < this.getSwarm().getSize(); i++) {
+        var minDistance = Number.MAX_VALUE;
+        bodyParts = this.getSwarm().getRobot(i).getBodyParts();
+        console.log(bodyParts.length + " body parts");
+        for (var j = 0; j < bodyParts.length; j++) {
+          var xDiff = (bodyParts[j].getRootPosition().x - this.startPos.x);
+          var yDiff = (bodyParts[j].getRootPosition().y - this.startPos.y);
+          var dist = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2));
+
+          if (dist < minDistance) {
+            minDistance = dist;
+          }
+        }
+        totalDistance += minDistance;
+      }
+
+      this.distances.push(totalDistance / this.getSwarm().getSize());
+      return true;
     },
     // the one required method... return the fitness!
     // here we return minimum distance travelled across evaluations
     getFitness: function() {
-	fitness = this.distances[0];
+    fitness = this.distances[0];
         for (var i=1; i<this.distances.length; i++) {
-		if (this.distances[i] < fitness)
-			fitness = this.distances[i];
-	}
+        if (this.distances[i] < fitness)
+            fitness = this.distances[i];
+    }
         return fitness;
     },
 

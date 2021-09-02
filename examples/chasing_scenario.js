@@ -1,6 +1,6 @@
 {
     // here we define variables for record keeping
-    trialFits : [],    
+    trialFits : [],
 
     // called at the beginning of the simulation
     setupSimulation: function() {
@@ -17,31 +17,33 @@
 
     // called after each step of simulation
     afterSimulationStep: function() {
-		// Compute distance from light source
+      // Loop through all robots and get the average distance from the light
+      let totalDistance = 0;
+      var lightSourcePos =
+        this.getEnvironment().getLightSources()[0].getPosition();
+      for (let i = 0; i < this.getSwarm().getSize(); i++) {
+        let currPos =
+          this.getSwarm.getRobot(i).getCoreComponent().getRootPosition();
+        totalDistance += this.vectorDistance(currPos, lightSourcePos);
+      }
+      this.trialFits[this.getCurTrial()] += (totalDistance / this.getSwarm().getSize());
+      this.timeSteps++;
 
-        // FIXME this won't work for a swarm with more than one robot
-		var curPos = this.getSwarm.getRobot(0).getCoreComponent().getRootPosition();
-
-		var lightSourcePos = this.getEnvironment().getLightSources()[0].getPosition();
-
-		this.trialFits[this.getCurTrial()] += this.vectorDistance(curPos, lightSourcePos);
-		this.timeSteps++;
-
-		return true;
+      return true;
     },
 
 
     // optional function called at the end of the simulation
     endSimulation: function() {
-		// We take average distance across trial, and multiply by -1 to make
-		// a maximization problem (want to be as close as possible to light
-		// source at each time step)
-		console.log(this.getCurTrial());
-		console.log(this.trialFits[this.getCurTrial()]);
-		this.trialFits[this.getCurTrial()] *= -1 / this.timeSteps;
-		console.log(this.trialFits[this.getCurTrial()]);
+      // We take average distance across trial, and multiply by -1 to make
+      // a maximization problem (want to be as close as possible to light
+      // source at each time step)
+      console.log(this.getCurTrial());
+      console.log(this.trialFits[this.getCurTrial()]);
+      this.trialFits[this.getCurTrial()] *= -1 / this.timeSteps;
+      console.log(this.trialFits[this.getCurTrial()]);
 
-		return true;
+      return true;
     },
 
 
