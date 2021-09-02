@@ -8,8 +8,6 @@
  *
  */
 
-// TODO do we need to include something
-// to use boost::shared_ptr?
 #include "Swarm.h"
 
 namespace robogen {

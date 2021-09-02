@@ -97,6 +97,8 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 
 		// wrap all this in block so things get cleaned up before shutting down
 		// ode
+        // FIXME There are lots of ODE errors when the simulation stops. Maybe it's
+        // something to do with this block not enclosing enough of the variables?
 		{
 
 		// ---------------------------------------
@@ -113,8 +115,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
           // TODO Depending on exactly how robot->init is implemented, we might
           // have issues passing the same robotMessage through to different robots
           if (!robot->init(odeWorld, odeSpace, robotMessage)) {
-            std::cout << "[E] Problems decoding the robot. Quit."
-              << std::endl;
+            std::cout << "[E] Problems decoding the robot. Quit." << std::endl;
             return SIMULATION_FAILURE;
           }
 

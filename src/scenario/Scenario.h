@@ -79,7 +79,6 @@ public:
 	 * destroyed before the destruction of the world). Undoes what init() does
 	 * and avoids memory leaks over multiple starting positions.
 	 */
-    // TODO right now this frees the robot, but should free the whole swarm
 	void prune();
 
 	/**

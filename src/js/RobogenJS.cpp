@@ -89,12 +89,12 @@ double EMSCRIPTEN_KEEPALIVE evaluate(int ptr, int length) {
 	//  Decode configuration file
 	// ---------------------------------------
 
-	boost::shared_ptr<RobogenConfig> configuration =
-	ConfigurationReader::parseRobogenMessage(
-			packet.getMessage()->configuration());
+    boost::shared_ptr<RobogenConfig> configuration =
+      ConfigurationReader::parseRobogenMessage(
+          packet.getMessage()->configuration());
 	if (configuration == NULL) {
 		std::cerr
-		<< "Problems parsing the configuration file. Quit."
+		<< "[E] Problems parsing the configuration file. Quit."
 		<< std::endl;
 		exitRobogen(EXIT_FAILURE);
 		return -1;

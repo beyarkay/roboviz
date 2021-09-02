@@ -152,8 +152,8 @@ int main(int argc, char* argv[]) {
 									packet.getMessage()->configuration());
 					if (configuration == NULL) {
 						std::cerr
-								<< "Problems parsing the configuration file. Quit."
-								<< std::endl;
+                          << "[E] Problems parsing the configuration file. Quit."
+                          << std::endl;
 						exitRobogen(EXIT_FAILURE);
 					}
 

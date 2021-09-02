@@ -129,8 +129,8 @@ void bind_events(sio::socket::ptr &socket) {
 								packet.getMessage()->configuration());
 				if (configuration == NULL) {
 					std::cerr
-							<< "Problems parsing the configuration file. Quit."
-							<< std::endl;
+                      << "[E] Problems parsing the configuration file. Quit."
+                      << std::endl;
 					exitRobogen(EXIT_FAILURE);
 				}
 

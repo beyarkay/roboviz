@@ -311,10 +311,6 @@ int main(int argc, char *argv[]) {
 	bool writeWebGL = false;
 	bool overwrite = false;
 
-    // TODO Check here that the starting positions have been read correctly
-    // into the configurations object. Or ideally just log everything in the
-    // configurations object to the console for debugging purposes
-
     // Go through all the command line arguments and parse them
 	int currentArg = 3;
 	if (argc >= 4 && !boost::starts_with(argv[3], "--")) {
