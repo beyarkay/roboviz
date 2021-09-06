@@ -1,0 +1,247 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Capstone Project Template that tries to save a few trees %%%
+%%%  Edwin Blake 22 Aug 2013                                  %%%
+%%%		1 Aug 2014 (revised)                                  %%%
+%%%             10 Aug 2015                                   %%%
+%%%  see also                                                 %%%
+%%% http://ravirao.wordpress.com/2005/11/19/latex-tips-to-meet-publication-page-limits/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt,a4paper]{article}
+\usepackage{times}
+% Allows better control over headers and footers
+\usepackage{fancyhdr}
+% set the margins using the geometry package (which is much the easiest way of
+% doing this).
+\usepackage[margin=2.5cm]{geometry}
+% Pictures (means you have to produce pdf output via pdflatex)
+\usepackage[pdftex]{graphicx}
+% Set a default path for the image files
+\graphicspath{{./images/}}
+% Clickable hyperlinks
+\usepackage{hyperref}
+% Try to reduce the white space latex loves so much
+\usepackage[small,compact]{titlesec}
+% Reduce space around section heads and add a full stop after the number
+\titlelabel{\thetitle. \quad}
+% Use fancy headers
+\pagestyle{fancy}
+% Change name of Abstract to nothing and loose some of the excessive white
+% space
+\renewcommand{\abstractname}{\vskip -5mm}
+
+\begin{document}
+\title{Final Report: RoboViz Capstone Project} \date{}
+\author{Boyd Kane\\KNXBOY001\\KNXBOY001@myuct.ac.za
+\and Imaad Ghoor\\GHRIMA002\\GHRIMA002@myuct.ac.za
+\and Jesse Sarembock\\SRMJES001\\SRMJES001@myuct.ac.za}
+
+%  Set the headers via fancyhdr package
+% Short title for running head
+\lhead{RoboViz Final Report}
+\chead{}
+\lfoot{}
+% add page number as centre footer.
+\cfoot{\thepage}
+\rfoot{}
+% Don't want horizontal line under header
+\renewcommand{\headrulewidth}{0.0pt}
+
+\maketitle
+% First page is plain style headings and footers (ie just the page number as
+% footer).
+\thispagestyle{plain}
+
+\begin{abstract}
+% First you should have an executive summary (or abstract) just a single
+% paragraph saying what the results of the project are (at most 200
+% words).
+    This Final Report describes the 2021 RoboViz Capstone project completed by
+    third year computer science students. This project expanded on the open
+    source RoboGen software to add the ability to simulate multiple robots in a
+    swarm, among other extensions.
+\end{abstract}
+
+% We expect a report of about 3500-4000 words, written single spaced, with a font
+% size of at least 11 pts.  Use at least a 2.5 cm margin on all sides of the
+% pages.
+%
+% No blank lines between paragraphs except to get figures and their captions to
+% position properly.
+%
+% Depending on how many diagrams you use (more is better) the report will be
+% between 7 and 10 pages long. Your appendices (e.g., user manual, test results,
+% which are needed) are not included in these limits.
+%
+% You must had-in an Adobe Acrobat file for your report (i.e., pdf
+% file).
+% You should begin your write-up with an overview and then drill down
+% into the details of what you produced. Your report should cover the
+% following sections (Sections \ref{s:introduction} --
+% \ref{s:conclusion}).
+%
+% Some notes about code formatting
+% - Each method should start with a brief description of its
+%   function.
+% - Use indentation to display the structure within a method.
+% - Comments should be used extensively. They are best used to
+%   describe logical blocks of code rather than individual
+%   statements. Line-by-line comments have the drawbacks of not
+%   providing any overview and of decreasing readability.
+% - Meaningful identifiers should be chosen.
+% - Output should be pleasingly formatted and easy to read.
+%
+% You do, of course, have the option to call in any of your
+% favourite packages for setting maths, graphics, computer listings,
+% etc.
+
+\section{Introduction}
+\label{s:introduction}
+% Your introduction provides the context for the project and should
+% contain the statement of the scope of the project (which may have
+% changed since you first wrote it). Someone reading your introduction
+% must have clear idea of what the system is intended for. If you think
+% there is something special about the kind of problem you tackled that
+% your reader needs to know up front then this is where you say it.
+%
+% If you need any survey of other work (you probably don't) then put it
+% towards the end of the introduction and give suitable references. A
+% case where this is needed is if your project builds on someone else's
+% project or some published algorithm.
+%
+% Discuss your approach to solving the problem. Please give a short
+% overview of the software engineering methods you used (e.g.,
+% traditional analysis followed by design and implementation -- typically
+% the case if you did an evolutionary prototype, or a more agile
+% approach where you had a cyclical development process).
+This is where the introduction will go
+
+\section{Requirements Captured}
+% The next section deals with the analysis of your system. Cover the
+% functional, non-functional and usability requirements. This is where
+% you present your use case narratives and diagrams.
+
+% Discuss the major analysis artefacts that you produced. We will expect
+% you to produce at least one overall description of the architecture
+% used in your system as a diagram, either here or below (see Section
+% \ref{s:design-overview}). You may also want to include an analysis
+% class hierarchy diagram.
+This is where the requirements captured will go.
+
+\section{Design Overview}
+\label{s:design-overview}
+% The next section is an overview of your design. The system design has
+% to be justified in terms of the expected behaviour of the final
+% product.
+%
+% If you produced a design class diagram put it here.
+% \begin{figure}[h!]
+%   \center{\includegraphics[scale=0.8]{architecture.png}}
+%   \caption{An architecture diagram. Caption to go below figure}
+%   \label{fig:architecture}
+% \end{figure}
+%
+% You must present the overall architecture of the system together with
+% an architecture diagram. You may choose what kind of diagram best
+% suits your project but we would expect a layered architecture diagram
+% (see Figure \ref{fig:architecture}) unless there is a good reason for
+% some other kind of diagram. It need not be a formal UML diagram as
+% long as it conveys all the necessary information clearly.
+%
+% You should then (in subsections) cover the algorithms and the data
+% organisation used and why they were considered the best.
+This is where the design overview should go
+
+\section{Implementation}
+% Now we get to the details.
+% - Describe your data structures and be sure to illustrate them with a
+%     diagram.
+% - If your user interface was a key feature describe how that was
+%     implemented.
+% - Discuss the function of the most significant methods in each class.
+%     This may well require flowcharts, or sequence diagrams, in some cases.
+% - Any special relationship between the classes (e.g. friends) and why
+%     they exist.
+% - A description of any special programming techniques or libraries
+%     used.
+This is where the implementation details should go.
+
+\section{Program Validation and Verification}
+\label{s:progr-valid-verif}
+% Tell us how you tested the system and why you believe it works.
+% Describe the Quality Management Plan for your project, that is,
+% software testing plan. The plan should indicate the types of testing
+% that was performed and detail how they were done. This must include
+% the reasons on why the chosen testing protocol was considered
+% effective.
+%
+% Create a table that summarizes the testing plan (see Table
+% \ref{tab:test-plan}).
+%
+% \begin{table}[h!]
+%     \centering
+%     \caption{Summary Testing Plan. A table caption goes above the table.}
+%
+%     \begin{tabular}[t]{|p{8cm}|p{7cm}|} \hline
+%         \textbf{Process} & \textbf{Technique} \\ \hline 1. Class
+%         Testing: test methods and state behaviour of classes & Random,
+%         Partition and White-Box Tests \\ \hline 2. Integration Testing:
+%         test the
+%         interaction of sets of classes & Random and Behavioural Testing \\
+%         \hline 3. Validation Testing: test whether customer requirements
+%         are satisfied & Use-case based black box and Acceptance tests \\
+%         \hline 4. System Testing: test the behaviour of the system as part
+%         of a larger environment & Recovery, security, stress and
+%         performance tests \\ \hline
+%     \end{tabular}
+%
+%     \label{tab:test-plan}
+% \end{table}
+% Describe all the steps taken to validate the correctness of the
+% program.
+%
+% If you had user tests then say what you did and what the results
+% were. Describe why these test data were chosen (what test conditions
+% the data was testing).  Table \ref{tab:tests} provides an example of
+% the sorts of results we are looking for. The full detail of the test
+% runs should be appended to the report.
+This is where we prove the program is valid and that we've tested it.
+
+% \begin{table}[h!]
+%     \centering
+%     \caption{A table of tests. A table caption goes above the table.}
+%
+%     \begin{tabular}[t]{|p{5.5cm}|p{3cm}|p{3cm}|p{3cm}|} \hline \textbf{Data Set
+%         and reason for its choice} & \multicolumn{3}{c|}{\textbf{Test Cases}}\\
+%         \cline{2-4} & \emph{Normal Functioning} & \emph{Extreme boundary cases} &
+%         \emph{Invalid Data (program should not crash)} \\ \hline Preliminary test
+%         (see Appendix 3) & Passed & n/a & Fell over \\\hline &&&\\ \hline
+%                          &&&\\ \hline
+%     \end{tabular}
+%
+%     \label{tab:tests}
+% \end{table}
+% Follow your table of results with a discussions of them highlighting
+% how useful and usable your system is for its intended purpose.
+
+\section{Conclusion}
+\label{s:conclusion}
+% Your report must have a clear conclusion where you revisit the aims
+% set out in the beginning and discuss how well you met them. Did you
+% achieve the objective of creating a well-structured, modular, and
+% robust system?  Please summarize the design features and test results
+% that show this.
+Here we must summarize everything, and provide a conclusion to the project's
+initial aims and goals
+\appendix
+\section{User Manual}
+\label{s:user-manual}
+This user manual still needs to be included.
+% Your system must have a user manual. Append this to your report (make
+% it Appendix A) or bind it separately if it is big. If your system is
+% interactive and has a good user interface with context dependent help
+% then this can be just a cheat sheet. Discuss the level at which your
+% user manual is to be pitched with your client. If your system is to be
+% extended then you might want to include a technical API manual.
+
+\end{document}
