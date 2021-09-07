@@ -331,14 +331,25 @@ namespace robogen {
         // FIXME here we are actually recalculating startingPosition, since
         // we've already calculated it above (around line 100). Find a way to
         // not recalculate the value.
-        osg::Vec2 startingPosition =
-          robogenConfig_->getStartingPos()->getStartPosition(
-              startPositionId_)->getPosition();
-        currRobot->translateRobot(osg::Vec3(
-              startingPosition.x(),
-              startingPosition.y(),
-              overlapMaxZ.at(i) + inMm(2) - rMinZ
-              ));
+        if (robogenConfig_->getSwarmPositionsConfig()->getCoordinates().size() > 0) {
+          // Set up the starting orientation of the robot
+          osg::Vec3 startingPosition =
+            robogenConfig_->getSwarmPositionsConfig()->getCoordinates().at(i);
+          // Translate the robot to the correct starting position
+          currRobot->translateRobot(
+              osg::Vec3(startingPosition.x(),
+                startingPosition.y(),
+                overlapMaxZ.at(i) + inMm(2) - rMinZ));
+        } else {
+          // Translate the robot to startingPosition
+          osg::Vec2 startingPosition =
+            robogenConfig_->getStartingPos()->getStartPosition(
+                startPositionId_)->getPosition();
+          currRobot->translateRobot(
+              osg::Vec3(startingPosition.x(),
+                startingPosition.y(),
+                overlapMaxZ.at(i) + inMm(2) - rMinZ));
+        }
       }
       // Physics optimisation: replace all fixed joints with composite bodies
       currRobot->optimizePhysics();
