@@ -114,13 +114,13 @@ int main(int argc, char* argv[]) {
 	while (!interrupted) {
 
 		// Wait for client to connect
-		std::cout << "Waiting for clients..." << std::endl;
+		std::cout << "[I] Waiting for clients..." << std::endl;
 
 		rc = socket.accept();
 
 		if (rc) {
 
-			std::cout << "Client connected..." << std::endl;
+			std::cout << "[I] Client connected..." << std::endl;
 
 			while (true) {
 
@@ -130,18 +130,18 @@ int main(int argc, char* argv[]) {
 					// Decode solution
 					// ---------------------------------------
 
-					ProtobufPacket<robogenMessage::EvaluationRequest> packet;
+					ProtobufPacket<robogenMessage::EvaluationRequest> evalReqPacket;
 
-					// 1) Read packet header
+					// 1) Read evalReqPacket header
 					std::vector<unsigned char> headerBuffer;
 					socket.read(headerBuffer,
 							ProtobufPacket<robogenMessage::EvaluationRequest>::HEADER_SIZE);
-					unsigned int packetSize = packet.decodeHeader(headerBuffer);
+					unsigned int packetSize = evalReqPacket.decodeHeader(headerBuffer);
 
-					// 2) Read packet size
+					// 2) Read evalReqPacket size
 					std::vector<unsigned char> payloadBuffer;
 					socket.read(payloadBuffer, packetSize);
-					packet.decodePayload(payloadBuffer);
+					evalReqPacket.decodePayload(payloadBuffer);
 
 					// ---------------------------------------
 					//  Decode configuration file
@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
 
 					boost::shared_ptr<RobogenConfig> configuration =
 							ConfigurationReader::parseRobogenMessage(
-									packet.getMessage()->configuration());
+									evalReqPacket.getMessage()->configuration());
 					if (configuration == NULL) {
 						std::cerr
                           << "[E] Problems parsing the configuration file. Quit."
@@ -179,9 +179,12 @@ int main(int argc, char* argv[]) {
 						viewer = new Viewer(startPaused);
 					}
 
-					unsigned int simulationResult = runSimulations(scenario,
-							configuration, packet.getMessage()->robot(),
-							viewer, rng);
+                    unsigned int simulationResult = runSimulations(
+                        scenario,
+                        configuration,
+                        evalReqPacket.getMessage()->swarm(),
+                        viewer,
+                        rng);
 
 					if(viewer != NULL) {
 						delete viewer;
@@ -201,16 +204,15 @@ int main(int argc, char* argv[]) {
 					} else {
 						fitness = scenario->getFitness();
 					}
-					std::cout << "Fitness for the current solution: " << fitness
+					std::cout << "[I] Fitness for the current solution: " << fitness
 							<< std::endl << std::endl;
 
 					// ---------------------------------------
 					// Send reply to EA
 					// ---------------------------------------
-					boost::shared_ptr<robogenMessage::EvaluationResult> evalResultPacket(
-							new robogenMessage::EvaluationResult());
+					boost::shared_ptr<robogenMessage::EvaluationResult> evalResultPacket(new robogenMessage::EvaluationResult());
 					evalResultPacket->set_fitness(fitness);
-					evalResultPacket->set_id(packet.getMessage()->robot().id());
+                    evalResultPacket->set_swarmid(evalReqPacket.getMessage()->swarm().id());
 					ProtobufPacket<robogenMessage::EvaluationResult> evalResult;
 					evalResult.setMessage(evalResultPacket);
 

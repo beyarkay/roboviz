@@ -45,20 +45,17 @@ namespace robogen{
 
 unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		boost::shared_ptr<RobogenConfig> configuration,
-		const robogenMessage::Robot &robotMessage,
+		const robogenMessage::Swarm &swarmMessage,
 		IViewer *viewer, boost::random::mt19937 &rng) {
 	boost::shared_ptr<FileViewerLog> log;
 	return runSimulations(scenario, configuration,
-			robotMessage, viewer, rng, false, log);
+			swarmMessage, viewer, rng, false, log);
 }
 
-// TODO We're accepting in a robotMessage here even if we're
-// creating a swarm, since for now all of the robots in our
-// swarm are identical. Later on this should be updated to allow
-// for multiple different robots in the same swarm
 unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		boost::shared_ptr<RobogenConfig> configuration,
-		const robogenMessage::Robot &robotMessage, IViewer *viewer,
+		const robogenMessage::Swarm &swarmMessage,
+		IViewer *viewer,
 		boost::random::mt19937 &rng,
 		bool onlyOnce, boost::shared_ptr<FileViewerLog> log) {
 
@@ -112,16 +109,14 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
         for (unsigned int i = 0; i < configuration->getSwarmSize(); i++) {
           // Create a robot. It'll be added to the swarm at the bottom of the for-loop
           boost::shared_ptr<Robot> robot(new Robot);
-          // TODO Depending on exactly how robot->init is implemented, we might
-          // have issues passing the same robotMessage through to different robots
-          if (!robot->init(odeWorld, odeSpace, robotMessage)) {
-            std::cout << "[E] Problems decoding the robot. Quit." << std::endl;
+          if (!robot->init(odeWorld, odeSpace, swarmMessage.robots(i))) {
+            std::cout << "[E] Problems decoding the " << i
+              << "-th robot.  Quit." << std::endl;
             return SIMULATION_FAILURE;
           }
 
 #ifdef DEBUG_MASSES
           float totalMass = 0;
-          // TODO This needs to loop through the body pars of the swarm
           for (unsigned int j = 0; j < robot->getBodyParts().size(); ++j) {
             float partMass = 0;
             for (unsigned int k = 0; k < robot->getBodyParts()[j]->getBodies().size(); ++k) {
@@ -194,11 +189,11 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
         }
 
         bool visualize = (viewer != NULL);
-        // TODO depending on the implementation of viewer->configureScene(),
-        // this for loop might not work for swarm sizes > 1
         for (unsigned int i = 0; i < configuration->getSwarmSize(); i++) {
           boost::shared_ptr<Robot> robot = swarm->getRobot(i);
           std::vector<boost::shared_ptr<Model>> bodyParts = robot->getBodyParts();
+          // TODO the implementation of viewer->configureScene()
+          // means this for loop might not work for swarm sizes > 1
           if(visualize && !viewer->configureScene(bodyParts, scenario)) {
             std::cout << "[E] Cannot configure scene. Quit." << std::endl;
             return SIMULATION_FAILURE;
@@ -244,7 +239,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
           }
 
           // Send a full stop every 500 iterations
-          // TODO can more useful info be displayed, like framerate or similar?
           if ((count++) % 500 == 0) {
             std::cout << "." << std::flush;
           }
@@ -265,10 +259,8 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 
           // If the acceleration is capped,
           if (configuration->isCapAlleration()) {
-            // go through every robot and check that no robot
-            // is going faster than that cap
-            // TODO this for loop might not be the best way to iterate over every robot
-            // in the swarm
+            // go through every robot and check that no robot is going faster
+            // than the acceleration cap
             for (unsigned int i = 0; i < configuration->getSwarmSize(); i++ ) {
               boost::shared_ptr<Robot> robot = swarm->getRobot(i);
               dBodyID robotRootBody = robot->getCoreComponent()->getRoot()->getBody();
@@ -320,7 +312,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
             }
           }
 
-          // TODO Updating the NN needs to be repeated for every robot
           bool motorBurntOut = false;
           // =========================================
           // Go through each robot and do two things:
@@ -429,7 +420,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
             return SIMULATION_FAILURE;
           }
 
-          // TODO This might not work for swarmSizes greater than 1
           for (unsigned int i = 0; i < configuration->getSwarmSize(); i++ ) {
             if(log) {
               log->logPosition(scenario->getSwarm()->getRobot(i)->getCoreComponent()->getRootPosition());

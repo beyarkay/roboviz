@@ -82,8 +82,7 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 		return "{\"error\" : \"ConfError\"}";
 	}
 	
-	robogenMessage::Robot robotMessage;
-
+    robogenMessage::Swarm swarmMessage;
 
 	if (startPosition > configuration->getStartingPos()->getStartPosition().size()) {
 		std::cerr << "[E] Specified desired starting position " << startPosition
@@ -94,15 +93,25 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 	// like for desktop version, should come in 1...n
 	startPosition--;
 
+    // TODO this just checks if one robot was created successfully, but should
+    // create the swarm and check that the entire thing was created
+    // successfully.
 	bool createRobotSuccess = false;
 	try {
-		createRobotSuccess = RobotRepresentation::createRobotMessageFromFile(
-				robotMessage, robotFileString);
+      for (int i = 0; i < configuration->getSwarmSize(); i++) {
+        robogenMessage::Robot* robotMessage = swarmMessage.add_robots();
+        // TODO RobotRepresentation::createRobotMessageFromFile should
+        // return a std::vector of robogenMessage::Robot, and take in a
+        // swarmFileString
+        createRobotSuccess = RobotRepresentation::createRobotMessageFromFile(
+            *robotMessage, robotFileString);
+        if (!createRobotSuccess) {
+          std::cerr << "[E] Problems parsing the "
+            << i << "-th robot file. Quit." << std::endl;
+          return "{\"error\" : \"RobotError\"}";
+        }
+      }
 	} catch(std::exception &e) { }
-	if (!createRobotSuccess) {
-		std::cerr << "Problems parsing the robot file. Quit." << std::endl;
-		return "{\"error\" : \"RobotError\"}";
-	}
 
 	// ---------------------------------------
 	// Setup environment
@@ -143,8 +152,14 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 	// ---------------------------------------
 	IViewer *viewer = new JSViewer();
 
-	unsigned int simulationResult = runSimulations(scenario, configuration,
-			robotMessage, viewer, rng, true, log);
+	unsigned int simulationResult = runSimulations(
+        scenario,
+        configuration,
+        swarmMessage,
+        viewer,
+        rng,
+        true,
+        log);
 
 	if (viewer != NULL) {
 		delete viewer;
@@ -266,9 +281,6 @@ void printHelp() {
  */
 #ifndef EMSCRIPTEN // only for the desktop version
 int main(int argc, char *argv[]) {
-    // TODO: What does this below line do? It only seems to link to
-    // `src/Robogen.cpp` where there's just one line:
-	//  GOOGLE_PROTOBUF_VERIFY_VERSION
 	startRobogen();
 
 #ifdef QT5_ENABLED
@@ -456,24 +468,26 @@ int main(int argc, char *argv[]) {
 	if (seed != -1)
 		rng.seed(seed);
 
-    // ------------------------------------------------------------------------
-    // Create a robot from the robot file string argv[1]. If the robot fails to
-    // be created, then exit
-    // ------------------------------------------------------------------------
+    // -----------------------------------------------------------------
+    // Create a swarm of identical robots, all from the same input file
+    // as given by argv[1]
+    // If any robot fails to be created, exit.
+    // -----------------------------------------------------------------
 
-    // TODO Right now we can do swarms, but every robot in the swarm is identical.
-    // So read in the robotFileString, convert it to a robotMessage, and then
-    // later on in the file we'll use that same robotMessage to create multiple
-    // robots that all have the same body and brain. Later this should be expanded
-    // to allow for multiple different robots to be created (although every robot
-    // should be defined in the same file)
-	robogenMessage::Robot robotMessage;
-	std::string robotFileString(argv[1]);
-
-	if(!RobotRepresentation::createRobotMessageFromFile(robotMessage,
-			robotFileString)) {
-		exitRobogen(EXIT_FAILURE);
-	}
+    robogenMessage::Swarm swarmMessage;
+    std::string robotFileString(argv[1]);
+    for (int i = 0; i < configuration->getSwarmSize(); i++) {
+      robogenMessage::Robot* robotMessage = swarmMessage.add_robots();
+      //robogenMessage::Robot robotMessage;
+      // TODO RobotRepresentation::createRobotMessageFromFile should
+      // return a std::vector of robogenMessage::Robot, and take in a
+      // swarmFileString
+      if(!RobotRepresentation::createRobotMessageFromFile(
+            *robotMessage,
+            robotFileString)) {
+        exitRobogen(EXIT_FAILURE);
+      }
+    }
 
 	// ---------------------------------------
 	// Setup environment
@@ -515,14 +529,15 @@ int main(int argc, char *argv[]) {
 				recordDirectoryName);
 	}
 
-    // TODO We're passing in a robotMessage here even if we're
-    // creating a swarm, since for now all of the robots in our
-    // swarm are identical. Later on this should be updated to allow
-    // for multiple different robots in the same swarm
-
     // The true boolean indicates to only complete one simulation
-	unsigned int simulationResult = runSimulations(scenario, configuration,
-			robotMessage, viewer, rng, true, log);
+	unsigned int simulationResult = runSimulations(
+        scenario,
+        configuration,
+        swarmMessage,
+        viewer,
+        rng,
+        true,
+        log);
 
 	if (viewer != NULL) {
 		delete viewer;

@@ -98,7 +98,7 @@ void bind_events(sio::socket::ptr &socket) {
 				std::lock_guard<std::mutex> lock(globalMutex);
 
 				const std::string id = data->get_map()["id"]->get_string();
-				std::cout << "I have a new task (id:" << id << ")" << std::endl;
+				std::cout << "[D] I have a new task (id:" << id << ")" << std::endl;
 				std::vector<sio::message::ptr> content =
 						data->get_map()["content"]->get_map(
 								)["packet"]->get_vector();
@@ -110,8 +110,8 @@ void bind_events(sio::socket::ptr &socket) {
 					headerBuffer.push_back(content.at(i)->get_int());
 				}
 
-				ProtobufPacket<robogenMessage::EvaluationRequest> packet;
-				unsigned int packSize = packet.decodeHeader(headerBuffer);
+				ProtobufPacket<robogenMessage::EvaluationRequest> evalReqPacket;
+				unsigned int packSize = evalReqPacket.decodeHeader(headerBuffer);
 
 				std::vector<unsigned char> payloadBuffer;
 				for (unsigned int i = headerSize; i < content.size(); ++i) {
@@ -119,14 +119,14 @@ void bind_events(sio::socket::ptr &socket) {
 				}
 
 				std::cout << payloadBuffer.size() << std::endl;
-				packet.decodePayload(payloadBuffer);
+				evalReqPacket.decodePayload(payloadBuffer);
 
-				std::cout << "packet decoded" << std::endl;
+				std::cout << "[I] evalReqPacket decoded" << std::endl;
 				
 
 				boost::shared_ptr<RobogenConfig> configuration =
 						ConfigurationReader::parseRobogenMessage(
-								packet.getMessage()->configuration());
+								evalReqPacket.getMessage()->configuration());
 				if (configuration == NULL) {
 					std::cerr
                       << "[E] Problems parsing the configuration file. Quit."
@@ -154,9 +154,12 @@ void bind_events(sio::socket::ptr &socket) {
 
 				unsigned int simulationResult;
 				try {
-					simulationResult = runSimulations(scenario,
-						configuration, packet.getMessage()->robot(),
-						nullptr, rng);
+                    simulationResult = runSimulations(
+                        scenario,
+                        configuration,
+                        evalReqPacket.getMessage()->swarm()->robots(),
+                        nullptr, // viewer is null
+                        rng);
 
 				} catch(std::exception &e) {
 					std::cerr << e.what();
@@ -188,7 +191,7 @@ void bind_events(sio::socket::ptr &socket) {
 				output->get_map()["content"]->get_map()["ptr"] =
 						data->get_map()["content"]->get_map()["ptr"];
 				socket->emit("responseTask", output);
-				std::cout << "Fitness for the current solution: " << fitness
+				std::cout << "[I] Fitness for the current solution: " << fitness
 						<< std::endl << std::endl;
 
 				// globalMutex auto released when lock goes out of scope
@@ -229,7 +232,7 @@ int main(int argc, char* argv[]) {
 			sio::message::ptr group = sio::object_message::create();
 			group->get_map()["id"] = sio::string_message::create(argv[i]);
 			currentSocket->emit("joinGroup", group);
-			std::cout << "Join group " << argv[i] << std::endl;
+			std::cout << "[I] Join group " << argv[i] << std::endl;
 		}
 
 		listener->waitForDisconnect();

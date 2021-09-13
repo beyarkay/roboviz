@@ -79,19 +79,19 @@ double EMSCRIPTEN_KEEPALIVE evaluate(int ptr, int length) {
 	boost::random::mt19937 rng;
 	rng.seed(ptr);
 
-	ProtobufPacket<robogenMessage::EvaluationRequest> packet;
+	ProtobufPacket<robogenMessage::EvaluationRequest> evalReqPacket;
 	std::vector<unsigned char> payloadBuffer;
 	for (unsigned int i = ProtobufPacket<robogenMessage::EvaluationRequest>::HEADER_SIZE ; i < length; ++i) {
 		payloadBuffer.push_back(data[i]);
 	}
-	packet.decodePayload(payloadBuffer);
+	evalReqPacket.decodePayload(payloadBuffer);
 	// ---------------------------------------
 	//  Decode configuration file
 	// ---------------------------------------
 
     boost::shared_ptr<RobogenConfig> configuration =
       ConfigurationReader::parseRobogenMessage(
-          packet.getMessage()->configuration());
+          evalReqPacket.getMessage()->configuration());
 	if (configuration == NULL) {
 		std::cerr
 		<< "[E] Problems parsing the configuration file. Quit."
@@ -121,9 +121,12 @@ double EMSCRIPTEN_KEEPALIVE evaluate(int ptr, int length) {
 
 	JSViewer* viewer = new JSViewer();
 
-	unsigned int simulationResult = runSimulations(scenario,
-			configuration, packet.getMessage()->robot(),
-			viewer, rng);
+	unsigned int simulationResult = runSimulations(
+        scenario,
+        configuration,
+        evalReqPacket.getMessage()->swarm(),
+        viewer,
+        rng);
 
 	delete viewer;
 

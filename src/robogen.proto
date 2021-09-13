@@ -48,6 +48,10 @@ message Brain {
   repeated NeuralConnection connection = 2;
 }
 
+message Swarm {
+  optional int32 id = 1;
+  repeated Robot robots = 2;
+}
 message Robot {
   required int32 id = 1;
   required Body body = 2;
@@ -126,13 +130,16 @@ message SimulatorConf {
 }
 
 message EvaluationRequest {
+  // robot is deprecated. Use a swarm of size 1 instead.
   required Robot robot = 1;
   required SimulatorConf configuration = 2;
+  optional Swarm swarm = 3;
 }
 
 message EvaluationResult {
     required int32 id = 1;
-    required float fitness = 2;
-    repeated float objectives = 3;
+    optional int32 swarmId = 2;
+    required float fitness = 3;
+    repeated float objectives = 4;
 }
 
