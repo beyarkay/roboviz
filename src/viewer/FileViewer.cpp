@@ -84,6 +84,7 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 	
     robogenMessage::Swarm swarmMessage;
 
+    std::cout << "[I] Swarm Size as configured=" << configuration->getSwarmSize() << std::endl;
 	if (startPosition > configuration->getStartingPos()->getStartPosition().size()) {
 		std::cerr << "[E] Specified desired starting position " << startPosition
 				<< " does not index a starting position. Aborting..."

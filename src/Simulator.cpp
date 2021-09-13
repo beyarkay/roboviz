@@ -188,16 +188,16 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
           return SIMULATION_FAILURE;
         }
 
-        bool visualize = (viewer != NULL);
+        // Go through the body parts of every robot, and configure them inside
+        // the scenario.
+        std::vector<std::vector<boost::shared_ptr<Model>>> swarmBodyParts;
         for (unsigned int i = 0; i < configuration->getSwarmSize(); i++) {
-          boost::shared_ptr<Robot> robot = swarm->getRobot(i);
-          std::vector<boost::shared_ptr<Model>> bodyParts = robot->getBodyParts();
-          // TODO the implementation of viewer->configureScene()
-          // means this for loop might not work for swarm sizes > 1
-          if(visualize && !viewer->configureScene(bodyParts, scenario)) {
-            std::cout << "[E] Cannot configure scene. Quit." << std::endl;
-            return SIMULATION_FAILURE;
-          }
+          swarmBodyParts.push_back( swarm->getRobot(i)->getBodyParts() );
+        }
+        bool visualize = (viewer != NULL);
+        if(visualize && !viewer->configureScene(swarmBodyParts, scenario)) {
+          std::cout << "[E] Cannot configure scene. Quit." << std::endl;
+          return SIMULATION_FAILURE;
         }
 
         //Init the webGLLogger

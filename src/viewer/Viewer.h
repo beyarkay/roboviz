@@ -62,8 +62,12 @@ public:
 			bool recording,
 			unsigned int recordFrequency, std::string recordDirectoryName);
 	~Viewer();
-	bool configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
-			boost::shared_ptr<Scenario> scenario);
+    // DONE configureScene should be restructured to take in a vector of body
+    // parts, or something similar so it configures the scene with every robot in
+    // the swarm as opposed to reconfiguring the scene for every robot
+    bool configureScene(
+        std::vector<std::vector<boost::shared_ptr<Model>>> swarmBodyParts,
+        boost::shared_ptr<Scenario> scenario);
 	bool done();
 
 	/***

@@ -148,33 +148,39 @@ Viewer::~Viewer() {
 	delete this->viewer;
 }
 
-bool Viewer::configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
-		boost::shared_ptr<Scenario> scenario) {
+// DONE configureScene should be restructured to take in a vector of body
+// parts, or something similar so it configures the scene with every robot in
+// the swarm as opposed to reconfiguring the scene for every robot
+bool Viewer::configureScene(
+    std::vector<std::vector<boost::shared_ptr<Model>>> swarmBodyParts,
+    boost::shared_ptr<Scenario> scenario) {
 
     // Attempt to render all the body parts into models
-	for (unsigned int i = 0; i < bodyParts.size(); ++i) {
-		boost::shared_ptr<RenderModel> renderModel =
-				RobogenUtils::createRenderModel(bodyParts[i]);
-		if (!renderModel) {
-			std::cout
-			<< "Cannot create a render model for model "
-			<< i << std::endl;
-			return false;
-		}
+    for (unsigned int i = 0; i < swarmBodyParts.size(); i++) {
+      for (unsigned int j = 0; j < swarmBodyParts.at(i).size(); ++j) {
+        boost::shared_ptr<RenderModel> renderModel =
+          RobogenUtils::createRenderModel(swarmBodyParts.at(i).at(j));
+        if (!renderModel) {
+          std::cout << "[E] Cannot create a render model for robot " 
+            << i << ", model " << j << std::endl;
+          return false;
+        }
 
-		renderModel->setDebugActive(this->debugActive);
+        renderModel->setDebugActive(this->debugActive);
 
-		if (!renderModel->initRenderModel()) {
-			std::cout
-			<< "Cannot initialize a render model for one of the components. "
-			<< std::endl
-			<< "Please check that the models/ folder is in the same folder of this executable."
-			<< std::endl;
-			return false;
-		}
-		renderModels.push_back(renderModel);
-		this->root->addChild(renderModels[i]->getRootNode());
-	}
+        if (!renderModel->initRenderModel()) {
+          std::cout
+            << "[E] Cannot initialize a render model for one of the components. "
+            << std::endl
+            << "[E] Please check that the models/ folder is in the same folder "
+            << "as this executable."
+            << std::endl;
+          return false;
+        }
+        renderModels.push_back(renderModel);
+        this->root->addChild(renderModels[j]->getRootNode());
+      }
+    }
 
 	// Terrain render model
 	boost::shared_ptr<TerrainRender> terrainRender(

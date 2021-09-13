@@ -40,8 +40,12 @@ class IViewer {
 
 public:
 	virtual ~IViewer() {};
-	virtual bool configureScene(std::vector<boost::shared_ptr<Model> > bodyParts,
-			boost::shared_ptr<Scenario> scenario) = 0;
+    // DONE configureScene should be restructured to take in a vector of body
+    // parts, or something similar so it configures the scene with every robot in
+    // the swarm as opposed to reconfiguring the scene for every robot
+    virtual bool configureScene(
+        std::vector<std::vector<boost::shared_ptr<Model>>> swarmBodyParts,
+        boost::shared_ptr<Scenario> scenario) = 0;
 	virtual bool done() = 0;
 
 	/***
