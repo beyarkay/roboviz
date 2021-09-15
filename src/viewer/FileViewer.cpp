@@ -94,14 +94,11 @@ std::string EMSCRIPTEN_KEEPALIVE simulationViewer(int tab, std::string robotFile
 	// like for desktop version, should come in 1...n
 	startPosition--;
 
-    // TODO this just checks if one robot was created successfully, but should
-    // create the swarm and check that the entire thing was created
-    // successfully.
 	bool createRobotSuccess = false;
 	try {
       for (int i = 0; i < configuration->getSwarmSize(); i++) {
         robogenMessage::Robot* robotMessage = swarmMessage.add_robots();
-        // TODO RobotRepresentation::createRobotMessageFromFile should
+        // TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
         // return a std::vector of robogenMessage::Robot, and take in a
         // swarmFileString
         createRobotSuccess = RobotRepresentation::createRobotMessageFromFile(
@@ -301,7 +298,7 @@ int main(int argc, char *argv[]) {
 		exitRobogen(EXIT_FAILURE);
 	}
 
-    // TODO For a homogeneous swarm, this configuration reader is okay.
+    // TODO [hetro-swarm] For a homogeneous swarm, this configuration reader is okay.
     // But for a swarm with multiple different robots, we'll need some
     // alternative way of defining all the different robots
 	boost::shared_ptr<RobogenConfig> configuration =
@@ -480,7 +477,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < configuration->getSwarmSize(); i++) {
       robogenMessage::Robot* robotMessage = swarmMessage.add_robots();
       //robogenMessage::Robot robotMessage;
-      // TODO RobotRepresentation::createRobotMessageFromFile should
+      // TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
       // return a std::vector of robogenMessage::Robot, and take in a
       // swarmFileString
       if(!RobotRepresentation::createRobotMessageFromFile(

@@ -39,7 +39,6 @@ namespace robogen {
        */
       void serialize(robogenMessage::SimulatorConf &message){
         for (unsigned int i = 0; i < coordinates_.size(); ++i){
-          // FIXME create robogenMessage::SwarmPositions
           robogenMessage::SwarmPosition *curr = message.add_swarmpositions();
           curr->set_x(coordinates_[i].x());
           curr->set_y(coordinates_[i].y());

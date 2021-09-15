@@ -64,9 +64,6 @@ JSViewer::~JSViewer() {
 
 } /* namespace robogen */
 
-// DONE configureScene should be restructured to take in a vector of body
-// parts, or something similar so it configures the scene with every robot in
-// the swarm as opposed to reconfiguring the scene for every robot
 bool robogen::JSViewer::configureScene(
         std::vector<std::vector<boost::shared_ptr<Model>>> swarmBodyParts,
 		boost::shared_ptr<Scenario> scenario) {

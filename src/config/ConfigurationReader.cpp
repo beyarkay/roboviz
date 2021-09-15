@@ -1014,7 +1014,6 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 	float timeStepLength = simulatorConf.timestep();
 	int actuationPeriod = simulatorConf.actuationperiod();
 
-    // TODO Why are all the filenames passed in as empty strings?:
     return boost::shared_ptr<RobogenConfig>(
         new RobogenConfig(
           scenario,

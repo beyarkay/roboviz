@@ -107,8 +107,7 @@ public:
       gatheringZonePos_(gatheringZonePos),
       swarmPositionsFile_(swarmPositionsFile),
       swarmPositions_(swarmPositions),
-//  TODO include this line to save the resources config into
-//      resourcesConfig_(resourcesConfig),
+      //  TODO [resources] include this line to save the resources config into resourcesConfig_(resourcesConfig),
       resourcesConfigFile_(resourcesConfigFile),
       obstacleOverlapPolicy_(obstacleOverlapPolicy) {
 
@@ -251,8 +250,6 @@ public:
 
 	/**
 	 * @return if acceleration is capped
-     * TODO Why is the capped acceleration boolean named isCapAlleration? undo
-     * this.
 	 */
 	bool isCapAlleration() {
 		return capAcceleration_;
@@ -300,7 +297,6 @@ public:
      * floating point values. The order of the values is:
      * x-pos y-pos z-pos x-magnitude y-magnitude z-magnitude unknown unknown
      *
-     * TODO what do the unknown values do?
 	 */
 	std::string getResourcesConfigFile(){
 		return resourcesConfigFile_;
@@ -345,8 +341,6 @@ public:
 	 * Convert configuration into configuration message.
 	 */
 	robogenMessage::SimulatorConf serialize() const{
-      // TODO Why aren't the files (lightSourceFile_, obstacleFile_, etc)
-      // serialized along with all the rest of the variables?
 		robogenMessage::SimulatorConf ret;
 
 		ret.set_ntimesteps(timeSteps_);
