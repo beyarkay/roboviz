@@ -51,13 +51,17 @@ CollisionData::CollisionData(boost::shared_ptr<Scenario> scenario) :
 
 	//numCulled = 0;
 
-    // FIXME this won't work for a swarm with more than one robot
-	for (size_t i = 0; i < scenario->getSwarm()->getRobot(0)->getBodyParts().size(); ++i) {
-		boost::shared_ptr<Model> model = scenario->getSwarm()->getRobot(0)->getBodyParts()[i];
-		for(size_t j=0; j<model->getBodies().size(); ++j) {
-			geomModelMap_[model->getBodies()[j]->getGeom()] = model;
-		}
 
+    // FIXME this won't work for a swarm with more than one robot
+	boost::shared_ptr<Swarm> swarm_ = scenario->getSwarm();
+
+	for (size_t i = 0; i < swarm_->getSize(); ++i) {
+		for (size_t j = 0; j < swarm_->getRobot(i)->getBodyParts().size(); ++j) {
+		boost::shared_ptr<Model> model = swarm_->getRobot(i)->getBodyParts()[j];
+			for(size_t k=0; k<model->getBodies().size(); ++k) {
+				geomModelMap_[model->getBodies()[k]->getGeom()] = model;
+			}
+		}
 	}
 }
 

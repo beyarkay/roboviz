@@ -74,11 +74,13 @@ bool ChasingScenario::afterSimulationStep() {
     // FIXME This will break if there are more than one robots in the swarm
     // but at this stage it is unclear how to calculate the fitness for a
     // swarm instead of a robot
-	osg::Vec3 curPos = this->getSwarm()->getRobot(0)->getCoreComponent()->getRootPosition();
-	osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[0]->getPosition();
+	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {
+		osg::Vec3 curPos = this->getSwarm()->getRobot(i)->getCoreComponent()->getRootPosition();
+		osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[i]->getPosition();
 
-	osg::Vec3 temp = curPos - lightSourcePos;
-	this->distances_[curTrial_] += temp.length();
+		osg::Vec3 temp = curPos - lightSourcePos;
+		this->distances_.at(i) += temp.length();
+	}
 
 	return true;
 }

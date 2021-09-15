@@ -67,8 +67,8 @@ const char *WebGLLogger::LIGHT_TAGS = "lights";
 // FIXME This won't work on swarms with more than 1 robot
 WebGLLogger::WebGLLogger(std::string inFileName,
 		boost::shared_ptr<Scenario> in_scenario, double targetFrameRate) :
-		frameRate(targetFrameRate), lastFrame(-1000.0), robot(
-				in_scenario->getSwarm()->getRobot(0)), scenario(in_scenario), fileName(
+		frameRate(targetFrameRate), lastFrame(-1000.0), swarm(
+				in_scenario->getSwarm()), scenario(in_scenario), fileName(
 				inFileName) {
 	this->jsonRoot = json_object();
 	this->jsonStructure = json_array();
@@ -80,7 +80,11 @@ WebGLLogger::WebGLLogger(std::string inFileName,
 	this->jsonObstaclesDefinition = json_array();
 	this->bodies = std::vector<struct BodyDescriptor>();
 	this->writeObstaclesDefinition();
-	this->generateBodyCollection();
+
+	for (int i = 0; i < swarm->getSize(); ++i) {
+		this->generateBodyCollection(i);
+	}
+
 	this->writeJSONHeaders();
 	this->writeRobotStructure();
 	this->generateMapInfo();
@@ -122,9 +126,9 @@ void WebGLLogger::writeObstaclesDefinition() {
 	}
 }
 
-void WebGLLogger::generateBodyCollection() {
-	for (size_t i = 0; i < this->robot->getBodyParts().size(); ++i) {
-		boost::shared_ptr<Model> currentModel = this->robot->getBodyParts()[i];
+void WebGLLogger::generateBodyCollection(int s) {
+	for (size_t i = 0; i < this->swarm->getRobot(s)->getBodyParts().size(); ++i) {
+		boost::shared_ptr<Model> currentModel = this->swarm->getRobot(s)->getBodyParts()[i];
 		boost::shared_ptr<ParametricBrickModel> brickModel =
 				boost::dynamic_pointer_cast<ParametricBrickModel>(currentModel);
 		std::vector<int> ids = currentModel->getIDs();

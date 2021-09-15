@@ -70,7 +70,7 @@ public:
 
 public slots:
     // FIXME This won't work on swarms with more than 1 robot
-	QScriptValue getRobot() { return qRobot_; }
+	QScriptValue getRobot(int i) { return qRobots_.at(i); }
 	QScriptValue getEnvironment() { return qEnvironment_; }
 	virtual int getCurTrial() const;
 	float vectorDistance(QScriptValue vector1, QScriptValue vector2);
@@ -88,7 +88,8 @@ private:
 	QScriptValue userScenario_;
 	std::map<std::string, bool> implementedMethods_;
 
-	QScriptValue qRobot_, qEnvironment_;
+	boost::vector<QScriptValue> qRobots_;
+	QScriptValue qEnvironment_;
 
 	bool initSuccess_;
 

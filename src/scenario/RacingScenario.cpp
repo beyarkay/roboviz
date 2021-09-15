@@ -63,21 +63,21 @@ bool RacingScenario::endSimulation() {
 	// Compute robot ending position from its closest part to the origin
 	double minDistance = std::numeric_limits<double>::max();
     // FIXME this won't work on swarms with more than one robot
-	const std::vector<boost::shared_ptr<Model> >& bodyParts = this->getSwarm()->getRobot(0)->getBodyParts();
-	for (unsigned int i = 0; i < bodyParts.size(); ++i) {
-		osg::Vec2 curBodyPos = osg::Vec2(bodyParts[i]->getRootPosition().x(), bodyParts[i]->getRootPosition().y());
-		osg::Vec2 curDistance = startPosition_[startPosition_.size()-1] - curBodyPos;
-		if (curDistance.length() < minDistance) {
-			minDistance = curDistance.length();
+	for (int s = 0; s < Scenario::getSwarm()->getSize(); ++s) {
+		const std::vector<boost::shared_ptr<Model> >& bodyParts = this->getSwarm()->getRobot(s)->getBodyParts();
+		for (unsigned int i = 0; i < bodyParts.size(); ++i) {
+			osg::Vec2 curBodyPos = osg::Vec2(bodyParts[i]->getRootPosition().x(), bodyParts[i]->getRootPosition().y());
+			osg::Vec2 curDistance = startPosition_.at(startPosition_.size()-1) - curBodyPos;
+			if (curDistance.length() < minDistance) {
+				minDistance = curDistance.length();
+			}
 		}
+		distances_.push_back(minDistance);
+		curTrial_++;
+		// Set next starting position
+		this->setStartingPosition(curTrial_);
 	}
-
-	distances_.push_back(minDistance);
-	curTrial_++;
-	// Set next starting position
-	this->setStartingPosition(curTrial_);
 	return true;
-
 }
 
 double RacingScenario::getFitness() {

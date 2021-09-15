@@ -78,7 +78,7 @@ public:
 private:
 	double frameRate;
 	double lastFrame;
-	boost::shared_ptr<Robot> robot;
+	boost::shared_ptr<Swarm> swarm;
 	boost::shared_ptr<Scenario> scenario;
 	std::string fileName;
 	json_t *jsonMap;
@@ -101,7 +101,7 @@ private:
 	WebGLLogger(const WebGLLogger& that);
 	//disable copy constructor
 	const WebGLLogger& operator=(const WebGLLogger& that);
-	void generateBodyCollection();
+	void generateBodyCollection(int s);
 	void generateMapInfo();
 	void writeJSONHeaders();
 	void writeRobotStructure();
