@@ -46,10 +46,12 @@ ChasingScenario::~ChasingScenario() {
 }
 
 bool ChasingScenario::setupSimulation() {
-
-	this->distances_.push_back(0);
+//changed this method to initialize the distance for each robot to 0 for the current trial
+	this->distances_.push_back(std::vector<double>(0));
+	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {
+		this->distances_.back().push_back(0);
+	}
 	return true;
-
 }
 
 bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Swarm> swarm) {
@@ -71,17 +73,14 @@ bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_p
 bool ChasingScenario::afterSimulationStep() {
 
 	// Compute distance from light source
-    // FIXME This will break if there are more than one robots in the swarm
-    // but at this stage it is unclear how to calculate the fitness for a
-    // swarm instead of a robot
+    // DONE
+	osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[0]->getPosition();
+
 	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {
 		osg::Vec3 curPos = this->getSwarm()->getRobot(i)->getCoreComponent()->getRootPosition();
-		osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[i]->getPosition();
-
 		osg::Vec3 temp = curPos - lightSourcePos;
-		this->distances_.at(i) += temp.length();
+		this->distances_.at(curTrial_).at(i) += temp.length(); //set the distance value for the current trial for the i'th robot
 	}
-
 	return true;
 }
 
@@ -96,14 +95,26 @@ bool ChasingScenario::endSimulation() {
 }
 
 double ChasingScenario::getFitness() {
-
-	double fitness = 1000;//0;
-	for (unsigned int i = 0; i < distances_.size(); ++i) {
-		double trialFit = -1.0 * distances_[i]/this->getRobogenConfig()->getTimeSteps();
-		if (trialFit < fitness)
-			fitness = trialFit;
+//changed the way fitness is calculated to take the average of all robots in the swarm
+	std::vector<double> fitnesses;
+	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {
+		fitnesses.push_back(1000);
 	}
-	return fitness;
+	for (unsigned int i = 0; i < distances_.size(); ++i) {
+		for (unsigned int j = 0; j < this->getSwarm()->getSize(); ++j) {
+			double trialFit = -1.0 * distances_.at(i).at(j)/this->getRobogenConfig()->getTimeSteps();
+//double trialFit = -1.0 * distances_[i]/this->getRobogenConfig()->getTimeSteps();
+			if (trialFit < fitnesses.at(j)) {
+				fitnesses.at(j) = trialFit;
+			//fitness = trialFit;
+			}
+		}
+	}
+	double swarmFitness;
+	for (int i = 0; i < fitnesses.size(); ++i) {
+		swarmFitness += fitnesses.at(i);
+	}
+	return swarmFitness/fitnesses.size();
 	// We transform everything into a maximization problem
 	//return -1*(fitness/distances_.size());
 }
