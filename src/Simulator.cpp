@@ -43,6 +43,12 @@ extern dJointGroupID odeContactGroup;
 
 namespace robogen{
 
+/**
+ * By default, set onlyOnce to false and supply a FileViewerLog
+ * object, then call the fully parameterised runSimulations method.
+ *
+ * @see runSimulations()
+ */
 unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		boost::shared_ptr<RobogenConfig> configuration,
 		const robogenMessage::Swarm &swarmMessage,
@@ -52,6 +58,27 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 			swarmMessage, viewer, rng, false, log);
 }
 
+/**
+  * @param[in] scenario      Contains the swarms goal and describes the
+  * environment in which it must complete that goal
+ * @param[in] configuration
+ * @param[in] swarmMessage   A Protobuf Message describing the swarm
+ * @param[in] viewer        Where the simulation should (optionally) be rendered to
+ * @param[in] rng           Random Noise Generator, used to simulate random
+ * fluctuations in the swarm's motors and sensor readings
+ * @param[in] onlyOnce      If true, the simulation will end after the first trial.
+ * @param[in] log           The object used to keep the logs.
+ *
+ * Run a certain number of trials in a scenario. A trial is one iteration of
+ * the swarm being initialised and then started to complete it's goal. A
+ * scenario is the collection of variables that defines the swarms surroundings
+ * and environment. The simulation can either be done headless (without being
+ * rendered to a screen for a person to view it) or it can be done with a
+ * viewer, where a person can view the simulation.
+ *
+ * Relies on external variables dWorldID odeWorld and dJointGroupID
+ * odeContactGroup.
+ */
 unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		boost::shared_ptr<RobogenConfig> configuration,
 		const robogenMessage::Swarm &swarmMessage,
@@ -89,7 +116,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		// Create collision world
 		dSpaceID odeSpace = dSimpleSpaceCreate(0);
 
-		// Create contact group
+		// Create contact group with maximum size of zero
 		odeContactGroup = dJointGroupCreate(0);
 
 		// wrap all this in block so things get cleaned up before shutting down
@@ -343,8 +370,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
               for (unsigned int j = 0; j < sensors.size(); ++j) {
                 networkInput[j] = sensors[j]->read();
 
-                // Add sensor noise: Gaussian with std dev of
-                // sensorNoiseLevel * actualValue
                 if (configuration->getSensorNoiseLevel() > 0.0) {
                   networkInput[j] += (normalDistribution(rng) *
                       configuration->getSensorNoiseLevel() * networkInput[j]);

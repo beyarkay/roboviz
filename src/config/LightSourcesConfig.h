@@ -35,19 +35,39 @@
 namespace robogen {
 
 /**
- * Obstacles configuration parameters
+ * A config object to store parallel vectors of light source locations and
+ * intensities.
+ *
+ * Light sources are light emitting objects in the robogen world. They can be
+ * added without constraint, but their intended purpose is for use with
+ * the 'chasing' scenario (see below). Lights can have a position and intensity.
+ *
+ * When the chasing scenario is set in the configuration file like
+ * ```
+ * scenario=chasing
+ * ```
+ * Then the fitness function rewards robots which are the closest to the
+ * nearest light source for as much time as possible.
+ *
+ * @see ConfigurationReader
+ * @see ChasingScenario
  */
 class LightSourcesConfig {
 
 public:
 
 	/**
-	 * Initializes light sources configuration
+	 * Initialise an empty light sources config.
 	 */
-
-	// no light sources
 	LightSourcesConfig() {}
 
+	/**
+     * Initialise a light sources config with a vector of Open Scene Graph Vec3
+     * coordinates and a parallel vector of intensities for those light sources.
+     *
+     * @param[in] coordinates       The xyz coordinates of each light source.
+     * @param[in] intensities       The float intensities of each light source.
+	 */
 	LightSourcesConfig(const std::vector<osg::Vec3>& coordinates,
 			const std::vector<float> &intensities) :
 			coordinates_(coordinates), intensities_(intensities) {
@@ -55,20 +75,24 @@ public:
 	}
 
 	/**
-	 * Destructor
+	 * Destructor.
 	 */
 	virtual ~LightSourcesConfig() {
 
 	}
 
 	/**
-	 * @return the coordinates of the light sources
+     * Get the xyz coordinates of the light sources.
+     *
+	 * @return The coordinates of the light sources
 	 */
 	const std::vector<osg::Vec3>& getCoordinates() const {
 		return coordinates_;
 	}
 
 	/**
+     * Get the intensities of the light sources.
+     *
 	 * @return the light source intensities
 	 */
 	const std::vector<float>& getIntensities() const{
@@ -76,7 +100,16 @@ public:
 	}
 
 	/**
-	 * Serialize obstacles into a SimulatorConf message
+	 * Serialize light sources into a SimulatorConf message.
+     *
+     * This LightSourcesConfig object will be serialised into a protobuf message
+     * which can later be deserialised.
+     *
+     * @param[out] message       The message into which this object should be
+     * serialised.
+     *
+     * @see robogenMessage::SimulatorConf
+     * @see src/robogen.proto
 	 */
 	void serialize(robogenMessage::SimulatorConf &message){
 		for (unsigned int i=0; i<coordinates_.size(); ++i){

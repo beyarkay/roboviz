@@ -35,17 +35,44 @@
 namespace robogen {
 
 /**
- * Obstacles configuration parameters
+ * A config object to store various parallel vectors describing the various
+ * obstacles in the robogen world.
+ *
+ *
+ * This config objects stores parallel vectors of the:
+ * - xyz positions
+ * - Sizes
+ * - Densities
+ * - Rotation Axes
+ * - Rotation Angles (in degrees)
+ *
+ * Of the obstacles which will then be generated into the robogen world.
+ *
+ * From the sizes and densities, (and the world's gravity), the weight of
+ * the obstacles can be calculated and used for interactions with the robots.
+ *
  */
 class ObstaclesConfig {
 
 public:
 
 	/**
-	 * Initializes obstacles configuration
+	 * Initializes an empty obstacles configuration.
 	 */
 	ObstaclesConfig() {}
 
+	/**
+	 * Initializes an Obstacles Config object with parallel vectors defining
+     * each of the obstacles in the world.
+     *
+     * @param[in] coordinates       The xyz coordinates of each obstacle.
+     * @param[in] sizes             The xyz sizes of each obstacle.
+     * @param[in] densities         The float densities of each obstacle.
+     * @param[in] rotationAxes      The vectors defining the angle around which
+     * the obstacle is rotated
+     * @param[in] rotationAngles    The float amount by which each obstacle is
+     * rotated around its rotationAxis, in degrees.
+	 */
 	ObstaclesConfig(const std::vector<osg::Vec3>& coordinates,
 			const std::vector<osg::Vec3>& sizes,
 			const std::vector<float> &densities,
@@ -57,20 +84,24 @@ public:
 	}
 
 	/**
-	 * Destructor
+	 * Destructor.
 	 */
 	virtual ~ObstaclesConfig() {
 
 	}
 
 	/**
-	 * @return the coordinates of the obstacles
+     * The xyz coordinates of the obstacles.
+     *
+	 * @return The coordinates of the obstacles
 	 */
 	const std::vector<osg::Vec3>& getCoordinates() const {
 		return coordinates_;
 	}
 
 	/**
+     * The xyz sizes of each of the obstacles.
+     *
 	 * @return the size of the obstacles
 	 */
 	const std::vector<osg::Vec3>& getSizes() const {
@@ -78,6 +109,8 @@ public:
 	}
 
 	/**
+     * The float densities of each of the obstacles.
+     *
 	 * @return the obstacle densities
 	 */
 	const std::vector<float>& getDensities() const{
@@ -85,6 +118,8 @@ public:
 	}
 
 	/**
+     * The axes around which the obstacle has been rotated.
+     *
 	 * @return the obstacle Rotation Axes
 	 */
 	const std::vector<osg::Vec3>& getRotationAxes() const{
@@ -92,6 +127,8 @@ public:
 	}
 
 	/**
+     * Get the angles in degrees by which the obstacles are rotated.
+     *
 	 * @return the obstacle rotation angles
 	 */
 	const std::vector<float>& getRotationAngles() const{
@@ -99,7 +136,10 @@ public:
 	}
 
 	/**
-	 * Serialize obstacles into a SimulatorConf message
+	 * Serialize obstacles into a SimulatorConf message.
+     *
+     * @param[out] message       The message into which this object should be
+     * serialised.
 	 */
 	void serialize(robogenMessage::SimulatorConf &message){
 		for (unsigned int i=0; i<coordinates_.size(); ++i){

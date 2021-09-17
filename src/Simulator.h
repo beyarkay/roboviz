@@ -26,7 +26,6 @@
  * @(#) $Id$
  */
 
-
 #ifndef SIMULATOR_H_
 #define SIMULATOR_H_
 
@@ -39,30 +38,36 @@
 #include "viewer/FileViewerLog.h"
 #include "viewer/IViewer.h"
 #include "Swarm.h"
-#define MIN_FITNESS (-10000.0)
+#define MIN_FITNESS (-10000.0) /*!< The fitness level given when a robot exceeds the acceleration limit.*/
+
+/**
+ * \file Simulator.h
+ *
+ * The simulator runs one simulation, which may contain multiple trials.
+ *
+ * The Simulator wraps the ODE code, and should be used by other classes
+ * that wish to run a simulation.
+ *
+ * Historically there were separate executables for Server, ServerViewer, and
+ * FileViewer.  This involved a lot of duplicate code, so this class aims to
+ * encapsulate all ODE code in one place.
+ */
 
 namespace robogen{
 
 /**
- * \brief Code for running a simulation
- *
- * Simulator wraps the ODE code, and should be used by other classes
- * that wish to run a simulation.
- *
- * Previously we had separate executables for Server, ServerViewer, and
- * FileViewer.  This involved a lot of duplicate code, so this class aims to
- * encapsulate all ODE code in one place
+ * Describes how the simulation ended.
  */
-
 enum result{
-		SIMULATION_SUCCESS,
-		SIMULATION_FAILURE,
-		CONSTRAINT_VIOLATED
+		SIMULATION_SUCCESS,     /*!< Simulation ended without failure */
+		SIMULATION_FAILURE,     /*!< Simulation ended with a failure of some kind */
+		CONSTRAINT_VIOLATED     /*!< An ODE physics engine constraint was violated */
+
 	};
 
 /**
- * Runs the simulations
- * Relies on two extern variables. See .cpp.
+ * Wrapper method that calls the full runSimulations, but with a
+ * default value for log.
  */
 unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		boost::shared_ptr<RobogenConfig> configuration,
@@ -70,6 +75,9 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
         IViewer *viewer,
 		boost::random::mt19937 &rng);
 
+/**
+ * Run the simulation in a given scenario for a certain number of trials.
+ */
 
 unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		boost::shared_ptr<RobogenConfig> configuration,
@@ -77,9 +85,6 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		IViewer *viewer,
 		boost::random::mt19937 &rng,
 		bool onlyOnce, boost::shared_ptr<FileViewerLog> log);
-
-
-
 }
 
 #endif /* SIMULATOR_H_ */

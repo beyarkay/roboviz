@@ -72,8 +72,6 @@ private :
 
 /**
  * Handles collisions between two ODE geometries.
- * Relies on two extern variables. See .cpp.
- * data should be a pointer to a RobogenConfig
  */
 void odeCollisionCallback(void *data, dGeomID o1, dGeomID o2);
 

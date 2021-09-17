@@ -42,38 +42,22 @@ class TerrainConfig;
 class LightSourcesConfig;
 
 /**
- * Read configuration files
+ * The Configuration Reader takes in various types of config files, and
+ * converts them to configuration objects as used by Robogen.
  */
 class ConfigurationReader {
 
 public:
 
 	/**
-	 * Reads the configuration file for ROBOGEN.
-	 * The file must contain the following parameterName=parameterValues pairs
-	 *
-	 * scenario=<"racing"|"chasing">
-	 * timeStep=FLOAT
-	 * nTimeSteps=FLOAT
-	 * terrainType=<"flat"|"rugged">
-	 * terrainLength=FLOAT
-	 * terrainWidth=FLOAT
-	 * terrainHeight=FLOAT [Mandatory if terrainType=="rugged", ignored otherwise]
-	 * terrainHeightField=STRING [Mandatory if terrainType=="rugged", ignored otherwise]
-	 * obstaclesConfigFile=STRING
-	 * startPositionConfigFile=STRING
-	 *
+	 * Convert the given configuration file to a RobogenConfig object.
 	 */
 	static boost::shared_ptr<RobogenConfig> parseConfigurationFile(
 			const std::string& fileName);
 
     /**
-     * Accept a simulator configuration and parse it into
-     * a robogen Config. Primarily used in robogen server and
-     * Robogen JS
-     *
-     * @param simulatorConf The simulator Configuration object.
-     * @return a Robogen Config object
+     * Convert a protobuf message defining a robogen configuration to
+     * a RobogenConfig object.
      */
     static boost::shared_ptr<RobogenConfig> parseRobogenMessage(
             const robogenMessage::SimulatorConf& simulatorConf);
@@ -81,30 +65,30 @@ public:
 private:
 
     /**
-     * Read in the configuration file specifying swarm positions.
-     *
-     * @param fileName The name of the file where the swarm positions can be
-     * found.
-     * @return a Swarm Positions config object
+     * Converts the configuration file specifying swarm positions to a
+     * SwarmPositionsConfig object.
      */
-    static boost::shared_ptr<SwarmPositionsConfig> parseSwarmPositionsFile( 
+    static boost::shared_ptr<SwarmPositionsConfig> parseSwarmPositionsFile(
         const std::string& fileName);
+
 	/**
-	 * Reads the configuration file for obstacles.
-	 * The file contains on each line the coordinates and sizes of the obstacles, separated by a tab (\t)
-	 * X_POSITION	Y_POSITION	X_SIZE	Y_SIZE	Z_SIZE
+     * Converts the configuration file for obstacles to a ObstaclesConfig
+     * object
 	 */
 	static boost::shared_ptr<ObstaclesConfig> parseObstaclesFile(
-			const std::string& fileName);
+        const std::string& fileName);
 
 	/**
-	 * Reads the starting position file
-	 * The file contains on each line the coordinates (on a 2D plane) of robot's starting positions, separated by a tab (\t)
-	 * X_POSITION	Y_POSITION
+	 * Converts the starting position file to a StartPositionConfig object.
 	 */
-	static boost::shared_ptr<StartPositionConfig> parseStartPositionFile(const std::string& fileName);
+	static boost::shared_ptr<StartPositionConfig> parseStartPositionFile(
+        const std::string& fileName);
 
-	static boost::shared_ptr<LightSourcesConfig> parseLightSourcesFile(const std::string& fileName);
+	/**
+	 * Converts the light sources file to a LightSourcesConfig object.
+	 */
+	static boost::shared_ptr<LightSourcesConfig> parseLightSourcesFile(
+        const std::string& fileName);
 
 };
 

@@ -7,15 +7,19 @@
 
 namespace robogen {
   /**
-   * SwarmPositions configuration parameters
+   * Contains all the starting positions for the robots in the swarm.
    */
   class SwarmPositionsConfig {
     public:
       /**
-       * Initializes starting positions configuration
+       * Initializes an empty starting positions configuration.
        */
       SwarmPositionsConfig() {}
 
+      /**
+       * Initialise the starting position configuration with some starting
+       * coordinates
+       */
       SwarmPositionsConfig(const std::vector<osg::Vec3>& coordinates):
         coordinates_(coordinates) {}
 
@@ -25,6 +29,8 @@ namespace robogen {
       virtual ~SwarmPositionsConfig() {}
 
       /**
+       * Get the starting positions of the swarm as xyz coordinates.
+       *
        * @return the coordinates of the starting positions
        */
       const std::vector<osg::Vec3>& getCoordinates() const {
@@ -35,7 +41,7 @@ namespace robogen {
        * Serialize the SwarmPositionsConfig into a format parseable for
        * ProtoBuf messages
        *
-       * @param message The message to serialise into.
+       * @param[out] message        The message to serialise into.
        */
       void serialize(robogenMessage::SimulatorConf &message){
         for (unsigned int i = 0; i < coordinates_.size(); ++i){

@@ -65,7 +65,15 @@ typedef boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS,
 typedef boost::graph_traits<BodyGraph>::edge_descriptor BodyEdge;
 
 /**
- * A ROBOGEN Robot
+ * A robot is an actor in the robogen world which attempts to maximise some
+ * fitness function.
+ *
+ * The fitness function is defined so that it increases when the Robot does
+ * something the research desires (like move towards a light, or walk quickly).
+ *
+ * Rather use a Swarm of size 1 than the robot class directly.
+ *
+ * @see Swarm
  */
 class Robot {
 
@@ -77,83 +85,169 @@ public:
 
 	/**
 	 * Initializes a Robogen robot from a robogen message
-	 * @param odeWorld
-	 * @param odeSpace
-	 * @param robotSpec
+     * @param[in] odeWorld          The Open Dynamics Engine World which the
+     * robot will inhabit.
+     * @param[in] odeSpace          The Open Dynamics Engine Space which is
+     * used to speed up collisions related to the robot
+     * @param[in] robotSpec         The Protobuf message which is a serialised
+     * version of all the parameters needed to initialise a robot.
+     * @param[in] printInfo         Default is false, If true then print
+     * information to std::cout.
+     * @param[in] printInitErrors    Default is true, if true then print
+     * errors preventing the robot from being initialised to `std::cerr`
 	 */
 	bool init(dWorldID odeWorld, dSpaceID odeSpace,
 			const robogenMessage::Robot& robotSpec,
 			bool printInfo=false, bool printInitErrors=true);
 
 	/**
-	 * Destructor
+	 * Destructor.
 	 */
 	virtual ~Robot();
 
 	/**
-	 *  @return  the body parts of which the robot is composed of
+     *  Get the Model objects which are this robot's body parts
+     *
+	 *  @return  The body parts of which the robot is composed of.
 	 */
 	const std::vector<boost::shared_ptr<Model> >& getBodyParts();
 
 	/**
-	 * @return the neural network that controls the robot
+     * Get the NeuralNetwork object which controls the actions of this robot.
+     *
+	 * @return The neural network that controls the robot.
 	 */
 	const boost::shared_ptr<NeuralNetwork>& getBrain() const;
 
 	/**
-	 * @return the sensors of the robot
+     * Get the vector of Sensor objects which allow the robot to perceive
+     * its environment.
+     *
+	 * @return The sensors of the robot.
 	 */
 	const std::vector<boost::shared_ptr<Sensor> >& getSensors() const;
 
 	/**
-	 * @return the motors of the robot
+     * Get the vector of Motor objects which allow the robot to move around in
+     * it's environment. Motors can either rotate continuously (like wheels) or
+     * they can be turned to a certain rotation (like arms).
+     *
+	 * @return The motors of the robot.
 	 */
 	const std::vector<boost::shared_ptr<Motor> >& getMotors();
 
 	/**
-	 * @return the core component of the robot
+     * Get a pointer to the robot's core component.
+     *
+     * If you think of the robot as a directed acyclic graph of
+     * different components all connected together, then the core component
+     * is the root node of that graph. The position of the core component is
+     * often used as the de-facto position of the robot as a whole.
+     *
+	 * @return The core component of the robot.
 	 */
 	boost::shared_ptr<Model> getCoreComponent();
 
 	/**
-	 * Translate the robot
-	 * @param pos Amount of translation
+	 * Translate the robot by some change in xyz to a new location.
+     *
+	 * @param translation Amount of translation.
 	 */
 	void translateRobot(const osg::Vec3& translation);
 
 	/**
-	 * Rotate the robot
+	 * Rotate the robot.
+     *
 	 * @param rot rotation Quaternion
 	 */
 	void rotateRobot(const osg::Quat &rot);
 
 	/**
-	 * Returns the robot axis-aligned bounding box
+	 * Returns the robot axis-aligned bounding box.
+     *
+     * This is the smallest box which can contain the robot while still having
+     * all six faces aligned to the axes of the coordinate system.
+     *
+     * @param[out] minX       The minimum X value.
+     * @param[out] maxX       The maximum X value.
+     * @param[out] minY       The minimum Y value.
+     * @param[out] maxY       The maximum Y value.
+     * @param[out] minZ       The minimum Z value.
+     * @param[out] maxZ       The maximum Z value.
 	 */
 	void getAABB(double& minX, double& maxX, double& minY, double& maxY,
 			double& minZ, double& maxZ);
 
 	/**
+     * Return the integer ID of the robot.
+     *
 	 * @return the robot ID
 	 */
 	int getId() const;
 
 	/**
-	 *
+     * Get the body part of the robot from a string ID
+     *
+     * @param[in] id       The id of the body part.
+	 * @return             The body part corresponding to the given id
 	 */
 	boost::shared_ptr<Model> getBodyPart(std::string id);
 
 	/**
+     * Get the protobuf serialised message which generated this robot.
+     *
 	 * @return message that generated the robot
 	 */
 	const robogenMessage::Robot& getMessage();
 
+    /**
+     * Get a vector of Connection objects which define the joints between
+     * the various components of the robot.
+     *
+     * @return the connections between the components of the robot.
+     */
 	const std::vector<boost::shared_ptr<Connection> >& getBodyConnections()
 			const;
+
+
+    /**
+     * Unimplemented.
+     *
+     * The body of this method is empty and has no usages. It was originally
+     * introduced in commit 99297df7 as:
+     * ```
+     *  commit 99297df7f026c864513b333d131769b5878086f0
+     *  Author: Deniz Aydin <deniz.aydin@epfl.ch>
+     *  Date:   Wed Nov 6 11:29:19 2013 +0100
+     *
+     *      WIP Body Compiler for 3D printing and user-readable robot body
+     *      representations.
+     * ```
+     */
 	void traverseBody(const std::vector<boost::shared_ptr<Model> >,
 			const std::vector<boost::shared_ptr<Connection> >);
+
+
+    /**
+     * Get the index of the core component.
+     *
+     * The method getCoreComponent should be used in preference to this
+     *
+     * @see getCoreComponent
+     */
 	int getRoot();
 
+    /**
+     * Push a joint to the end of the private joints_ vector.
+     *
+     * This is used in the tree_edge method while the search tree of the
+     * robot is being created.
+     *
+     * @param[in] join       The joint to add.
+     *
+     * @see tree_edge
+     *
+     */
 	inline void addJoint(boost::shared_ptr<Joint> joint) {
 		joints_.push_back(joint);
 	}

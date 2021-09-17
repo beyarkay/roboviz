@@ -86,7 +86,23 @@ void CollisionData::testObstacleCollisons(dGeomID o1, dGeomID o2) {
 	}
 }
 
-
+/**
+ * @param[in] data       Should be a pointer to a RobogenConfig object.
+ * @param[in] o1         The first object in the collision between o1 and o2.
+ * @param[in] o2         The second object in the collision between o1 and o2.
+ *
+ * The callback given to ODE to use when there's a collision. From <a href="http://opende.sourceforge.net/docs/group__collide.html#ga9f458413ace07fa9e3e7e52d6652ace0">
+ * the ODE docs on dNearCallback</a> :
+ *
+ * > The callback function can call dCollide on o1 and o2 to generate contact
+ * > points between each pair. Then these contact points may be added to the
+ * > simulation as contact joints. The user's callback function can of course
+ * > chose not to call dCollide for any pair, e.g. if the user decides that
+ * > those pairs should not interact.
+ *
+ * Relies on external variables dWorldID odeWorld and dJointGroupID
+ * odeContactGroup.
+ */
 void odeCollisionCallback(void *data, dGeomID o1, dGeomID o2) {
 
 	CollisionData *collisionData = static_cast<CollisionData*>(data);

@@ -55,10 +55,10 @@
 namespace robogen {
 
 /**
- * Convert a file name to that files absolute path
+ * Utility to convert a file name to that file's absolute path.
  *
- * @param fileName The name of the file to convert to an absolute path
- * @param filePath The returned absolute file path
+ * @param[in]  fileName The name of the file to convert to an absolute path.
+ * @param[out] filePath The absolute file path of fileName.
  */
 void makeAbsolute(std::string &fileName,
 		const boost::filesystem::path &filePath) {
@@ -72,6 +72,66 @@ void makeAbsolute(std::string &fileName,
 }
 
 
+/**
+ *
+ *
+ * @param[in] fileName       The file containing the parameters.
+ *
+ * An example configuration file would be:
+ * ```
+ * # The fitness function will favour robots which get as far from their
+ * # starting positions as they can
+ * scenario=racing
+ *
+ * # how much real time each iteration of the simulator represents
+ * timeStep=0.005
+ *
+ * # nTimeSteps or simulationTime – these options specify the length of the
+ * # simulation in terms of the number of time steps or number of seconds
+ * # respectively (use one or the other). We use the former here.
+ * nTimeSteps = 10000
+ *
+ * # Actuation frequency of the controller in Hz. Inverse of actuationFrequency
+ * # must be a multiple of timeStep.
+ * actuationFrequency=25
+ *
+ * # Terrain
+ * terrainType=flat
+ * terrainLength=10
+ * terrainWidth=10
+ * terrainFriction=1.0
+ *
+ * # Physics
+ * gravity=-9.81
+ *
+ * # starting positions and orientations defined
+ * startPositionConfigFile=sindiso_start_position.txt
+ *
+ * # Noise
+ * sensorNoiseLevel=0.0
+ * motorNoiseLevel=0.0
+ *
+ * # Constraint Handling
+ * capAcceleration=false
+ *
+ * # uncomment the following to prevent 'jittery behaviors'
+ * # maxDirectionShiftsPerSecond=16
+ * disallowObstacleCollisions=false
+ * obstacleOverlapPolicy=removeObstacles
+ *
+ * # Gathering zone coordinates. The specified position will be the position of
+ * # the center of the gathering zone.
+ * gatheringZonePosition=0,16,0
+ *
+ * # Gathering zone size.
+ * gatheringZoneSize=20,8,0.0005
+ *
+ * # Define the size of the swarm. The number of robots to generate
+ * swarmSize=1
+ *
+ * ```
+ *
+ */
 boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
     const std::string& fileName) {
   std::cout << "[I] Parsing config file: " << fileName << std::endl;
@@ -693,6 +753,15 @@ const std::string getMatchNFloatPattern(unsigned int n) {
 	return paternSS.str();
 }
 
+/**
+ * Read in the starting positions of the swarm from fileName, and convert
+ * them to a SwarmPositionsConfig object
+ *
+ * @param[in] fileName The name of the file where the swarm positions can be
+ * found.
+ * @return A Swarm Positions Config object with positions as specified by
+ * fileName
+ */
 boost::shared_ptr<SwarmPositionsConfig>
 ConfigurationReader::parseSwarmPositionsFile( const std::string& fileName) {
     // TODO Add in a check that the number of positions specified is equal to
@@ -737,6 +806,15 @@ ConfigurationReader::parseSwarmPositionsFile( const std::string& fileName) {
 }
 
 
+/*
+ * Each line in the file at fileName should contain the coordinates and sizes
+ * of the obstacles, separated by a tab (\t), excluding the z-position. For
+ * example:
+ * ```X_POSITION	Y_POSITION	X_SIZE	Y_SIZE	Z_SIZE```
+ *
+ * Other specifications are allowed, but they are deprecated.
+ *
+ */
 boost::shared_ptr<ObstaclesConfig> ConfigurationReader::parseObstaclesFile(
 		const std::string& fileName) {
 
@@ -825,6 +903,15 @@ boost::shared_ptr<ObstaclesConfig> ConfigurationReader::parseObstaclesFile(
 					rotationAxes, rotationAngles));
 }
 
+/**
+ * The file should contain, on each line, the coordinates (on a 2D plane) of
+ * the positions of the light sources starting positions,
+ * separated by a tab (\t) as x y z or x y z intensity. For example:
+ *
+ * ```X_POSITION	Y_POSITION  Z_POSITION```
+ * or
+ * ```X_POSITION	Y_POSITION  Z_POSITION  INTENSITY```
+ */
 boost::shared_ptr<LightSourcesConfig> ConfigurationReader::parseLightSourcesFile(
 		const std::string& fileName) {
 
@@ -874,6 +961,11 @@ boost::shared_ptr<LightSourcesConfig> ConfigurationReader::parseLightSourcesFile
 }
 
 
+/**
+ * The file contains on each line the coordinates (on a 2D plane) of robot's
+ * starting positions, separated by a tab (\t). For example:
+ * ```X_POSITION	Y_POSITION```
+ */
 boost::shared_ptr<StartPositionConfig> ConfigurationReader::parseStartPositionFile(
 		const std::string& fileName) {
 
@@ -909,6 +1001,15 @@ boost::shared_ptr<StartPositionConfig> ConfigurationReader::parseStartPositionFi
 
 }
 
+/**
+ * Accept a protobuf simulator configuration and parse it into
+ * a RobogenConfig. Primarily used in robogen server and
+ * Robogen javascript.
+ *
+ * @param[in] simulatorConf The simulator Configuration object.
+ * @return  A configuration object containing the same values as the input
+ * configuration message
+ */
 boost::shared_ptr<RobogenConfig> ConfigurationReader::parseRobogenMessage(
 		const robogenMessage::SimulatorConf& simulatorConf) {
 	// ---------------------
