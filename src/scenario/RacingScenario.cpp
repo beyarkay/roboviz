@@ -61,33 +61,49 @@ bool RacingScenario::afterSimulationStep() {
 bool RacingScenario::endSimulation() {
 
 	// Compute robot ending position from its closest part to the origin
-	double minDistance = std::numeric_limits<double>::max();
-    // FIXME this won't work on swarms with more than one robot
+	// changed minDistance attribute to be vector of minDistances for each robot
+	std::vector<double> minDistances;
+	for (int t = 0; t < Scenario::getSwarm()->getSize(); ++t) {
+		minDistances.push_back(std::numeric_limits<double>::max());
+	}
+    // DONE
+	// for each iteration over s a minDistance is calculated for each robot and added to the vector, then this vector is added to distances_
 	for (int s = 0; s < Scenario::getSwarm()->getSize(); ++s) {
 		const std::vector<boost::shared_ptr<Model> >& bodyParts = this->getSwarm()->getRobot(s)->getBodyParts();
 		for (unsigned int i = 0; i < bodyParts.size(); ++i) {
 			osg::Vec2 curBodyPos = osg::Vec2(bodyParts[i]->getRootPosition().x(), bodyParts[i]->getRootPosition().y());
 			osg::Vec2 curDistance = startPosition_.at(startPosition_.size()-1) - curBodyPos;
-			if (curDistance.length() < minDistance) {
-				minDistance = curDistance.length();
+			if (curDistance.length() < minDistances.at(s)) {
+				minDistances.at(s) = curDistance.length();
 			}
 		}
-		distances_.push_back(minDistance);
-		curTrial_++;
-		// Set next starting position
-		this->setStartingPosition(curTrial_);
 	}
+	distances_.push_back(minDistances);
+	curTrial_++;
+	// Set next starting position
+	this->setStartingPosition(curTrial_);
 	return true;
 }
 
 double RacingScenario::getFitness() {
-	double fitness = 1000000;
-	for (unsigned int i = 0; i < distances_.size(); ++i) {
-		if (distances_[i] < fitness)
-			fitness = distances_[i];
+//changed the way fitness is calculated to take the average of all robots in the swarm
+	std::vector<double> fitnesses;
+	for (int i = 0; i < Scenario::getSwarm()->getSize(); ++i) {
+		fitnesses.push_back(1000000);
 	}
-
-	return fitness;
+	for (unsigned int i = 0; i < distances_.size(); ++i) {
+		for (unsigned int j = 0; j < this->getSwarm()->getSize(); ++j) {
+			double distance = distances_.at(i).at(j);
+			if (distance < fitnesses.at(j)) {
+				fitnesses.at(j) = distance;
+			}
+		}
+	}
+	double swarmFitness;
+	for (int i = 0; i < fitnesses.size(); ++i) {
+		swarmFitness += fitnesses.at(i);
+	}
+	return swarmFitness/fitnesses.size();
 }
 
 bool RacingScenario::remainingTrials() {
