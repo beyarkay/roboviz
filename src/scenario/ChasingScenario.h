@@ -66,7 +66,8 @@ public:
 
 private:
 
-	std::vector<double> distances_;
+	//std::vector<double> distances_;
+	std::vector< std::vector<double> > distances_; //changed distanced attribute to be vector of vectors of double values
 	unsigned int curTrial_;
 
 };
