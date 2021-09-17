@@ -113,11 +113,11 @@ bool JSScenario::endSimulation() {
 }
 
 void JSScenario::printRobotPosition() {
-    // FIXME This won't work on swarms with more than one robot
+    // DONE
 	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {
 		osg::Vec3 pos = this->getSwarm()->getRobot(i)->getCoreComponent()->getRootPosition();
 		std::stringstream ss;
-		ss << "console.log(\"" << pos[0] << " " <<pos[1] << " " << pos[2] << "\")";
+		ss << "console.log(\"" << "Robot " << i << " position: " << pos[0] << " " <<pos[1] << " " << pos[2] << "\")"; //changed this line to first print out the robot number
 		emscripten_run_script(ss.str().c_str());
 	}
 }
