@@ -67,7 +67,7 @@ public:
 private:
 
 	std::vector<osg::Vec2> startPosition_;
-	std::vector<double> distances_;
+	std::vector< std::vector<double> > distances_; //changed this attribute to be vector of vectors of double type
 	unsigned int curTrial_;
 
 };
