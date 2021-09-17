@@ -74,6 +74,7 @@ bool ChasingScenario::afterSimulationStep() {
 
 	// Compute distance from light source
     // DONE
+    // [D] only the first light source will be used in the chasing scenario 
 	osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[0]->getPosition();
 
 	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {
