@@ -91,6 +91,7 @@ private:
 	json_t *jsonLights;
 
 	std::vector<struct BodyDescriptor> bodies;
+	std::vector< std::vector<struct BodyDescriptor> > vectorOfBodies; //added this vector attribute  to hold bodies instances
 
 	static std::string getFormatedStringForCuboid(double width, double height,
 			double thickness);
@@ -104,7 +105,7 @@ private:
 	void generateBodyCollection(int s);
 	void generateMapInfo();
 	void writeJSONHeaders();
-	void writeRobotStructure();
+	void writeRobotStructures();
 	void writeObstaclesDefinition();
 };
 }
