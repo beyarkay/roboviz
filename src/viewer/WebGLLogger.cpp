@@ -86,7 +86,7 @@ WebGLLogger::WebGLLogger(std::string inFileName,
 	}
 
 	this->writeJSONHeaders();
-	this->writeRobotStructure();
+	this->writeRobotStructures();
 	this->generateMapInfo();
 }
 
@@ -176,63 +176,66 @@ void WebGLLogger::generateBodyCollection(int s) {
 			}
 		}
 	}
+	vectorOfBodies.push_back(this->bodies); //add bodies vector to vector of bodies
+	this->bodies.clear();
 }
 WebGLLogger::~WebGLLogger() {
 	json_dump_file(this->jsonRoot, this->fileName.c_str(), JSON_TAGS);
 	json_decref(this->jsonRoot);
 }
 
-void WebGLLogger::writeRobotStructure() {
-	for (std::vector<struct BodyDescriptor>::iterator it = this->bodies.begin();
-			it != this->bodies.end(); ++it) {
-		osg::Vec3 relativePosition = RobogenUtils::getRelativePosition(
-				it->model, it->bodyId) / 1000;
-		osg::Quat relativeAttitude = RobogenUtils::getRelativeAttitude(
-				it->model, it->bodyId);
+//altered this method to iterate through the vector of bodies and each bodies vector as an inner loop
+void WebGLLogger::writeRobotStructures() {
+	for (auto  i = this->vectorOfBodies.begin(); i != this->vectorOfBodies.end(); ++i) {
+		for (auto it = i->begin(); it != i->end(); ++it) {
+			osg::Vec3 relativePosition = RobogenUtils::getRelativePosition(
+					it->model, it->bodyId) / 1000;
+			osg::Quat relativeAttitude = RobogenUtils::getRelativeAttitude(
+					it->model, it->bodyId);
 
-		// NOTE : we are still having issues with meshes displaying differently
-		// in the web viewer.    Since there is no specific code for each model
-		// in the webgl engine it is cleaner to differentiate this behavior
-		// here.
-		// todo : figure out cause and fix (this stuff should not be needed!)
+			// NOTE : we are still having issues with meshes displaying differently
+			// in the web viewer.    Since there is no specific code for each model
+			// in the webgl engine it is cleaner to differentiate this behavior
+			// here.
+			// todo : figure out cause and fix (this stuff should not be needed!)
 
-#ifdef WEBGL_LOG_DEBUG
-		std::cout << RobogenUtils::getPartType(it->model) << " " <<
-				it->bodyId;
-#endif
-		// we rotate 180 degrees around z for :
-		//	both meshes of ActiveWheels, ActiveWhegs, Rotators
-		//  slot of PassiveWheel,
-		//  IrSensors, LightSensors
+	#ifdef WEBGL_LOG_DEBUG
+			std::cout << RobogenUtils::getPartType(it->model) << " " <<
+					it->bodyId;
+	#endif
+			// we rotate 180 degrees around z for :
+			//	both meshes of ActiveWheels, ActiveWhegs, Rotators
+			//  slot of PassiveWheel,
+			//  IrSensors, LightSensors
 
-		if (	boost::dynamic_pointer_cast<ActiveWheelModel>(it->model) ||
-				boost::dynamic_pointer_cast<ActiveWhegModel>(it->model) ||
-				boost::dynamic_pointer_cast<RotateJointModel>(it->model) ||
-				boost::dynamic_pointer_cast<IrSensorModel>(it->model) ||
-				boost::dynamic_pointer_cast<LightSensorModel>(it->model) ||
-				(boost::dynamic_pointer_cast<PassiveWheelModel>(it->model)
-						&& it->bodyId == PassiveWheelModel::B_SLOT_ID)) {
+			if (	boost::dynamic_pointer_cast<ActiveWheelModel>(it->model) ||
+					boost::dynamic_pointer_cast<ActiveWhegModel>(it->model) ||
+					boost::dynamic_pointer_cast<RotateJointModel>(it->model) ||
+					boost::dynamic_pointer_cast<IrSensorModel>(it->model) ||
+					boost::dynamic_pointer_cast<LightSensorModel>(it->model) ||
+					(boost::dynamic_pointer_cast<PassiveWheelModel>(it->model)
+							&& it->bodyId == PassiveWheelModel::B_SLOT_ID)) {
 
-			relativeAttitude *= osg::Quat(osg::inDegrees(180.0),
+				relativeAttitude *= osg::Quat(osg::inDegrees(180.0),
 										  osg::Vec3(0, 0, 1));
-#ifdef WEBGL_LOG_DEBUG
-			std::cout << " rotating!";
-#endif
-		}
+	#ifdef WEBGL_LOG_DEBUG
+				std::cout << " rotating!";
+	#endif
+			}
 
-		// then rotate 180 degrees around y for Active Wheel meshes
-		// and Active Wheg meshes
+			// then rotate 180 degrees around y for Active Wheel meshes
+			// and Active Wheg meshes
 		if (	(boost::dynamic_pointer_cast<ActiveWheelModel>(it->model)
-				 && it->bodyId == ActiveWheelModel::B_WHEEL_ID) ||
-				(boost::dynamic_pointer_cast<ActiveWhegModel>(it->model)
-				&& it->bodyId == ActiveWhegModel::B_WHEG_BASE)) {
+			 && it->bodyId == ActiveWheelModel::B_WHEEL_ID) ||
+			(boost::dynamic_pointer_cast<ActiveWhegModel>(it->model)
+			&& it->bodyId == ActiveWhegModel::B_WHEG_BASE)) {
 
 			relativeAttitude *= osg::Quat(osg::inDegrees(180.0),
 										  osg::Vec3(0, 1, 0));
-#ifdef WEBGL_LOG_DEBUG
-			std::cout << " rotating!";
-#endif
-		}
+	#ifdef WEBGL_LOG_DEBUG
+				std::cout << " rotating!";
+	#endif
+			}
 
 		// 180 degrees around x for LightSensors, IrSensors, ActiveHinge motors
 		// PassiveHinges
@@ -250,34 +253,35 @@ void WebGLLogger::writeRobotStructure() {
 		}
 
 
-#ifdef WEBGL_LOG_DEBUG
-		std::cout << std::endl
-				<< relativeAttitude.x() <<  " " << relativeAttitude.y() <<
-				" " << relativeAttitude.z() << " " << relativeAttitude.w() <<
-				std::endl;
-#endif
+	#ifdef WEBGL_LOG_DEBUG
+			std::cout << std::endl
+					<< relativeAttitude.x() <<  " " << relativeAttitude.y() <<
+					" " << relativeAttitude.z() << " " << relativeAttitude.w() <<
+					std::endl;
+	#endif
 
 
-		json_t* obDescriptor = json_object();
-		json_t* relAttitude = json_array();
-		json_t* relPosition = json_array();
-		json_object_set_new(obDescriptor, WebGLLogger::MESH_PATH,
-				json_string(it->meshName.c_str()));
+			json_t* obDescriptor = json_object();
+			json_t* relAttitude = json_array();
+			json_t* relPosition = json_array();
+			json_object_set_new(obDescriptor, WebGLLogger::MESH_PATH,
+					json_string(it->meshName.c_str()));
 
-		json_array_append(relAttitude, json_real(relativeAttitude.x()));
-		json_array_append(relAttitude, json_real(relativeAttitude.y()));
-		json_array_append(relAttitude, json_real(relativeAttitude.z()));
-		json_array_append(relAttitude, json_real(relativeAttitude.w()));
-		json_object_set_new(obDescriptor, WebGLLogger::REL_ATT_TAG,
-				relAttitude);
+			json_array_append(relAttitude, json_real(relativeAttitude.x()));
+			json_array_append(relAttitude, json_real(relativeAttitude.y()));
+			json_array_append(relAttitude, json_real(relativeAttitude.z()));
+			json_array_append(relAttitude, json_real(relativeAttitude.w()));
+			json_object_set_new(obDescriptor, WebGLLogger::REL_ATT_TAG,
+					relAttitude);
 
-		json_array_append(relPosition, json_real(relativePosition.x()));
-		json_array_append(relPosition, json_real(relativePosition.y()));
-		json_array_append(relPosition, json_real(relativePosition.z()));
-		json_object_set_new(obDescriptor, WebGLLogger::REL_POS_TAG,
-				relPosition);
+			json_array_append(relPosition, json_real(relativePosition.x()));
+			json_array_append(relPosition, json_real(relativePosition.y()));
+			json_array_append(relPosition, json_real(relativePosition.z()));
+			json_object_set_new(obDescriptor, WebGLLogger::REL_POS_TAG,
+					relPosition);
 
-		json_array_append(this->jsonStructure, obDescriptor);
+			json_array_append(this->jsonStructure, obDescriptor);
+		}
 	}
 }
 
