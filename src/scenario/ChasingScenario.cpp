@@ -66,7 +66,7 @@ bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_p
 	}
 	if(this->getEnvironment()->getLightSources().size() > 1) {
 		std::cerr << "[W] "
-          << this->getEnvironment()->getLightSources().size() " lights"
+          << this->getEnvironment()->getLightSources().size() << " lights"
           << " specified, but only the first will be used to evaluate "
           << " swarm fitness for the chasing scenario." << std::endl;
 	}

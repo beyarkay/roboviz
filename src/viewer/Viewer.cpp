@@ -154,11 +154,15 @@ bool Viewer::configureScene(
 
     // Attempt to render all the body parts into models
     for (unsigned int i = 0; i < swarmBodyParts.size(); i++) {
+      std::cout << "[D] Attempting to render " << swarmBodyParts.at(i).size()
+        << " models for robot " << i << "." << std::endl;
+      // Create an empty renderModels vector for each robot in the swarm.
+      std::vector<boost::shared_ptr<RenderModel>> renderModels;
       for (unsigned int j = 0; j < swarmBodyParts.at(i).size(); ++j) {
         boost::shared_ptr<RenderModel> renderModel =
           RobogenUtils::createRenderModel(swarmBodyParts.at(i).at(j));
         if (!renderModel) {
-          std::cout << "[E] Cannot create a render model for robot " 
+          std::cout << "[E] Cannot create a render model for robot "
             << i << ", model " << j << std::endl;
           return false;
         }
@@ -174,9 +178,15 @@ bool Viewer::configureScene(
             << std::endl;
           return false;
         }
+        // Add each rendered model to the vector of rendered models for each
+        // robot.
         renderModels.push_back(renderModel);
+        // Add every rendered model's root node as a child of root.
         this->root->addChild(renderModels[j]->getRootNode());
       }
+      // Add the vector of per-robot rendered models to the vector of swarm
+      // rendered models
+      swarmRenderModels.push_back(renderModels);
     }
 
 	// Terrain render model
@@ -265,13 +275,16 @@ bool Viewer::frame(double simulatedTime, unsigned int numTimeSteps) {
 		this->timeSinceLastFrame += frameTime;
 	}
 
-	if(this->debugActive) {
-		for(unsigned int i=0; i<renderModels.size(); i++) {
-			renderModels[i]->togglePrimitives(keyboardEvent->showGeoms());
-			renderModels[i]->toggleMeshes(keyboardEvent->showMeshes());
-			//renderModels[i]->toggleTransparency(keyboardEvent->isTransparent());
-		}
-	}
+    if(this->debugActive) {
+      for(unsigned int i=0; i<swarmRenderModels.size(); i++) {
+        for(unsigned int j=0; j<swarmRenderModels.at(i).size(); j++) {
+          swarmRenderModels.at(i).at(j)->togglePrimitives(
+              keyboardEvent->showGeoms());
+          swarmRenderModels.at(i).at(j)->toggleMeshes(
+              keyboardEvent->showMeshes());
+        }
+      }
+    }
 
 
 	this->tick1 = boost::posix_time::microsec_clock::universal_time();

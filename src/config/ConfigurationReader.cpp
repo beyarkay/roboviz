@@ -632,11 +632,6 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   // ------------------------------------
   unsigned int swarmSize;
   if (var_map.count("swarmSize")){
-    // TODO Remove these warning messages when the relevant code has been
-    // implemented
-    std::cout << "[W] parameter swarmSize has been "
-      "specified but the code for using it has not been "
-      "implemented yet. The value will be ignored." << std::endl;
     swarmSize = var_map["swarmSize"].as<unsigned int>();
   } else {
     swarmSize = 1;

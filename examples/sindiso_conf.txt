@@ -42,7 +42,7 @@ gatheringZonePosition=0,16,0
 
 #Gathering zone size.
 gatheringZoneSize=20,8,0.0005
-swarmSize=1
+swarmSize=3
 
 # Define the swarm starting positions
 swarmPositionsConfigFile=sindiso_start_position.txt

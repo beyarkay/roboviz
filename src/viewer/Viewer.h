@@ -107,7 +107,8 @@ private:
     // TODO [docs] Add documentation
 	bool debugActive;
 
-	std::vector<boost::shared_ptr<RenderModel> > renderModels;
+    // TODO [docs] Add documentation
+	std::vector<std::vector<boost::shared_ptr<RenderModel>>> swarmRenderModels;
 
 };
 
