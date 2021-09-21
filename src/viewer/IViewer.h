@@ -46,15 +46,22 @@ public:
         boost::shared_ptr<Scenario> scenario) = 0;
 	virtual bool done() = 0;
 
-	/***
-	 * frame:  updates frame if it should be updated
-	 * params:
-	 * 		simulatedTime: the amount of time simulated so far (in seconds)
-	 * 		numTimeSteps: the number of time steps simulated so far
-	 * returns:
-	 * 		false if paused or going to fast
-	 * 			(so simulator should continue without stepping physics)
-	 * 		true otherwise
+	/**
+	 * Updates the viewer's frame if it should be updated.
+     *
+     * Will return false if the simulation is paused or going too fast,
+     * indicating the simulator should continue without stepping physics.
+     *
+     * For example, if only a tiny amount of in-simulator time has passed,
+     * ignore the physics and keep showing the same rendering of the simulation
+     * until enough time has passed that some meaningful change could have
+     * happened in the world.
+     *
+	 * @param[in] simulatedTime      The amount of time simulated so far (in seconds)
+	 * @param[in] numTimeSteps       The number of time steps simulated so far
+	 *
+     * @return false if paused or simulating too fast for physics to be worth
+     * simulating
 	 */
 
 	virtual bool frame(double simulatedTime, unsigned int numTimeSteps) = 0;

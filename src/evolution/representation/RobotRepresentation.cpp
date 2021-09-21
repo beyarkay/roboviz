@@ -1062,7 +1062,7 @@ std::string RobotRepresentation::toString() {
 }
 
 
-// TODO RobotRepresentation::createRobotMessageFromFile should
+// TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
 // return a std::vector of robogenMessage::Robot, and take in a
 // swarmFileString
 bool RobotRepresentation::createRobotMessageFromFile(robogenMessage::Robot

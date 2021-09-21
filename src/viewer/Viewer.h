@@ -104,6 +104,7 @@ private:
 	double speedFactor;
 	double timeSinceLastFrame;
 
+    // TODO [docs] Add documentation
 	bool debugActive;
 
 	std::vector<boost::shared_ptr<RenderModel> > renderModels;

@@ -221,8 +221,8 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
         for (unsigned int i = 0; i < configuration->getSwarmSize(); i++) {
           swarmBodyParts.push_back( swarm->getRobot(i)->getBodyParts() );
         }
-        bool visualize = (viewer != NULL);
-        if(visualize && !viewer->configureScene(swarmBodyParts, scenario)) {
+        bool viewerIsNotNull = (viewer != NULL);
+        if(viewerIsNotNull && !viewer->configureScene(swarmBodyParts, scenario)) {
           std::cout << "[E] Cannot configure scene. Quit." << std::endl;
           return SIMULATION_FAILURE;
         }
@@ -238,14 +238,12 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		dReal previousLinVel[3];
 		dReal previousAngVel[3];
 
-		// ---------------------------------------
+        // -----------------------------------------------------------------
 		// Main Loop
         //
-        // This is the main simulation loop, in
-        // which the forces are calculated,
-        // collisions managed, and results
-        // displayed to the user
-		// ---------------------------------------
+        // This is the main simulation loop, in which the forces are
+        // calculated, collisions managed, and results displayed to the user
+        // -----------------------------------------------------------------
 
         // Number of iterations since start of simulation
 		int count = 0;
@@ -254,14 +252,21 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 
         boost::shared_ptr<CollisionData> collisionData(new CollisionData(scenario));
 
+
+        std::cout << "[D] Starting simulation loop with "
+          << "swarm of size" << configuration->getSwarmSize() << std::endl;
         double step = configuration->getTimeStepLength();
-        while ((t < configuration->getSimulationTime()) && (!(visualize && viewer->done()))) {
-          if(visualize && (!viewer->frame(t, count))) {
+        while ((t < configuration->getSimulationTime()) && (!(viewerIsNotNull && viewer->done()))) {
+          // If there is either no viewer, or there is a viewer but its paused
+          // (or barely any time has passed since the last physics step), then
+          // skip the physics step and keep looping until we're unpaused or
+          // enough time has passed that it's worth simulating the physics
+          if(viewerIsNotNull && (!viewer->frame(t, count))) {
             continue;
           }
 
           if (scenario->shouldStopSimulationNow()) {
-            std::cout << "[E] Scenario has stopped the simulation!" << std::endl;
+            std::cout << "[E] Scenario has stopped the simulation" << std::endl;
             break;
           }
 
@@ -273,7 +278,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
           // Collision detection
           dSpaceCollide(odeSpace, collisionData.get(), odeCollisionCallback);
 
-          // Step the world by one timestep
+          // Step the world by `step` number of time steps.
           dWorldStep(odeWorld, step);
 
           // Empty contact groups used for collisions handling
@@ -445,12 +450,15 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
             return SIMULATION_FAILURE;
           }
 
+          // If we need to log the swarm's positions, then do so
           for (unsigned int i = 0; i < configuration->getSwarmSize(); i++ ) {
             if(log) {
               log->logPosition(scenario->getSwarm()->getRobot(i)->getCoreComponent()->getRootPosition());
             }
           }
 
+
+          // TODO This needs to be updated to log details for every robot in the swarm
           if(webGLlogger) {
             webGLlogger->log(t);
           }
@@ -474,7 +482,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 		} // END code block protecting objects for ode code clean up
 
 
-		// scenario has a shared ptr to the robot, so need to prune it
+		// scenario has a shared ptr to the swarm, so need to prune it
 		scenario->prune();
 
 		// Destroy the joint group

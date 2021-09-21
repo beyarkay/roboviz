@@ -144,7 +144,6 @@ bool QScriptScenario::setupSimulation() {
 		return false;
 
 	// set up exposed stuff before user's setup
-    // FIXME This won't work for swarms with more than 1 robot
 	for (int i = 0; i < Scenario::getSwarm()->getSize(); ++i) {
     		qRobots_.push_back(engine_->newQObject(
         		new qscript::QRobot(Scenario::getSwarm()->getRobot(i)),

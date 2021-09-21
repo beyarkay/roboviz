@@ -64,7 +64,6 @@ const char *WebGLLogger::OBSTACLE_DEF_TAG = "definition";
 const char *WebGLLogger::OBSTACLE_LOG_TAG = "log";
 const char *WebGLLogger::LIGHT_TAGS = "lights";
 
-// FIXME This won't work on swarms with more than 1 robot
 WebGLLogger::WebGLLogger(std::string inFileName,
 		boost::shared_ptr<Scenario> in_scenario, double targetFrameRate) :
 		frameRate(targetFrameRate), lastFrame(-1000.0), swarm(
@@ -375,6 +374,8 @@ std::string WebGLLogger::getLightsJSON() {
 	return result;
 }
 
+// TODO This needs to be updated to log details for every robot in the swarm
+// Also see src/Simulator.cpp:475
 void WebGLLogger::log(double dt) {
 	if (dt - lastFrame >= 1.0 / frameRate) {
 		std::string obKey = boost::lexical_cast < std::string > (dt);

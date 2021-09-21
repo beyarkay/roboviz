@@ -764,8 +764,6 @@ const std::string getMatchNFloatPattern(unsigned int n) {
  */
 boost::shared_ptr<SwarmPositionsConfig>
 ConfigurationReader::parseSwarmPositionsFile( const std::string& fileName) {
-    // TODO Add in a check that the number of positions specified is equal to
-    // the size of the swarm.
     std::cout << "[I] Attempting to parse swarmPositions file: '"
       << fileName << "'" << std::endl;
 	std::ifstream swarmPositionsConfigFile(fileName.c_str());

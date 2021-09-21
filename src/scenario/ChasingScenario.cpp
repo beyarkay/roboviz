@@ -60,9 +60,15 @@ bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_p
 
 
 	if(this->getEnvironment()->getLightSources().size() == 0) {
-		std::cerr << "At least 1 light source is required for the "
+		std::cerr << "[E] At least 1 light source is required for the "
 				<< "chasing scenario." << std::endl;
 		return false;
+	}
+	if(this->getEnvironment()->getLightSources().size() > 1) {
+		std::cerr << "[W] "
+          << this->getEnvironment()->getLightSources().size() " lights"
+          << " specified, but only the first will be used to evaluate "
+          << " swarm fitness for the chasing scenario." << std::endl;
 	}
 
 
@@ -73,8 +79,6 @@ bool ChasingScenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_p
 bool ChasingScenario::afterSimulationStep() {
 
 	// Compute distance from light source
-    // DONE
-    // [D] only the first light source will be used in the chasing scenario 
 	osg::Vec3 lightSourcePos = this->getEnvironment()->getLightSources()[0]->getPosition();
 
 	for (int i = 0; i < this->getSwarm()->getSize(); ++i) {

@@ -66,7 +66,6 @@ bool RacingScenario::endSimulation() {
 	for (int t = 0; t < Scenario::getSwarm()->getSize(); ++t) {
 		minDistances.push_back(std::numeric_limits<double>::max());
 	}
-    // DONE
 	// for each iteration over s a minDistance is calculated for each robot and added to the vector, then this vector is added to distances_
 	for (int s = 0; s < Scenario::getSwarm()->getSize(); ++s) {
 		const std::vector<boost::shared_ptr<Model> >& bodyParts = this->getSwarm()->getRobot(s)->getBodyParts();

@@ -52,7 +52,6 @@ CollisionData::CollisionData(boost::shared_ptr<Scenario> scenario) :
 	//numCulled = 0;
 
 
-    // FIXME this won't work for a swarm with more than one robot
 	boost::shared_ptr<Swarm> swarm_ = scenario->getSwarm();
 
 	for (size_t i = 0; i < swarm_->getSize(); ++i) {

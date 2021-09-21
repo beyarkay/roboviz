@@ -243,11 +243,11 @@ bool Viewer::configureScene(
 
     // If in debug mode, show some extra help for keyboard shortcuts
 	if(this->debugActive) {
-		std::cout << "Press m to show/hide meshes." << std::endl;
-		std::cout << "Press g to show/hide geoms." << std::endl;
+		std::cout << "[I] Press m to show/hide meshes." << std::endl;
+		std::cout << "[I] Press g to show/hide geoms." << std::endl;
 	}
-	std::cout << "Press p to pause/unpause the simulation." << std::endl;
-	std::cout << "Press q to quit the visualizer." << std::endl;
+	std::cout << "[I] Press p to pause/unpause the simulation." << std::endl;
+	std::cout << "[I] Press q to quit the visualizer." << std::endl;
 
 	return true;
 }

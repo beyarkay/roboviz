@@ -209,6 +209,20 @@ Important source files and descriptions
 ## TODOs related to swarm things
 Command to grep for todos
 ```
-grep -nr "TODO\|FIXME\|DONE" src/* --exclude-dir=src/evolution --exclude-dir=src/utils --exclude-dir=src/model --exclude-dir=src/brain --exclude-dir=src/printing --exclude=src/Evolver.cpp --exclude=src/PartList.cpp --exclude=src/Robot.cpp --exclude=src/config/EvolverConfiguration.cpp --exclude=src/config/EvolverConfiguration.h --exclude=src/config/TerrainConfig.h
+grep -nr "TODO\|FIXME\|DONE" src/* --exclude-dir=src/evolution --exclude-dir=src/utils --exclude-dir=src/model --exclude-dir=src/brain --exclude-dir=src/printing --exclude=src/Evolver.cpp --exclude=src/PartList.cpp --exclude=src/config/EvolverConfiguration.cpp --exclude=src/config/EvolverConfiguration.h --exclude=src/config/TerrainConfig.h
 ```
 
+- src/Simulator.cpp:124:        // FIXME There are lots of ODE errors when the simulation stops. Maybe it's
+- src/Simulator.cpp:461:          // TODO This needs to be updated to log details for every robot in the swarm
+- src/config/ConfigurationReader.cpp:646:    // TODO Remove these warning messages when the relevant code has been
+- src/config/ConfigurationReader.cpp:672:    // TODO Remove these warning messages when the relevant code has been
+- src/config/ConfigurationReader.cpp:700:    // TODO Remove these warning messages when the relevant code has been
+- src/config/RobogenConfig.h:162:      //  TODO [resources] include this line to save the resources config into resourcesConfig_(resourcesConfig),
+- src/scenario/Scenario.cpp:331:        // FIXME here we are actually recalculating startingPosition, since
+- src/viewer/FileViewer.cpp:101:        // TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
+- src/viewer/FileViewer.cpp:301:    // TODO [hetro-swarm] For a homogeneous swarm, this configuration reader is okay.
+- src/viewer/FileViewer.cpp:480:      // TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
+- src/viewer/Viewer.h:107:    // TODO [docs] Add documentation
+- src/viewer/Viewer.h:110:    // TODO [docs] Add documentation
+- src/viewer/FileViewerLog.cpp:60:// TODO [hetro-swarm] this currently accepts a robotFile, but should be changed to accept a swarmFile
+- src/viewer/WebGLLogger.cpp:377:// TODO This needs to be updated to log details for every robot in the swarm
