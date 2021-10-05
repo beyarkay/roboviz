@@ -254,7 +254,7 @@ unsigned int runSimulations(boost::shared_ptr<Scenario> scenario,
 
 
         std::cout << "[D] Starting simulation loop with "
-          << "swarm of size" << configuration->getSwarmSize() << std::endl;
+          << "swarm of size " << configuration->getSwarmSize() << std::endl;
         double step = configuration->getTimeStepLength();
         while ((t < configuration->getSimulationTime()) && (!(viewerIsNotNull && viewer->done()))) {
           // If there is either no viewer, or there is a viewer but its paused

@@ -20,6 +20,10 @@
 \graphicspath{{./images/}}
 % Clickable hyperlinks
 \usepackage{hyperref}
+% Import bib latex package
+\usepackage{biblatex}
+% Import the bibliography file
+\addbibresource{bibliography.bib}
 % Try to reduce the white space latex loves so much
 \usepackage[small,compact]{titlesec}
 % Reduce space around section heads and add a full stop after the number
@@ -116,12 +120,12 @@
 % the case if you did an evolutionary prototype, or a more agile
 % approach where you had a cyclical development process).
 
-This project - RoboViz - involves extending an existing visualiser (RoboGen) to
-enable the visualisation of multiple of multiple robots simultaneously.
-Robogen allows researchers to define a robot structure and then make use of
-genetic algorithms (paired with a fitness function) to evolve robots that that
-gradually perform better (as a measured by the relevant fitness function) as
-more generations of robots are simulated.
+This project - RoboViz - involves extending an existing visualiser
+\cite{robogen} to enable the visualisation of multiple of multiple robots
+simultaneously.  Robogen allows researchers to define a robot structure and
+then make use of genetic algorithms (paired with a fitness function) to evolve
+robots that that gradually perform better (as a measured by the relevant
+fitness function) as more generations of robots are simulated.
 
 After a set number of generations, the final robot can also be visualised,
 although currently the software only allows for the visualisation of a single
@@ -152,10 +156,48 @@ of the project to check key functions.
 
 % TODO: provide reference to the original RoboGen project
 
+The Doxygen documentation tool \cite{doxygen} was also added to the project, in
+order to automatically generate documentation from the source code of the
+project.  Following this, the source code was annotated with well formatted
+comments that could be parsed by Doxygen. The html documentation can be found
+in \texttt{src/docs/html/index.html} (but it is not kept under version
+control).
+
 \section{Requirements Captured}
+% (10%) Requirements analysis (functional, non- functional, usability), use cases
+
 % The next section deals with the analysis of your system. Cover the
 % functional, non-functional and usability requirements. This is where
 % you present your use case narratives and diagrams.
+
+
+
+\subsection{Functional Requirements}
+% DONE Add functional requirements
+The final project must be able to visualise at least 3 robots simultaneously.
+The morphology and neural network defining these robots must be defined in a
+file as per existing RoboGen guidelines for defining robots (as either
+\texttt{json} or specially formatted \texttt{txt} files). The user must be able
+to zoom in and out of the simulation, as well as pan across to view different
+parts of the simulation with more clarity. The user must also be able to pause
+and unpause the simulation.
+
+\subsection{Non-functional Requirements}
+% DONE Add non-functional Requirements.
+The user should be able to interact smoothly with the simulation once started.
+That is, the simulation should not close before the specified simulation
+duration is over. The simulation should start within 2 minutes of running the
+\texttt{robogen-file-viewer} executable. On an adequately powerful machine, the
+swarm should be simulated at more than 15 frames per second.
+
+\subsection{Usability Requirements}
+% DONE Add usability requirements
+While the simulation is running, console based output should inform the user of
+the details of the simulation, for example, when robots are added to the swarm
+or which configuration files are being read. This output should be well
+formatted and provide information on various levels useful for finding
+problems, warning the user about potential issues, and if an error occurs,
+providing the user with sufficient information to solve the error.
 
 % Discuss the major analysis artefacts that you produced. We will expect
 % you to produce at least one overall description of the architecture
@@ -163,42 +205,16 @@ of the project to check key functions.
 % \ref{s:design-overview}). You may also want to include an analysis
 % class hierarchy diagram.
 
-This section provides an overview of the system and discusses functional,
-non-functional and usability requirements.
-
-\subsection{Functional Requirements}
-% TODO Add functional requirements
-\begin{itemize}
-  \item Defines robots in a visualiser
-  \item Defines robot behaviour in a visualiser
-  \item Visualizes a swarm of robots performing a task
-\end{itemize}
-
-\subsection{Non-functional Requirements}
-% TODO Add non-functional Requirements.
-\begin{itemize}
-  \item Takes in parameters for a robot file and a test scenario and starts
-      simulating that robot
-\end{itemize}
-
-\subsection{Usability Requirements}
-% TODO Add usability requirements
-% TODO Add Add 'Analysis Class hierarchy Diagram'
-
-\subsection{Use Case Diagram}
 % TODO Discuss the 'major analysis artefacts'
-
-\begin{figure}[htpb]
-\centering
-\includegraphics[width=0.8\textwidth]{2}
-\caption{Use Case Diagram}
-\label{fig:use-case-diagram}
-\end{figure}
-
-see figure
-\ref{fig:use-case-diagram}
-
 \subsection{Use Case Narratives}
+% DONE Add Add 'Analysis Class hierarchy Diagram'
+See Figure \ref{fig:use-case-diagram} for the Use Case Diagram.
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{2}
+    \caption{Use Case Diagram}
+    \label{fig:use-case-diagram}
+\end{figure}
 \subsubsection{Start Simulation of the Swarm. Actor: User}
 \paragraph{Primary Path:} The user runs the program and is prompted to enter
 the name of a robot file and a configuration file (which includes how many
@@ -252,14 +268,25 @@ time limit specified in the configuration file has passed.
 
 % TODO Justify the system design in terms of the expected behaviour of the
 % final product.
+Given that the project authors were extending the existing RoboGen
+\cite{robogen} code base, changing some existing aspects of the existing
+software was considered out of scope due to time constraints and for existing
+RoboGen users to easily learn to use the RoboViz project.
+
+
 % TODO Add design class diagram.
+\subsection{Layered Architecture Diagram}
 % TODO Add layered architecture diagram to present the overall architecture of
 % the system.
+\subsection{Swarm Class}
 % TODO Cover (in subsections) the algorithms and data structures used, any why
 % they were best.
-This section provides a few diagrams that showcase the overall system design.
-Figure \ref{fig:analysis-class-diagram} shows the Analysis Class Diagram of the
-project.
+\subsection{SwarmPositionsConfig Class}
+% TODO Cover (in subsections) the algorithms and data structures used, any why
+% they were best.
+
+\subsection{Analysis Class Diagram}
+See the Analysis Class Diagram in Figure \ref{fig:analysis-class-diagram}
 
 \begin{figure}[htpb]
     \centering
@@ -281,120 +308,136 @@ project.
 % - A description of any special programming techniques or libraries
 %     used.
 
+
+\subsection{Overview}
+The changes made to the existing project will be covered in the same order as
+they are encountered when a user runs the final executable.
+
+The \texttt{robogen-file-viewer} is the executable used to run the simulation
+such that the swarm can be watched in real time. This executable had to be
+modified to read in some additional parameters (for example: \texttt{swarmSize}
+, \texttt{swarmPositions}) via configuration files, and then to store those
+parameters in the existing \texttt{RobogenConfig} object along with the other
+configurations. Since the positions of the robots in the swarm has to be
+specified in a separate file, this also required creating a new file
+configuration reader (\texttt{SwarmPositionsConfig}) to parse the swarm
+positions. This file was created to be similar to the existing
+\texttt{ObstaclesConfig} and \texttt{LightSourcesConfig} objects, and was
+integrated to the existing \texttt{ConfigurationReader}.
+
+Once the configurations for a swarm are read in, error checking is done on
+those configurations and the program exits if the user requests an invalid
+combination of options (for example, a negative \texttt{swarmSize}).
+At this point various logging objects are initialised, and these were modified
+to log the details of every robot in the swarm.
+
+At this stage the robots are initialised, with source files and swarm size
+specified in the above mentioned configuration files. Each robot's sensors,
+actuators, and its neural network are also initialised here. This can take some
+time, and so sufficient log output is printed to keep the user informed.
+
+Now that everything is initialised, the main loop of the simulation begins. The
+simulation can run once (as is the case for a simple visualisation) or it can
+run multiple times (as is the case for when a population of swarms are being
+evaluated by the evolver. There are various protections in place to ensure the
+swarm is not taking advantage of errors in the physics simulation, which were
+developed to handle more than one robot. Additionally the evaluation of the
+individual robot's neural networks had to be extended to work for more than
+just one robot.
+
+On completion of the simulation, the memory required by the dynamics engine
+\cite{ODE} and the RoboViz swarm is freed.
+
+\subsection{Data Structures Used}
 % TODO Describe data structures, with diagrams for illustration
+\subsubsection{Swarm Class}
+The Swarm class ( \texttt{src/Swarm} ) is the internal representation of a
+collection of robots. The members of the swarm are assumed to be attempting to
+cooperate with one another, and receive a single fitness score at the end of a
+scenario.
+
+\subsubsection{RobogenConfig Class}
+The simulator is designed to be flexible, and as such requires a lot of
+configuration parameters to be specified. These configurations are stored in
+the \texttt{RobogenConfig} object, often named \texttt{config} in the code
+base. However, the \texttt{RobogenConfig} object is only responsible for storing the
+well formatted and easily accessible parameters. The responsibility of parsing
+those parameters is handed to the \texttt{ConfigurationReader} class:
+
+\subsubsection{ConfigurationReader Class}
+The configuration parameters for the scenario (like the type and size of
+terrain, the starting positions of the robot(s), the fitness function to use)
+are parsed by the \texttt{ConfigurationReader}. Some of the parameters are
+specified directly in the configuration file as key-value pairs separated by an
+equals \texttt{=} symbol, while other parameters have values referencing
+relative file paths where a list of values can be found. These external
+parameters are parsed separately by different config classes (for example,
+\texttt{ObstaclesConfig}, \texttt{LightSourcesConfig}, and
+\texttt{SwarmPositionsConfig}.
+
+\subsubsection{SwarmPositionsConfig}
+The x,y,z locations of the individual members of the swarm can be specified in
+a separate file, and this file is parsed by the \texttt{SwarmPositionsConfig}
+object. The object is instantiated as a member of the
+\texttt{ConfigurationReader}, and these configurations can later be accessed
+during simulations.
+
+\subsubsection{Scenario}
+A scenario is the combination of a swarm in rigid body simulation with a
+fitness function. When a scenario is initialised, the swarm is instantiated
+into the task environment, and when the simulation starts the swarm will be
+monitored by the scenario so that it's fitness can be calculated. A custom
+fitness function can be defined by creating a javascript file with the
+appropriate callbacks, or one of \texttt{racing} (fitness is proportional to
+average distance from the starting position) or \texttt{chasing} (fitness is
+inversely proportional to distance from the nearest moving light source) can be
+chosen. These fitness functions are defined in the various files found in
+\texttt{src/scenario/} 
+
+\subsubsection{FileViewer Class}
+The \texttt{FileViewer} is the command line entry point for starting a
+simulation. It takes in two command line arguments (the path of the file
+defining the robots, and the path of the configuration file), parses those
+arguments using \texttt{boost} program options \cite{boost}. This is the file
+that becomes the executable used to start the simulator for the purpose of
+viewing a swarm.
+
+\subsubsection{IViewer Class}
+This is an interface defining common functionality for classes wishing to view
+the current state of a simulation. For example, the simulation can be viewed in
+the web browser or on desktop.
+
+\subsubsection{Simulator}
+The \texttt{Simulator} has a single (overloaded) method,
+\texttt{runSimulations} which receives a scenario, a RobogenConfig, and
+optionally a viewer. This method then initialises the viewer (if applicable),
+each robot in the swarm, the rigid body simulator, ODE, and sets up the
+scenario in anticipation of calculating the fitness of the swarm. The
+simulation is then started up, and run for a duration specified in the
+\texttt{RobogenConfig} object. This duration from starting the simulation in
+the world until the simulation is destroyed is called a trial. The simulator
+can be specified to perform multiple trials, or just one.
+
+When the specified number of trials has been completed, the dynamics engine is
+closed, and all resources are cleaned up.
+
+\subsubsection{robogen.proto}
+Most objects in the Robogen project can be serialised into Google Protocol Buffer
+Messages \cite{protobuf}, which provide a language and platform neutral method
+for serialising structured data, similar to XML but faster and simpler. The
+file \texttt{robogen.proto} contains definitions of the structure of the data,
+and was extended to allow the swarm class to be serialised.
+
+
+\subsection{Overview of the User Interface}
 % TODO Brief overview of the user interface (don't need to go in depth, it
 % wasn't a major part of the system)
+\subsection{Most Significant Methods of Each Class}
 % TODO Discuss most significant methods of each class, including
 % flowcharts/sequence diagrams.
+\subsection{Special Relationships between Classes}
 % TODO Describe special relationships between classes and why those
 % relationships exist
-% TODO Describe
-
-This section will expand on the different files that were implemented and
-modified to meet the project goals.
-
-\subsection{Example Files}
-
-The files that needed to be modified to meet the project goals are listed below.
-
-\begin{itemize}
-    \item \texttt{sindiso\_conf.txt} - modified to support a swarm of robots
-    \item \texttt{sindiso\_start\_position.txt} - co-ordinates for the start
-        postitions of the robots
-    \item \texttt{chasing\_scenario.js} - modified to enable a swarm of robots
-        to follow the same light source
-    \item \texttt{obstacles.js} - modified to enable a swarm performing the task
-    \item \texttt{racing\_scenario.js} - modified to enable a swarm performing
-        the task
-\end{itemize}
-
-\subsection{Source Files}
-\begin{itemize}
-    \item \texttt{Swarm.cpp} The \texttt{Swarm} class was created to store
-        multiple robots in order to visualise those multiple robots being
-        performing their tasks at one given instance.
-
-        The \texttt{addRobot} method of the \texttt{Swarm} class is used to add
-        robots to its swarm. The number of robots to be added are specified in
-        the \texttt{sindiso\_conf.txt} file.
-    \item \texttt{Swarm.h} - Corresponding header file containing method
-        defintions and variables for \texttt{Swarm.cpp}
-    \item \texttt{RobogenServer.cpp}
-    \item \texttt{RobogenServerSIO.cpp}
-    \item \texttt{Robot.cpp}
-    \item \texttt{Robot.h}
-    \item \texttt{Simulator.cpp}
-    \item \texttt{Simulator.h}
-\end{itemize}
-
-\subsection{Config Files}
-\begin{itemize}
-    \item \texttt{ConfigurationReader.cpp}
-    \item \texttt{ConfigurationReader.h}
-    \item \texttt{LightSourcesConfig.h}
-    \item \texttt{Obstacles.h}
-    \item \texttt{RobogenConfig.h}
-    \item \texttt{SwarmPositionsConfig.h} - Created file to contain starting
-        positions of the swarm
-\end{itemize}
-
-\subsection{Evolution Files}
-\begin{itemize}
-    \item \texttt{RobotRepresentation.cpp} - Added error handling
-\end{itemize}
-
-\subsection{Javascript Files}
-\begin{itemize}
-    \item \texttt{RobogenJS.cpp}
-\end{itemize}
-
-\subsection{Render Files}
-\begin{itemize}
-    \item \texttt{RenderModel.cpp}
-\end{itemize}
-
-\subsection{Scenario Files}
-\begin{itemize}
-    \item \texttt{ChasingScenario.cpp} - setup for swarms, changed
-        configuration for robot's starting position, setup robots to follow
-        first light source, fitness calculation changed to take average of all
-        robots in the swarm
-    \item \texttt{ChasingScenario.h} - Modified parameters for a swarm
-    \item \texttt{JSScenario.cpp} - Modified for swarm support, the
-        printRobotPosition method loops through the swarm printing each position
-        of a robot in the swarm
-    \item \texttt{JSScenario.h} - Modified distance variable to support a swarm
-        by making it a double vector
-    \item \texttt{QScriptScenario.cpp} -
-    \item \texttt{QScriptScenario.h}
-    \item \texttt{RacingScenario.cpp}
-    \item \texttt{RacingScenario.h}
-    \item \texttt{Scenario.cpp}
-    \item \texttt{Scenario.h}
-\end{itemize}
-
-\subsection{Utility Files}
-\begin{itemize}
-    \item \texttt{RobogenCollision.cpp}
-    \item \texttt{RobogenCollision.h}
-\end{itemize}
-
-\subsection{Viewer Files}
-\begin{itemize}
-    \item \texttt{FileViewer.cpp} - Modified to create a swarm of robots from
-        the same input file
-    \item \texttt{FileViewerLog.cpp} -
-    \item \texttt{FileViewerLog.h} - Include Swarm header file
-    \item \texttt{IViewer.h} - Modified parameters to take in a swarm.
-    \item \texttt{JSViewer.cpp} - Modified parameters to take in a swarm.
-    \item \texttt{JSViewer.h} - Modified parameters to take in a swarm.
-    \item \texttt{Viewer.cpp} - Modified class to render models for multiple
-        robots in a swarm by looping through the body parts of the swarm per
-        robot, a double for-loop was used to implement this.
-    \item \texttt{Viewer.h} - Modified parameters to take in a swarm.
-    \item \texttt{WebGLLogger.cpp} -
-    \item \texttt{WebGLLogger.h}
-\end{itemize}
 
 \section{Program Validation and Verification}
 \label{s:progr-valid-verif}
@@ -470,14 +513,18 @@ The files that needed to be modified to meet the project goals are listed below.
 
 % TODO Revisit the aims put out at at the beginning, and discuss if they were
 % achieved or not
-% TODO Discuss: is the system well-structured, modular, robust. 
+% TODO Discuss: is the system well-structured, modular, robust.
 % TODO Summarize the design features and test results proving the system is
 % robust, well structured, and modular.
 Here we must summarize everything, and provide a conclusion to the project's
 initial aims and goals.
+
+\section{Bibliography}
+% TODO Add references.
+\printbibliography
+
 \appendix
 \section{User Manual}
 \label{s:user-manual}
 \input{RoboVizUserManual.tex}
-% TODO Add references.
 \end{document}

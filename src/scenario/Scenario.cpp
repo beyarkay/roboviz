@@ -53,7 +53,7 @@ namespace robogen {
    *
    * @param odeWorld a dynamics world, that contains all the simulation data
    * @param odeSpace a collision space, used to organize and speed up collision tests
-   * @param robot The robot to place into the scenario.
+   * @param swarm The swarm to place into the scenario.
    * @return true if the scenario was created successfully, false otherwise
    */
   bool Scenario::init(dWorldID odeWorld, dSpaceID odeSpace, boost::shared_ptr<Swarm> swarm) {
