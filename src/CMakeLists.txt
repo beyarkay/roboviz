@@ -408,8 +408,23 @@ else() ############################## C++ VERSION #####################
 			 COMMAND ${CMAKE_COMMAND} -E remove_directory CMakeFiles)
 				 
 
+    # =================================
+    # Testing Framework via googletests
+    # =================================
+    add_subdirectory(googletest-release-1.11.0)
+    include_directories(googletest-release-1.11.0/googletest/include)
+    include_directories(googletest-release-1.11.0/googlemock/include)
+    enable_testing()
 
-	# Tests
+    # Add testing for the swarm class
+    add_executable(SwarmTest SwarmTest.cpp)
+    target_link_libraries(SwarmTest gtest_main robogen ${ROBOGEN_DEPENDENCIES})
+
+    include(GoogleTest)
+    gtest_discover_tests(SwarmTest)
+
+
+    # Deprecated Tests
 	#add_executable(robogen-server-viewer-test viewer/ServerViewerTest.cpp)
 	#target_link_libraries(robogen-server-viewer-test robogen ${ROBOGEN_DEPENDENCIES})
 
