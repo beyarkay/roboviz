@@ -56,10 +56,10 @@
 % First you should have an executive summary (or abstract) just a single
 % paragraph saying what the results of the project are (at most 200
 % words).
-    This Final Report describes the 2021 RoboViz Capstone project completed by
-    third year computer science students. This project expanded on the open
-    source RoboGen software to add the ability to simulate multiple robots in a
-    swarm, among other extensions.
+    The RoboViz Project extends an existing open source genetic evolution
+    platform (RoboGen) to permit the visualisation of multiple robots, called a
+    swarm. The RoboViz Project accepts multiple parameter to fine-tune the
+    simulation of the swarm, and adheres to OOP best practices.
 \end{abstract}
 
 % We expect a report of about 3500-4000 words, written single spaced, with a font
@@ -123,7 +123,6 @@ genetic algorithms (paired with a fitness function) to evolve robots that that
 gradually perform better (as a measured by the relevant fitness function) as
 more generations of robots are simulated.
 
-
 After a set number of generations, the final robot can also be visualised,
 although currently the software only allows for the visualisation of a single
 robot. The software also generates STL files which describe the 3D body parts
@@ -132,11 +131,9 @@ components of the evolved robot. INO files are also generated, which can be
 loaded onto the Arduino platform and define the robot’s ‘brain’ as a software
 defined artificial neural network which was evolved by the genetic algorithm.
 
-
 This project involves modifying the source code of the RoboGen software and
 proving that the modifications are efficient enough for at least 3 (but
 preferably more) robots to be simulated at once.
-
 
 An agile software development approach was taken to develop this project. The
 project team has worked over WhatsApp and MS Teams, informing each other on
@@ -148,11 +145,12 @@ developing the project. Throughout development, there have been a significant
 number of changes needed as development progressed and these were added to the
 project plan over time.
 
-
 A vertical prototype was chosen for this project since it focuses on
 implementing a specific feature - swarm of robots in the visualiser - this was
 the most appropriate prototype as it tests key components during early stages
 of the project to check key functions.
+
+% TODO: provide reference to the original RoboGen project
 
 \section{Requirements Captured}
 % The next section deals with the analysis of your system. Cover the
@@ -169,28 +167,26 @@ This section provides an overview of the system and discusses functional,
 non-functional and usability requirements.
 
 \subsection{Functional Requirements}
-
-
+% TODO Add functional requirements
 \begin{itemize}
   \item Defines robots in a visualiser
   \item Defines robot behaviour in a visualiser
   \item Visualizes a swarm of robots performing a task
-  \item
 \end{itemize}
 
 \subsection{Non-functional Requirements}
-
-
+% TODO Add non-functional Requirements.
 \begin{itemize}
   \item Takes in parameters for a robot file and a test scenario and starts
       simulating that robot
-  \item
 \end{itemize}
 
-
 \subsection{Usability Requirements}
+% TODO Add usability requirements
+% TODO Add Add 'Analysis Class hierarchy Diagram'
 
 \subsection{Use Case Diagram}
+% TODO Discuss the 'major analysis artefacts'
 
 \begin{figure}[htpb]
 \centering
@@ -254,6 +250,13 @@ time limit specified in the configuration file has passed.
 % You should then (in subsections) cover the algorithms and the data
 % organisation used and why they were considered the best.
 
+% TODO Justify the system design in terms of the expected behaviour of the
+% final product.
+% TODO Add design class diagram.
+% TODO Add layered architecture diagram to present the overall architecture of
+% the system.
+% TODO Cover (in subsections) the algorithms and data structures used, any why
+% they were best.
 This section provides a few diagrams that showcase the overall system design.
 Figure \ref{fig:analysis-class-diagram} shows the Analysis Class Diagram of the
 project.
@@ -277,6 +280,16 @@ project.
 %     they exist.
 % - A description of any special programming techniques or libraries
 %     used.
+
+% TODO Describe data structures, with diagrams for illustration
+% TODO Brief overview of the user interface (don't need to go in depth, it
+% wasn't a major part of the system)
+% TODO Discuss most significant methods of each class, including
+% flowcharts/sequence diagrams.
+% TODO Describe special relationships between classes and why those
+% relationships exist
+% TODO Describe
+
 This section will expand on the different files that were implemented and
 modified to meet the project goals.
 
@@ -395,25 +408,6 @@ The files that needed to be modified to meet the project goals are listed below.
 % Create a table that summarizes the testing plan (see Table
 % \ref{tab:test-plan}).
 %
-% \begin{table}[h!]
-%     \centering
-%     \caption{Summary Testing Plan. A table caption goes above the table.}
-%
-%     \begin{tabular}[t]{|p{8cm}|p{7cm}|} \hline
-%         \textbf{Process} & \textbf{Technique} \\ \hline 1. Class
-%         Testing: test methods and state behaviour of classes & Random,
-%         Partition and White-Box Tests \\ \hline 2. Integration Testing:
-%         test the
-%         interaction of sets of classes & Random and Behavioural Testing \\
-%         \hline 3. Validation Testing: test whether customer requirements
-%         are satisfied & Use-case based black box and Acceptance tests \\
-%         \hline 4. System Testing: test the behaviour of the system as part
-%         of a larger environment & Recovery, security, stress and
-%         performance tests \\ \hline
-%     \end{tabular}
-%
-%     \label{tab:test-plan}
-% \end{table}
 % Describe all the steps taken to validate the correctness of the
 % program.
 %
@@ -422,10 +416,38 @@ The files that needed to be modified to meet the project goals are listed below.
 % the data was testing).  Table \ref{tab:tests} provides an example of
 % the sorts of results we are looking for. The full detail of the test
 % runs should be appended to the report.
-This is where we prove the program is valid and that we've tested it.
+
+% TODO Describe how the system was tested
+% TODO Describe why we think the system works
+% TODO Describe the type of testing, and how the tests were performed.
+% TODO justify why the selected testing plan was chosen
+% TODO If mock data was used for testing, explain why that data was used.
+% TODO Append the full detail of the test runs to the report.
+% TODO Describe how useful and usable the system is based on the success of the
+% unit tests.
 
 \begin{table}[h!]
     \centering
+    \caption{Summary Testing Plan. TODO: complete caption}
+    \begin{tabular}[t]{|p{8cm}|p{7cm}|} \hline
+        \textbf{Process} & \textbf{Technique} \\
+        \hline 1. Class Testing: test methods and state behaviour of classes
+                         & TODO \\
+        \hline 2. Integration Testing: test the interaction of sets of classes
+                            & TODO \\
+        \hline 3. Validation Testing: test whether customer requirements are
+        satisfied
+                            & TODO \\ \hline 4. System Testing: test the behaviour of the system as part of a
+        larger environment
+                            & TODO \\
+        \hline
+    \end{tabular}
+    \label{tab:test-plan}
+\end{table}
+
+\begin{table}[h!]
+    \centering
+    \caption{A table of tests. TODO Complete Caption}
     \begin{tabular}[t]{|p{5.5cm}|p{3cm}|p{3cm}|p{3cm}|} \hline \textbf{Data Set
         and reason for its choice} & \multicolumn{3}{c|}{\textbf{Test Cases}}\\
         \cline{2-4} & \emph{Normal Functioning} & \emph{Extreme boundary cases} &
@@ -433,7 +455,6 @@ This is where we prove the program is valid and that we've tested it.
         (see Appendix 3) & Passed & n/a & Fell over \\\hline &&&\\ \hline
                          &&&\\ \hline
     \end{tabular}
-    \caption{A table of tests. A table caption goes above the table.}
     \label{tab:tests}
 \end{table}
 % Follow your table of results with a discussions of them highlighting
@@ -446,17 +467,17 @@ This is where we prove the program is valid and that we've tested it.
 % achieve the objective of creating a well-structured, modular, and
 % robust system?  Please summarize the design features and test results
 % that show this.
+
+% TODO Revisit the aims put out at at the beginning, and discuss if they were
+% achieved or not
+% TODO Discuss: is the system well-structured, modular, robust. 
+% TODO Summarize the design features and test results proving the system is
+% robust, well structured, and modular.
 Here we must summarize everything, and provide a conclusion to the project's
 initial aims and goals.
 \appendix
 \section{User Manual}
 \label{s:user-manual}
-This user manual still needs to be included.
-% Your system must have a user manual. Append this to your report (make
-% it Appendix A) or bind it separately if it is big. If your system is
-% interactive and has a good user interface with context dependent help
-% then this can be just a cheat sheet. Discuss the level at which your
-% user manual is to be pitched with your client. If your system is to be
-% extended then you might want to include a technical API manual.
-
+\input{RoboVizUserManual.tex}
+% TODO Add references.
 \end{document}
