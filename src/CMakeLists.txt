@@ -417,11 +417,16 @@ else() ############################## C++ VERSION #####################
     enable_testing()
 
     # Add testing for the swarm class
+    add_executable(ConfigurationReaderTest config/ConfigurationReaderTest.cpp)
+    target_link_libraries(ConfigurationReaderTest gtest_main robogen ${ROBOGEN_DEPENDENCIES})
+
+    # Add testing for the swarm class
     add_executable(SwarmTest SwarmTest.cpp)
     target_link_libraries(SwarmTest gtest_main robogen ${ROBOGEN_DEPENDENCIES})
 
     include(GoogleTest)
     gtest_discover_tests(SwarmTest)
+    gtest_discover_tests(ConfigurationReaderTest)
 
 
     # Deprecated Tests

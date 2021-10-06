@@ -1,0 +1,9 @@
+scenario=chasing
+timeStep=0.005
+nTimeSteps = 10000
+terrainType=flat
+terrainLength=10
+terrainWidth=10
+terrainFriction=1.0
+swarmSize=3
+swarmPositionsConfigFile=../sindiso_start_position.txt

@@ -264,8 +264,8 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
           desc, false), var_map);
     boost::program_options::notify(var_map);
   } catch (std::exception &e) {
-    std::cerr << "Error while processing simulator configuration: "
-      << e.what() << std::endl;
+    std::cerr << "[E] Boost program_options error while processing simulator"
+      << " configuration: " << e.what() << std::endl;
     return boost::shared_ptr<RobogenConfig>();
   }
   std::cout << "[I] Config file '" << fileName << "' parsed successfully"
@@ -532,7 +532,7 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
   int actuationPeriod;
   if (!var_map.count("actuationFrequency")) {
     actuationPeriod = 1;
-    std::cout << "Undefined 'actuationFrequency' parameter in '"
+    std::cout << "[I] Undefined 'actuationFrequency' parameter in '"
       << fileName << "'" << ", will actuate every timeStep."
       << std::endl;
   } else {
@@ -635,6 +635,11 @@ boost::shared_ptr<RobogenConfig> ConfigurationReader::parseConfigurationFile(
     swarmSize = var_map["swarmSize"].as<unsigned int>();
   } else {
     swarmSize = 1;
+  }
+  if (swarmPositions->getCoordinates().size() != swarmSize) {
+    std::cerr << "[E] The swarmSize parameter doesn't equal the length of"
+      << " the swarmPositionsFile" << std::endl;
+    return boost::shared_ptr<RobogenConfig>();
   }
 
   // -----------------------------------------
