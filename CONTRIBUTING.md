@@ -29,7 +29,7 @@ an example and make sure the visualiser is up and working.
 
 First compile the code and make sure it gets to 100% without errors:
 ```
-cd build
+mkdir build; cd build
 cmake -DCMAKE_BUILD_TYPE=Release -G"Unix Makefiles" ../src/
 make -j3
 ```
@@ -187,42 +187,3 @@ Important source files and descriptions
 - `src/arduino/` contains files for generating a `NeuralNetwork.h` file for use
   on Arduino.
 
-## When robogen-file-viewer is run
-1. `src/viewer/FileViewer.cpp:465` is where `argv[1]` is passed to be parsed
-    1. `src/evolution/representation/RobotRepresentation.cpp:1114` is the method
-    that does the parsing of json robot config files
-    2. `src/evolution/representation/RobotRepresentation.cpp:1133` is the call of
-    the json to protobuffer method to convert the json file to a protobuf
-    3. `src/utils/json2pb/json2pb.cpp:288` is a wrapper method
-    4. `src/utils/json2pb/json2pb.cpp:258` converts json to Proto Buffer
-2. `src/viewer/FileViewer.cpp:147` is the line that calls runSimulation with
-   one robot
-    1. `src/Simulator.cpp:101` is the line that generates the robot swarm
-    2. `src/Simulator.cpp:176` Initialises the simulator with one robot instead
-       of a swarm
-
-## Useful information
-- Communication between the programs is done via sockets
-    - Except for `robogen-server-sio`, which uses socket.io
-
-
-## TODOs related to swarm things
-Command to grep for todos
-```
-grep -nr "TODO\|FIXME\|DONE" src/* --exclude-dir=src/evolution --exclude-dir=src/utils --exclude-dir=src/model --exclude-dir=src/brain --exclude-dir=src/printing --exclude=src/Evolver.cpp --exclude=src/PartList.cpp --exclude=src/config/EvolverConfiguration.cpp --exclude=src/config/EvolverConfiguration.h --exclude=src/config/TerrainConfig.h
-```
-
-- src/Simulator.cpp:124:        // FIXME There are lots of ODE errors when the simulation stops. Maybe it's
-- src/Simulator.cpp:461:          // TODO This needs to be updated to log details for every robot in the swarm
-- src/config/ConfigurationReader.cpp:646:    // TODO Remove these warning messages when the relevant code has been
-- src/config/ConfigurationReader.cpp:672:    // TODO Remove these warning messages when the relevant code has been
-- src/config/ConfigurationReader.cpp:700:    // TODO Remove these warning messages when the relevant code has been
-- src/config/RobogenConfig.h:162:      //  TODO [resources] include this line to save the resources config into resourcesConfig_(resourcesConfig),
-- src/scenario/Scenario.cpp:331:        // FIXME here we are actually recalculating startingPosition, since
-- src/viewer/FileViewer.cpp:101:        // TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
-- src/viewer/FileViewer.cpp:301:    // TODO [hetro-swarm] For a homogeneous swarm, this configuration reader is okay.
-- src/viewer/FileViewer.cpp:480:      // TODO [hetro-swarm] RobotRepresentation::createRobotMessageFromFile should
-- src/viewer/Viewer.h:107:    // TODO [docs] Add documentation
-- src/viewer/Viewer.h:110:    // TODO [docs] Add documentation
-- src/viewer/FileViewerLog.cpp:60:// TODO [hetro-swarm] this currently accepts a robotFile, but should be changed to accept a swarmFile
-- src/viewer/WebGLLogger.cpp:377:// TODO This needs to be updated to log details for every robot in the swarm

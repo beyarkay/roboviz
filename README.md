@@ -11,6 +11,8 @@ Laboratory of Intelligent Systems, EPFL
 
 **Read carefully this document and the online documentation: http://robogen.org/docs/robogen-software-suite/ before starting to do anything!**
 
+For details about editing the source code, and about running the simulation,
+read `CONTRIBUTING.md`
 
 
 -------------
