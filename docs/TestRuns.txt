@@ -1,0 +1,579 @@
+UpdateCTestConfiguration  from :/home/boyd/roboviz/build/DartConfiguration.tcl
+UpdateCTestConfiguration  from :/home/boyd/roboviz/build/DartConfiguration.tcl
+Test project /home/boyd/roboviz/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+      Start  1: SwarmTest.OnInitThenSizeIsZero
+
+1: Test command: /home/boyd/roboviz/build/SwarmTest "--gtest_filter=SwarmTest.OnInitThenSizeIsZero" "--gtest_also_run_disabled_tests"
+1: Test timeout computed to be: 10000000
+1: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+1: Note: Google Test filter = SwarmTest.OnInitThenSizeIsZero
+1: [==========] Running 1 test from 1 test suite.
+1: [----------] Global test environment set-up.
+1: [----------] 1 test from SwarmTest
+1: [ RUN      ] SwarmTest.OnInitThenSizeIsZero
+1: [       OK ] SwarmTest.OnInitThenSizeIsZero (0 ms)
+1: [----------] 1 test from SwarmTest (0 ms total)
+1: 
+1: [----------] Global test environment tear-down
+1: [==========] 1 test from 1 test suite ran. (0 ms total)
+1: [  PASSED  ] 1 test.
+ 1/12 Test  #1: SwarmTest.OnInitThenSizeIsZero ....................   Passed    0.01 sec
+test 2
+      Start  2: SwarmTest.OnAddRobotThenSizeIncrements
+
+2: Test command: /home/boyd/roboviz/build/SwarmTest "--gtest_filter=SwarmTest.OnAddRobotThenSizeIncrements" "--gtest_also_run_disabled_tests"
+2: Test timeout computed to be: 10000000
+2: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+2: Note: Google Test filter = SwarmTest.OnAddRobotThenSizeIncrements
+2: [==========] Running 1 test from 1 test suite.
+2: [----------] Global test environment set-up.
+2: [----------] 1 test from SwarmTest
+2: [ RUN      ] SwarmTest.OnAddRobotThenSizeIncrements
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [D] Adding robot to swarm
+2: [       OK ] SwarmTest.OnAddRobotThenSizeIncrements (0 ms)
+2: [----------] 1 test from SwarmTest (0 ms total)
+2: 
+2: [----------] Global test environment tear-down
+2: [==========] 1 test from 1 test suite ran. (0 ms total)
+2: [  PASSED  ] 1 test.
+ 2/12 Test  #2: SwarmTest.OnAddRobotThenSizeIncrements ............   Passed    0.02 sec
+test 3
+      Start  3: SwarmTest.OnAddRobotThenReturnsCorrectRobot
+
+3: Test command: /home/boyd/roboviz/build/SwarmTest "--gtest_filter=SwarmTest.OnAddRobotThenReturnsCorrectRobot" "--gtest_also_run_disabled_tests"
+3: Test timeout computed to be: 10000000
+3: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+3: Note: Google Test filter = SwarmTest.OnAddRobotThenReturnsCorrectRobot
+3: [==========] Running 1 test from 1 test suite.
+3: [----------] Global test environment set-up.
+3: [----------] 1 test from SwarmTest
+3: [ RUN      ] SwarmTest.OnAddRobotThenReturnsCorrectRobot
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [D] Adding robot to swarm
+3: [       OK ] SwarmTest.OnAddRobotThenReturnsCorrectRobot (0 ms)
+3: [----------] 1 test from SwarmTest (0 ms total)
+3: 
+3: [----------] Global test environment tear-down
+3: [==========] 1 test from 1 test suite ran. (0 ms total)
+3: [  PASSED  ] 1 test.
+ 3/12 Test  #3: SwarmTest.OnAddRobotThenReturnsCorrectRobot .......   Passed    0.01 sec
+test 4
+      Start  4: ConfigurationReaderTest.DisplaysHelp
+
+4: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.DisplaysHelp" "--gtest_also_run_disabled_tests"
+4: Test timeout computed to be: 10000000
+4: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+4: Note: Google Test filter = ConfigurationReaderTest.DisplaysHelp
+4: [==========] Running 1 test from 1 test suite.
+4: [----------] Global test environment set-up.
+4: [----------] 1 test from ConfigurationReaderTest
+4: [ RUN      ] ConfigurationReaderTest.DisplaysHelp
+4: [I] Parsing config file: help
+4: Allowed options for Simulation Config File:
+4:   --scenario arg                    Experiment scenario: (racing, chasing, or a
+4:                                     provided js file)
+4:   --timeStep arg                    Time step duration (s)
+4:   --nTimeSteps arg                  Number of timesteps (Either this or 
+4:                                     simulationTime are required)
+4:   --simulationTime arg              Length of simulation (s)  (Either this or 
+4:                                     nTimeSteps are required)
+4:   --terrainType arg                 Terrain type: flat or rugged
+4:   --terrainHeightField arg          Height Field for terrain generation
+4:   --terrainWidth arg                Terrain width
+4:   --terrainHeight arg               Terrain height
+4:   --terrainLength arg               Terrain length
+4:   --terrainFriction arg             Terrain Friction Coefficient
+4:   --startPositionConfigFile arg     Start Positions Configuration File
+4:   --obstaclesConfigFile arg         Obstacles configuration file
+4:   --lightSourcesConfigFile arg      Light sources configuration file
+4:   --actuationFrequency arg          Actuation Frequency (Hz)
+4:   --sensorNoiseLevel arg            Sensor Noise Level:
+4:                                      Sensor noise is Gaussian with std dev of 
+4:                                     sensorNoiseLevel * actualValue.
+4:                                     i.e. value given to Neural Network is N(a, 
+4:                                     a * s)
+4:                                     where a is actual value and s is 
+4:                                     sensorNoiseLevel
+4:   --motorNoiseLevel arg             Motor noise level:
+4:                                     Motor noise is uniform in range 
+4:                                     +/-(motorNoiseLevel * actualValue)
+4:   --capAcceleration arg             Flag to enforce acceleration cap.Useful for
+4:                                     preventing unrealistic  behaviors / 
+4:                                     simulator exploits
+4:   --maxLinearAcceleration arg       Maximum linear acceleration (if 
+4:                                     capAcceleration. is true
+4:   --maxAngularAcceleration arg      Maximum angular acceleration (if 
+4:                                     capAcceleration. is true
+4:   --maxDirectionShiftsPerSecond arg Maximum number of direction shifts per 
+4:                                     second for testing motor burnout.  If not 
+4:                                     set, then there is no cap
+4:   --gravity arg                     Gravity: either a single z-value for 
+4:                                     g=(0,0,z) or x,y,z (comma separated) for 
+4:                                     full g vector. Specified in m/(s^2) 
+4:                                     Defaults to (0,0,-9.81)
+4:   --disallowObstacleCollisions arg  Flag to enforce no obstacle collisions.  If
+4:                                     true then any obstacle collision will be 
+4:                                     considered a constraint violation. (default
+4:                                     false).
+4:   --swarmSize arg                   The number of duplicate robots to include 
+4:                                     in the simulation. Defaults to 1 if not 
+4:                                     specified
+4:   --gatheringZoneSize arg           The size as an 'x,y,z' string of the 
+4:                                     gathering zone, which is an area highlighed
+4:                                     in a special color, useful for certain 
+4:                                     fitness functions
+4:   --gatheringZonePosition arg       The center as an 'x,y,z' string of the 
+4:                                     gathering zone, which is an area  
+4:                                     highlighed in a special color,  useful for 
+4:                                     certain fitness functions
+4:   --resourcesConfigFile arg         A config file containing a list of 
+4:                                     resources, with one resourceper line. Each 
+4:                                     line must contain a list of space-separated
+4:                                     floating point values defining the resource
+4:                                     in the order:x-pos y-pos z-pos x-magnitude 
+4:                                     y-magnitude z-magnitude unknown unknown
+4:   --swarmPositionsConfigFile arg    A configuration file containing the 
+4:                                     positions of each robot in the swarm. Will 
+4:                                     take preference over anything specified in 
+4:                                     startPositionFile
+4:   --obstacleOverlapPolicy arg       Defines the policy for handling obstacles  
+4:                                     enclosed in the robot's initial axis 
+4:                                     aligned bounding box (AABB).  Options are
+4:                                     'removeObstacles' -- obstacles will be 
+4:                                     removed, and the simulation will proceed 
+4:                                     (default).
+4:                                     'constraintViolation' -- the simulation 
+4:                                     will be terminated with a constrain 
+4:                                     violation.
+4:                                     'elevateRobot' -- the robot will be 
+4:                                     elevated to be above all obstacles before 
+4:                                     the simulation begins.
+4:                                     
+4: [       OK ] ConfigurationReaderTest.DisplaysHelp (0 ms)
+4: [----------] 1 test from ConfigurationReaderTest (0 ms total)
+4: 
+4: [----------] Global test environment tear-down
+4: [==========] 1 test from 1 test suite ran. (0 ms total)
+4: [  PASSED  ] 1 test.
+ 4/12 Test  #4: ConfigurationReaderTest.DisplaysHelp ..............   Passed    0.01 sec
+test 5
+      Start  5: ConfigurationReaderTest.ParsesSwarmSize
+
+5: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ParsesSwarmSize" "--gtest_also_run_disabled_tests"
+5: Test timeout computed to be: 10000000
+5: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+5: Note: Google Test filter = ConfigurationReaderTest.ParsesSwarmSize
+5: [==========] Running 1 test from 1 test suite.
+5: [----------] Global test environment set-up.
+5: [----------] 1 test from ConfigurationReaderTest
+5: [ RUN      ] ConfigurationReaderTest.ParsesSwarmSize
+5: [I] Parsing config file: ../examples/test_cases/TestParsesSwarmSize.txt
+5: [I] Config file '../examples/test_cases/TestParsesSwarmSize.txt' parsed successfully
+5: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/../sindiso_start_position.txt'
+5: [D] SwarmPosition file line 1: 0 0 0
+5: [D] SwarmPosition file line 2: 3 0 0
+5: [D] SwarmPosition file line 3: 0 3 0
+5: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+5: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestParsesSwarmSize.txt', will actuate every timeStep.
+5: [       OK ] ConfigurationReaderTest.ParsesSwarmSize (3 ms)
+5: [----------] 1 test from ConfigurationReaderTest (3 ms total)
+5: 
+5: [----------] Global test environment tear-down
+5: [==========] 1 test from 1 test suite ran. (3 ms total)
+5: [  PASSED  ] 1 test.
+ 5/12 Test  #5: ConfigurationReaderTest.ParsesSwarmSize ...........   Passed    0.01 sec
+test 6
+      Start  6: ConfigurationReaderTest.ParsesRacingScenario
+
+6: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ParsesRacingScenario" "--gtest_also_run_disabled_tests"
+6: Test timeout computed to be: 10000000
+6: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+6: Note: Google Test filter = ConfigurationReaderTest.ParsesRacingScenario
+6: [==========] Running 1 test from 1 test suite.
+6: [----------] Global test environment set-up.
+6: [----------] 1 test from ConfigurationReaderTest
+6: [ RUN      ] ConfigurationReaderTest.ParsesRacingScenario
+6: [I] Parsing config file: ../examples/test_cases/TestParsesRacingScenario.txt
+6: [I] Config file '../examples/test_cases/TestParsesRacingScenario.txt' parsed successfully
+6: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/../sindiso_start_position.txt'
+6: [D] SwarmPosition file line 1: 0 0 0
+6: [D] SwarmPosition file line 2: 3 0 0
+6: [D] SwarmPosition file line 3: 0 3 0
+6: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+6: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestParsesRacingScenario.txt', will actuate every timeStep.
+6: [       OK ] ConfigurationReaderTest.ParsesRacingScenario (2 ms)
+6: [----------] 1 test from ConfigurationReaderTest (2 ms total)
+6: 
+6: [----------] Global test environment tear-down
+6: [==========] 1 test from 1 test suite ran. (2 ms total)
+6: [  PASSED  ] 1 test.
+ 6/12 Test  #6: ConfigurationReaderTest.ParsesRacingScenario ......   Passed    0.01 sec
+test 7
+      Start  7: ConfigurationReaderTest.ParsesChasingScenario
+
+7: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ParsesChasingScenario" "--gtest_also_run_disabled_tests"
+7: Test timeout computed to be: 10000000
+7: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+7: Note: Google Test filter = ConfigurationReaderTest.ParsesChasingScenario
+7: [==========] Running 1 test from 1 test suite.
+7: [----------] Global test environment set-up.
+7: [----------] 1 test from ConfigurationReaderTest
+7: [ RUN      ] ConfigurationReaderTest.ParsesChasingScenario
+7: [I] Parsing config file: ../examples/test_cases/TestParsesChasingScenario.txt
+7: [I] Config file '../examples/test_cases/TestParsesChasingScenario.txt' parsed successfully
+7: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/../sindiso_start_position.txt'
+7: [D] SwarmPosition file line 1: 0 0 0
+7: [D] SwarmPosition file line 2: 3 0 0
+7: [D] SwarmPosition file line 3: 0 3 0
+7: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+7: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestParsesChasingScenario.txt', will actuate every timeStep.
+7: [       OK ] ConfigurationReaderTest.ParsesChasingScenario (2 ms)
+7: [----------] 1 test from ConfigurationReaderTest (2 ms total)
+7: 
+7: [----------] Global test environment tear-down
+7: [==========] 1 test from 1 test suite ran. (2 ms total)
+7: [  PASSED  ] 1 test.
+ 7/12 Test  #7: ConfigurationReaderTest.ParsesChasingScenario .....   Passed    0.01 sec
+test 8
+      Start  8: ConfigurationReaderTest.ReadsSwarmPosFile
+
+8: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ReadsSwarmPosFile" "--gtest_also_run_disabled_tests"
+8: Test timeout computed to be: 10000000
+8: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+8: Note: Google Test filter = ConfigurationReaderTest.ReadsSwarmPosFile
+8: [==========] Running 1 test from 1 test suite.
+8: [----------] Global test environment set-up.
+8: [----------] 1 test from ConfigurationReaderTest
+8: [ RUN      ] ConfigurationReaderTest.ReadsSwarmPosFile
+8: [I] Parsing config file: ../examples/test_cases/TestReadsSwarmPosFile.txt
+8: [I] Config file '../examples/test_cases/TestReadsSwarmPosFile.txt' parsed successfully
+8: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/TestSwarmPosFile.txt'
+8: [D] SwarmPosition file line 1: 0 0 0
+8: [D] SwarmPosition file line 2: 3 0 0
+8: [D] SwarmPosition file line 3: 0 3 0
+8: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+8: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestReadsSwarmPosFile.txt', will actuate every timeStep.
+8: [       OK ] ConfigurationReaderTest.ReadsSwarmPosFile (2 ms)
+8: [----------] 1 test from ConfigurationReaderTest (2 ms total)
+8: 
+8: [----------] Global test environment tear-down
+8: [==========] 1 test from 1 test suite ran. (2 ms total)
+8: [  PASSED  ] 1 test.
+ 8/12 Test  #8: ConfigurationReaderTest.ReadsSwarmPosFile .........   Passed    0.01 sec
+test 9
+      Start  9: ConfigurationReaderTest.ThrowsOnBadSwarmSize
+
+9: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ThrowsOnBadSwarmSize" "--gtest_also_run_disabled_tests"
+9: Test timeout computed to be: 10000000
+9: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+9: Note: Google Test filter = ConfigurationReaderTest.ThrowsOnBadSwarmSize
+9: [==========] Running 1 test from 1 test suite.
+9: [----------] Global test environment set-up.
+9: [----------] 1 test from ConfigurationReaderTest
+9: [ RUN      ] ConfigurationReaderTest.ThrowsOnBadSwarmSize
+9: [I] Parsing config file: ../examples/test_cases/TestThrowsOnBadSwarmSize.txt
+9: [I] Config file '../examples/test_cases/TestThrowsOnBadSwarmSize.txt' parsed successfully
+9: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/TestSwarmPosFile.txt'
+9: [D] SwarmPosition file line 1: 0 0 0
+9: [D] SwarmPosition file line 2: 3 0 0
+9: [D] SwarmPosition file line 3: 0 3 0
+9: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+9: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestThrowsOnBadSwarmSize.txt', will actuate every timeStep.
+9: [E] The swarmSize parameter doesn't equal the length of the swarmPositionsFile
+9: [       OK ] ConfigurationReaderTest.ThrowsOnBadSwarmSize (1 ms)
+9: [----------] 1 test from ConfigurationReaderTest (1 ms total)
+9: 
+9: [----------] Global test environment tear-down
+9: [==========] 1 test from 1 test suite ran. (1 ms total)
+9: [  PASSED  ] 1 test.
+ 9/12 Test  #9: ConfigurationReaderTest.ThrowsOnBadSwarmSize ......   Passed    0.01 sec
+test 10
+      Start 10: ConfigurationReaderTest.ParsesGatheringZone
+
+10: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ParsesGatheringZone" "--gtest_also_run_disabled_tests"
+10: Test timeout computed to be: 10000000
+10: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+10: Note: Google Test filter = ConfigurationReaderTest.ParsesGatheringZone
+10: [==========] Running 1 test from 1 test suite.
+10: [----------] Global test environment set-up.
+10: [----------] 1 test from ConfigurationReaderTest
+10: [ RUN      ] ConfigurationReaderTest.ParsesGatheringZone
+10: [I] Parsing config file: ../examples/test_cases/TestParsesGatheringZone.txt
+10: [I] Config file '../examples/test_cases/TestParsesGatheringZone.txt' parsed successfully
+10: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/../sindiso_start_position.txt'
+10: [D] SwarmPosition file line 1: 0 0 0
+10: [D] SwarmPosition file line 2: 3 0 0
+10: [D] SwarmPosition file line 3: 0 3 0
+10: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+10: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestParsesGatheringZone.txt', will actuate every timeStep.
+10: [W] parameter gatheringZonePos has been specified but the code for using it has not been implemented yet. The value will be ignored.
+10: [W] parameter gatheringZoneSize has been specified but the code for using it has not been implemented yet. The value will be ignored.
+10: [       OK ] ConfigurationReaderTest.ParsesGatheringZone (2 ms)
+10: [----------] 1 test from ConfigurationReaderTest (2 ms total)
+10: 
+10: [----------] Global test environment tear-down
+10: [==========] 1 test from 1 test suite ran. (2 ms total)
+10: [  PASSED  ] 1 test.
+10/12 Test #10: ConfigurationReaderTest.ParsesGatheringZone .......   Passed    0.01 sec
+test 11
+      Start 11: ConfigurationReaderTest.ParsesGatheringZonePos
+
+11: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ParsesGatheringZonePos" "--gtest_also_run_disabled_tests"
+11: Test timeout computed to be: 10000000
+11: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+11: Note: Google Test filter = ConfigurationReaderTest.ParsesGatheringZonePos
+11: [==========] Running 1 test from 1 test suite.
+11: [----------] Global test environment set-up.
+11: [----------] 1 test from ConfigurationReaderTest
+11: [ RUN      ] ConfigurationReaderTest.ParsesGatheringZonePos
+11: [I] Parsing config file: ../examples/test_cases/TestParsesGatheringZonePos.txt
+11: [I] Config file '../examples/test_cases/TestParsesGatheringZonePos.txt' parsed successfully
+11: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/../sindiso_start_position.txt'
+11: [D] SwarmPosition file line 1: 0 0 0
+11: [D] SwarmPosition file line 2: 3 0 0
+11: [D] SwarmPosition file line 3: 0 3 0
+11: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+11: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestParsesGatheringZonePos.txt', will actuate every timeStep.
+11: [W] parameter gatheringZonePos has been specified but the code for using it has not been implemented yet. The value will be ignored.
+11: [W] parameter gatheringZoneSize has been specified but the code for using it has not been implemented yet. The value will be ignored.
+11: [       OK ] ConfigurationReaderTest.ParsesGatheringZonePos (1 ms)
+11: [----------] 1 test from ConfigurationReaderTest (1 ms total)
+11: 
+11: [----------] Global test environment tear-down
+11: [==========] 1 test from 1 test suite ran. (1 ms total)
+11: [  PASSED  ] 1 test.
+11/12 Test #11: ConfigurationReaderTest.ParsesGatheringZonePos ....   Passed    0.01 sec
+test 12
+      Start 12: ConfigurationReaderTest.ParsesGatheringZoneSize
+
+12: Test command: /home/boyd/roboviz/build/ConfigurationReaderTest "--gtest_filter=ConfigurationReaderTest.ParsesGatheringZoneSize" "--gtest_also_run_disabled_tests"
+12: Test timeout computed to be: 10000000
+12: Running main() from /home/boyd/roboviz/src/googletest-release-1.11.0/googletest/src/gtest_main.cc
+12: Note: Google Test filter = ConfigurationReaderTest.ParsesGatheringZoneSize
+12: [==========] Running 1 test from 1 test suite.
+12: [----------] Global test environment set-up.
+12: [----------] 1 test from ConfigurationReaderTest
+12: [ RUN      ] ConfigurationReaderTest.ParsesGatheringZoneSize
+12: [I] Parsing config file: ../examples/test_cases/TestParsesGatheringZoneSize.txt
+12: [I] Config file '../examples/test_cases/TestParsesGatheringZoneSize.txt' parsed successfully
+12: [I] Attempting to parse swarmPositions file: '/media/sf_roboviz/build/../examples/test_cases/../sindiso_start_position.txt'
+12: [D] SwarmPosition file line 1: 0 0 0
+12: [D] SwarmPosition file line 2: 3 0 0
+12: [D] SwarmPosition file line 3: 0 3 0
+12: No startPositionConfigFile provided so will use a single evaluation with the robot starting at the origin, and having 0 azimuth
+12: [I] Undefined 'actuationFrequency' parameter in '../examples/test_cases/TestParsesGatheringZoneSize.txt', will actuate every timeStep.
+12: [W] parameter gatheringZonePos has been specified but the code for using it has not been implemented yet. The value will be ignored.
+12: [W] parameter gatheringZoneSize has been specified but the code for using it has not been implemented yet. The value will be ignored.
+12: [       OK ] ConfigurationReaderTest.ParsesGatheringZoneSize (2 ms)
+12: [----------] 1 test from ConfigurationReaderTest (2 ms total)
+12: 
+12: [----------] Global test environment tear-down
+12: [==========] 1 test from 1 test suite ran. (2 ms total)
+12: [  PASSED  ] 1 test.
+12/12 Test #12: ConfigurationReaderTest.ParsesGatheringZoneSize ...   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 12
+
+Total Test time (real) =   0.17 sec

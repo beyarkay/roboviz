@@ -8,6 +8,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[11pt,a4paper]{article}
+% Allow verbatim input to be included (for the unit tests)
+\usepackage{verbatim}
 \usepackage{times}
 % Allows better control over headers and footers
 \usepackage{fancyhdr}
@@ -207,7 +209,7 @@ providing the user with sufficient information to solve the error.
 
 % TODO Discuss the 'major analysis artefacts'
 \subsection{Use Case Narratives}
-% DONE Add Add 'Analysis Class hierarchy Diagram'
+% DONE Add 'Analysis Class hierarchy Diagram'
 See Figure \ref{fig:use-case-diagram} for the Use Case Diagram.
 \begin{figure}[htpb]
     \centering
@@ -392,7 +394,7 @@ appropriate callbacks, or one of \texttt{racing} (fitness is proportional to
 average distance from the starting position) or \texttt{chasing} (fitness is
 inversely proportional to distance from the nearest moving light source) can be
 chosen. These fitness functions are defined in the various files found in
-\texttt{src/scenario/} 
+\texttt{src/scenario/}
 
 \subsubsection{FileViewer Class}
 The \texttt{FileViewer} is the command line entry point for starting a
@@ -460,29 +462,99 @@ and was extended to allow the swarm class to be serialised.
 % the sorts of results we are looking for. The full detail of the test
 % runs should be appended to the report.
 
-% TODO Describe how the system was tested
-% TODO Describe why we think the system works
-% TODO Describe the type of testing, and how the tests were performed.
-% TODO justify why the selected testing plan was chosen
-% TODO If mock data was used for testing, explain why that data was used.
-% TODO Append the full detail of the test runs to the report.
-% TODO Describe how useful and usable the system is based on the success of the
+\subsection{How the system was tested}
+% DONE Describe how the system was tested
+The testing frameworks \texttt{GoogleTest} and \texttt{GoogleMock} were
+used to run tests on the code base, and these tests were integrated with the
+existing \texttt{CMake} files so that tests are compiled automatically and can
+be run via the command \texttt{ctest}. Testing covered some aspects of the
+existing code base but due to it's size (164 thousand source lines of code)
+the primary focus was on the additions made by the RoboViz project in the
+\texttt{Swarm} and \texttt{ConfigurationReader} classes. These test are run
+automatically when the rest of the code base is compiled, so that no changes
+can get through which break existing functionality.
+
+
+\subsection{How we know the system works}
+% DONE Describe why we think the system works
+The RoboViz team has confidence that the existing system works due to the tests
+that have been put in place to assure us of this. If something were incorrect,
+the tests would pick it up automatically. Since the test run automatically,
+there is no scope for human error or judgement which can sometimes cause errors
+to creep in.
+
+\subsection{Type of testing, and method of test execution}
+% DONE Describe the type of testing, and how the tests were performed.
+The existing code base was not structured to allow for easy testing. The levels
+of coupling between different objects was very high and there exist many
+methods which have a large number of side effects, reducing the atomicity of
+any tests that would be run on them. The focus of the testing was on unit
+tests, specifically for the additions to the code base which were made by the
+RoboViz team. These unit tests were written using the \texttt{GoogleTest} testing
+framework, and were integrated with \texttt{CMake} so that they would compile
+and run automatically.
+
+\subsection{Justification of the chosen testing plan}
+% DONE justify why the selected testing plan was chosen
+The testing plan was chosen to be effective yet efficient, given that complete
+test coverage was infeasible due to the size of the project and the duration of
+time given to complete the project. The existing test were written to cover the
+most likely of errors and the most fatal of errors of the existing code base,
+as well as to cover the newly written code so that problems have the greatest
+likelihood of causing a test to fail.
+
+\subsection{Use of mock data in the tests}
+% DONE If mock data was used for testing, explain why that data was used.
+Mock data was used in the form of valid or invalid input files, stored in
+\texttt{examples/test\_cases/} as files named like the tests that use them.
+These data provide common mistakes made when specifying the input files, and
+the tests are written to check against these common errors.
+
+\subsection{Full detail of the test runs}
+% DONE Append the full detail of the test runs to the report.
+The full details of the test runs can be found in the Appendix, section
+\ref{s:full-test-runs}.
+
+
+\subsection{Usefulness of the system based on the unit tests}
+% DONE Describe how useful and usable the system is based on the success of the
 % unit tests.
+The system is considered by the authors to be more useful and more error-save
+(thereby more usable) than the original project for various reasons. Firstly,
+the addition of the tests and the setup of the testing framework means that any
+problems in the future will be found by the existing tests, and adding new unit
+tests to cover future expansions are made easier. Secondly, the extensive
+documentation (in the code base in the form of Doxygen comments, in the
+\texttt{CONTRIBUTING} file, and in the commandline-help that gets printed when
+a user specifies the wrong arguments) mean that future users will easily be
+able to get started, as we have extensively logged our troubles with the code
+base (and the solutions to those troubles) via these means.
 
 \begin{table}[h!]
     \centering
-    \caption{Summary Testing Plan. TODO: complete caption}
+    \caption{Summary Testing Plan}
     \begin{tabular}[t]{|p{8cm}|p{7cm}|} \hline
         \textbf{Process} & \textbf{Technique} \\
         \hline 1. Class Testing: test methods and state behaviour of classes
-                         & TODO \\
+                         & Via class-by-class tests in the appropriately named
+                         test files\\
         \hline 2. Integration Testing: test the interaction of sets of classes
-                            & TODO \\
+                            & Due to the highly-coupled design of the existing
+                            code base and the extensive side effects that occur when
+                            classes interact, integration testing had to be
+                            covered by the new unit tests.\\
         \hline 3. Validation Testing: test whether customer requirements are
         satisfied
-                            & TODO \\ \hline 4. System Testing: test the behaviour of the system as part of a
+                            & The client expressed satisfaction with the
+                            prototype and agreed with our plans for further
+                            development after the prototype. The client's
+                            requirements were manually considered and found to
+                            be satisfied.\\
+        \hline 4. System Testing: test the behaviour of the system as part of a
         larger environment
-                            & TODO \\
+                            &  The testing framework was executed on different
+                            environments, resulting in the stability of the
+                            platform in different situations being established.\\
         \hline
     \end{tabular}
     \label{tab:test-plan}
@@ -490,18 +562,75 @@ and was extended to allow the swarm class to be serialised.
 
 \begin{table}[h!]
     \centering
-    \caption{A table of tests. TODO Complete Caption}
-    \begin{tabular}[t]{|p{5.5cm}|p{3cm}|p{3cm}|p{3cm}|} \hline \textbf{Data Set
-        and reason for its choice} & \multicolumn{3}{c|}{\textbf{Test Cases}}\\
-        \cline{2-4} & \emph{Normal Functioning} & \emph{Extreme boundary cases} &
-        \emph{Invalid Data (program should not crash)} \\ \hline Preliminary test
-        (see Appendix 3) & Passed & n/a & Fell over \\\hline &&&\\ \hline
-                         &&&\\ \hline
+    \caption{Tests used to ensure correct functioning of the code base.}
+    \begin{tabular}[t]{|p{4cm}|p{4cm}|p{5cm}|} \hline
+        \textbf{Test File Name} & \textbf{Test Name} & \textbf{Test Description} \\
+        \hline  SwarmTest & OnInitThenSizeIsZero & Check swarm size is zero on
+        initialisation. \\
+        \hline  SwarmTest & OnAddRobot ThenSizeIncrements & Check the swarm size
+        variable is incremented when a robot is added to the swarm\\
+        \hline  SwarmTest & OnAddRobot ThenReturnsCorrectRobot & Check when a
+        new robot is added to the swarm, then that robot is returned by the
+        appropriate \texttt{getRobot(i)} call.\\
+        \hline  ConfigurationReaderTest & DisplaysHelp & Check the
+        ConfigurationReader will display help to the user when they input
+        invalid commandline arguments.\\
+        \hline  ConfigurationReaderTest & ParsesSwarmSize & Check the
+        ConfigurationReader correctly reads in and parses the swarm size from
+        the configuration file.\\
+        \hline  ConfigurationReaderTest & ParsesRacingScenario & Check the
+        ConfigurationReader correctly reads in and parses the racing scenario from
+        the configuration file.\\
+        \hline  ConfigurationReaderTest & ParsesChasingScenario & Check the
+        ConfigurationReader correctly reads in and parses the chasing scenario from
+        the configuration file. \\
+        \hline  ConfigurationReaderTest & ReadsSwarmPosFile & Check the
+        ConfigurationReader correctly reads in and parses the swarm position
+        file from the configuration file. \\
+        \hline  ConfigurationReaderTest & ThrowsOnBadSwarmSize & Check the
+        ConfigurationReader throws an error when a bad swarm size and
+        swarmPositionFile combination is used in the configuration file. \\
+        \hline  ConfigurationReaderTest & ParsesGatheringZone & Check the
+        ConfigurationReader correctly reads in and parses the gathering zone
+        file from the configuration file. \\
+        \hline  ConfigurationReaderTest & ParsesGatheringZonePos & Check the
+        ConfigurationReader correctly reads in and parses the gathering zone
+        position from the configuration file. \\
+        \hline  ConfigurationReaderTest & ParsesGatheringZoneSize & Check the
+        ConfigurationReader correctly reads in and parses the gathering zone
+        size from the configuration file. \\
+        \hline
     \end{tabular}
     \label{tab:tests}
 \end{table}
 % Follow your table of results with a discussions of them highlighting
 % how useful and usable your system is for its intended purpose.
+
+\section{Group Contributions}
+\label{s:group-contributions}
+
+\subsection{Boyd Kane - KNXBOY001}
+Boyd made changes to the code base, the final report, and was in charge of
+rebasing the feature git branches onto the master branch. Boyd set up the
+Doxygen documentation system and added properly formatted documentation comments
+to the majority of the code base. Boyd set up the GoogleTest testing framework
+and wrote the unit tests contained in \texttt{SwarmTest.cpp} and
+\texttt{ConfigurationReaderTest.cpp}. Boyd changed the Google Protocol Buffer
+definitions to handle the new Swarm object, and added code to allow the
+ConfigurationReader to parse the new parameters required by the project brief
+that did not exist in the original project. Boyd changed the
+\texttt{Simulator} to accept a swarm instead of a collection of robots. Boyd
+changed the \texttt{Scenario} initialisation to accept and initialise a swarm
+of robots, and to handle the edge cases arising from that. Boyd standardised
+the console log messages to have a common format, and increased the amount of
+output so that the program would be more helpful to the user. Boyd changed the
+\texttt{FileViewer} and created the \texttt{SwarmPositionsConfig} so that a
+separate file containing a list of swarm starting positions can be specified.
+
+\subsection{Imaad Ghoor - ABCXYZ001}
+
+
+\subsection{Jesse Sarembock - ABCXYZ001}
 
 \section{Conclusion}
 \label{s:conclusion}
@@ -524,6 +653,9 @@ initial aims and goals.
 \printbibliography
 
 \appendix
+\section{Full Test Runs}
+\label{s:full-test-runs}
+\verbatiminput{TestRuns.txt}
 \section{User Manual}
 \label{s:user-manual}
 \input{RoboVizUserManual.tex}
