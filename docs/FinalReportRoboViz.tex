@@ -269,8 +269,15 @@ RoboGen users to easily learn to use the RoboViz project.
 
 
 \subsection{Layered Architecture Diagram}
-% TODO Add layered architecture diagram to present the overall architecture of
+% DONE Add layered architecture diagram to present the overall architecture of
 % the system.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{PK}
+    \caption{Layered Architecture Diagram}
+    \label{fig:layered-architecture-diagram}
+\end{figure}
 
 \subsection{Swarm Class}
 The starting point of our design process was the Swarm Class.
@@ -779,9 +786,18 @@ separate file containing a list of swarm starting positions can be specified.
 Boyd started the generation of the \LaTeX report and oversaw the changes made
 to it.
 
-\subsection{Imaad Ghoor - ABCXYZ001}
-TODO [imaad]
-
+\subsection{Imaad Ghoor - GHRIMA002}
+Imaad set up the a shared network folder - google drive - for the team to work 
+on the project documentation. Imaad has contributed to the code base, making changes 
+to the Simulator and Fileviewer class in order to support a Swarm of robots when 
+simulating robots in a Swarm, the changes included adding loops to add the different parts 
+of the robots into a swarm. Changes were also made in \texttt{FileViewer.cpp} and \texttt{WebGLLogger.cpp}
+in order to list log details of every robot in the swarm, however, due to time constraints, this wasn not 
+fully functional in time and not added to the master branch. Imaad created the use case narratives, diagram, 
+analysis class diagram and layered architecture diagram, work was also done on setting 
+up the first draft of the LaTeX report, adding introductionary section, list of modified classes,
+the requirements, design overview diagrams and the user manual. Imaad also recorded the minutes for all the meetings,
+contributed portions of risks to the stage 1 documents as well as UML diagrams for stage 2.
 
 \subsection{Jesse Sarembock - ABCXYZ001}
 TODO [jesse]
