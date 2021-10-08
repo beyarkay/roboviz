@@ -471,7 +471,7 @@ are \texttt{parseObstaclesFile}, \texttt{parseStartPositionFile}, and
 The simulator (\texttt{src/Simulator.cpp}) contains just one (overloaded)
 method, \texttt{runSimulations}. This made testing this class exceedingly
 difficult, and highlighted the importance of not having `god classes' as
-mentions in our Advanced Software Development lectures. This methods receives a
+mentioned in our Advanced Software Development lectures. This methods receives a
 scenario, a configuration, a swarm, and optionally a viewing window. It is in
 charge of running a certain number of trials in a scenario. A trial is one
 iteration of the swarm being initialised and then started to complete it's
@@ -586,8 +586,34 @@ of each robot is then added to the vectorOfBodies, which holds bodies vectors
 for each robot in the swarm.
 
 \subsection{Special Relationships between Classes}
-% TODO Describe special relationships between classes and why those
+% DONE Describe special relationships between classes and why those
 % relationships exist
+Due to its size, the existing Robogen code base is highly connected and has
+many relationships between classes. This subsection only attempts to describe
+those relationships that are essential to the RoboViz project and those
+relationships which were introduced by the RoboViz project.
+
+A \texttt{Swarm} is defined as a collection of \texttt{Robot} objects which
+themselves are constructed from various classes which define the morphology of
+the robot, the neural network controlling the robot, and the simplified
+physical representation of the robot used by the simulator for physics
+calculations.
+
+A Swarm is created to complete some user-defined task in an environment. The
+Scenario class is that environment combined with parameters defining the
+terrain, obstacles, light sources, the method of evaluating how well the swarm
+accomplished its task, and various physics engine parameters. Since the physics
+engine is not entirely deterministic by design, a scenario can be run multiple
+times (called trials), resulting in a fitness value for each trial. A
+collection of trials being run from start to finish is handled by the Simulator
+class.
+
+There is also the option for a human to view the simulation as it progresses.
+This is done by providing an optional Viewer to the scenario, which will be
+initialised and destroyed in line with the life cycle of the simulation.
+
+The evolution engine was not changed and so will not be described in this
+outline.
 
 
 
@@ -776,11 +802,15 @@ the console log messages to have a common format, and increased the amount of
 output so that the program would be more helpful to the user. Boyd changed the
 \texttt{FileViewer} and created the \texttt{SwarmPositionsConfig} so that a
 separate file containing a list of swarm starting positions can be specified.
+Boyd started the generation of the \LaTeX report and oversaw the changes made
+to it.
 
 \subsection{Imaad Ghoor - ABCXYZ001}
+TODO [imaad]
 
 
 \subsection{Jesse Sarembock - ABCXYZ001}
+TODO [jesse]
 
 \section{Conclusion}
 \label{s:conclusion}
@@ -789,14 +819,22 @@ separate file containing a list of swarm starting positions can be specified.
 % achieve the objective of creating a well-structured, modular, and
 % robust system?  Please summarize the design features and test results
 % that show this.
-
-% TODO Revisit the aims put out at at the beginning, and discuss if they were
+% DONE Revisit the aims put out at at the beginning, and discuss if they were
 % achieved or not
-% TODO Discuss: is the system well-structured, modular, robust.
-% TODO Summarize the design features and test results proving the system is
-% robust, well structured, and modular.
-Here we must summarize everything, and provide a conclusion to the project's
-initial aims and goals.
+This project aimed to convert the existing code base of the RoboGen project
+into a form that would allow the visualisation of a collection of robots,
+called a swarm. This objective was achieved on time and as per schedule. The
+project satisfies the client's primary requirements and has extensive
+documentation with which the client can modify the project according to their
+future needs.
+
+% DONE Discuss: is the system well-structured, modular, robust.
+One large difficulty with modifying a large existing code base like RoboGen is
+that there are many places which are (unfortunately) not well-structured and
+there is not enough scope to refactor the entire project. However, where
+possible we have restructured the code base to better adhere to the principals
+we learnt in Advanced Software Development, while still conforming with the
+code style of the existing project.
 
 \section{Bibliography}
 % DONE Add references.
@@ -811,4 +849,7 @@ initial aims and goals.
 \section{User Manual}
 \label{s:user-manual}
 \input{RoboVizUserManual.tex}
+\section{Full Test Runs}
+\label{s:full-test-runs}
+\verbatiminput{TestRuns.txt}
 \end{document}
