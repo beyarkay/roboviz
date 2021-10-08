@@ -175,7 +175,6 @@ control).
 
 
 \subsection{Functional Requirements}
-% DONE Add functional requirements
 The final project must be able to visualise at least 3 robots simultaneously.
 The morphology and neural network defining these robots must be defined in a
 file as per existing RoboGen guidelines for defining robots (as either
@@ -185,7 +184,6 @@ parts of the simulation with more clarity. The user must also be able to pause
 and unpause the simulation.
 
 \subsection{Non-functional Requirements}
-% DONE Add non-functional Requirements.
 The user should be able to interact smoothly with the simulation once started.
 That is, the simulation should not close before the specified simulation
 duration is over. The simulation should start within 2 minutes of running the
@@ -193,7 +191,6 @@ duration is over. The simulation should start within 2 minutes of running the
 swarm should be simulated at more than 15 frames per second.
 
 \subsection{Usability Requirements}
-% DONE Add usability requirements
 While the simulation is running, console based output should inform the user of
 the details of the simulation, for example, when robots are added to the swarm
 or which configuration files are being read. This output should be well
@@ -209,7 +206,6 @@ providing the user with sufficient information to solve the error.
 
 % TODO Discuss the 'major analysis artefacts'
 \subsection{Use Case Narratives}
-% DONE Add 'Analysis Class hierarchy Diagram'
 See Figure \ref{fig:use-case-diagram} for the Use Case Diagram.
 \begin{figure}[htpb]
     \centering
@@ -287,14 +283,10 @@ This is a class that acts as a container of Robot objects. By implementing such 
 we were able to store multiple instances of Robot objects and then alter the codebase to
 reference Robot objects through the Swarm class, which was integral to obtaining swarm functionality.
 
-% DONE Cover (in subsections) the algorithms and data structures used, any why
-% they were best.
 \subsection{SwarmPositionsConfig Class}
 
 This class is responsible for initializing the position of each robot in the swarm in the environment.
 It also creates a message containing these coordinates.
-% DONE Cover (in subsections) the algorithms and data structures used, any why
-% they were best.
 
 \subsection{Analysis Class Diagram}
 See the Analysis Class Diagram in Figure \ref{fig:analysis-class-diagram}
@@ -360,7 +352,6 @@ On completion of the simulation, the memory required by the dynamics engine
 \cite{ODE} and the RoboViz swarm is freed.
 
 \subsection{Data Structures Used}
-% DONE Describe data structures, with diagrams for illustration
 \subsubsection{Swarm Class}
 The Swarm class ( \texttt{src/Swarm} ) is the internal representation of a
 collection of robots. The members of the swarm are assumed to be attempting to
@@ -444,8 +435,6 @@ and was extended to allow the swarm class to be serialised.
 % TODO Brief overview of the user interface (don't need to go in depth, it
 % wasn't a major part of the system)
 \subsection{Most Significant Methods of Each Class}
-% DONE Discuss most significant methods of each class, including
-% flowcharts/sequence diagrams.
 Note that, due to the immense size of the existing code base, only classes
 to which substantial changes were made are included in this subsection.
 
@@ -491,7 +480,7 @@ are handled by the \texttt{C++} preprocessor, only the second of which was
 modified for this project. The first component takes care of \texttt{emscripten}
 content which is used for when the program is being displayed in a web browser
 via JavaScript, and the second component takes care of the case when the
-program is being run on the desktop via \texttt{C++}. 
+program is being run on the desktop via \texttt{C++}.
 
 Despite the misleading name, this is the main executable which is run after
 compilation in order to view a simulation run, and so has a standard
@@ -541,53 +530,51 @@ Google Protocol Buffer Message.
 
 
 \subsubsection{Swarm Class}
-The getRobot(int i) method returns a pointer to the i’th robot in the swarm.
-The addRobot (boost::shared\_ptr<Robot> robot) adds a robot to the swarm, by
+The \texttt{getRobot(int i)} method returns a pointer to the i-th robot in the swarm.
+The \texttt{addRobot(boost::shared\_ptr<Robot> robot)} adds a robot to the swarm, by
 pushing it to the back of the vector of robots.
 
 \subsubsection{RobogenCollision Class}
 
-The prune() method resets the environment and all of the robots to their
-initial states.  The getSwarm() method returns a pointer to the swarm of
+The \texttt{prune()} method resets the environment and all of the robots to their
+initial states.  The \texttt{getSwarm()} method returns a pointer to the swarm of
 robots.  The Scenario constructor sets up the environment for a given scenario
-by initializing objects such as lightSources, obstacles, and robots.
+by initializing objects such as \texttt{lightSources,} obstacles, and robots.
 
 \subsubsection{ChasingScenario Class}
 
-The setupSimulation() method initializes the distances in the distances vector
+The \texttt{setupSimulation()} method initializes the distances in the distances vector
 to 0.  This is the first step to calculating the fitness of the swarm.  The
-afterSimulationStep() method evaluates the distance of each robot from its
+\texttt{afterSimulationStep()} method evaluates the distance of each robot from its
 corresponding light source at the end of the current trial, and updates this
-value in the distances vector.  The endSimulation() method increments the trial
-counter and resets the starting positiong for the next trial.  The getFitness()
+value in the distances vector.  The \texttt{endSimulation()} method increments the trial
+counter and resets the starting positions for the next trial.  The \texttt{getFitness()}
 method calculates the fitness of the swarm for the chasing scenario by
 calculating the average distance from a robot to its corresponding light
 source.
 
 \subsubsection{JSScenario Class}
-The printRobotPosition() method prints out the position of the robots at the
+The \texttt{printRobotPosition()} method prints out the position of the robots at the
 current trial.
 
 \subsubsection{QScriptScenario Class}
-The getFitness() method calculates the fitness of the swarm for the
-QScriptScenario case.
+The \texttt{getFitness()} method calculates the fitness of the swarm for the
+\texttt{QScriptScenario} case.
 
 \subsubsection{RacingScenario Class}
-The endSimulation() method evaluates the distance of each robot from its
+The \texttt{endSimulation()} method evaluates the distance of each robot from its
 starting position and updates this value in the distances vector.  The
-getFitness() method evaluates the fitness of the swarm for the Racing Scenario
+\texttt{getFitness()} method evaluates the fitness of the swarm for the Racing Scenario
 by calculating the average distance that each robot has moved from its starting
 position.
 
 \subsubsection{WebGLLogger Class}
-The generateBodyCollection(int s) method creates a BodyDescriptor struct for
+The \texttt{generateBodyCollection(int s)} method creates a \texttt{BodyDescriptor} struct for
 every body part of robot s and adds this to a bodies vector. The bodies vector
-of each robot is then added to the vectorOfBodies, which holds bodies vectors
+of each robot is then added to the \texttt{vectorOfBodies,} which holds bodies vectors
 for each robot in the swarm.
 
 \subsection{Special Relationships between Classes}
-% DONE Describe special relationships between classes and why those
-% relationships exist
 Due to its size, the existing Robogen code base is highly connected and has
 many relationships between classes. This subsection only attempts to describe
 those relationships that are essential to the RoboViz project and those
@@ -639,7 +626,6 @@ outline.
 % runs should be appended to the report.
 
 \subsection{How the system was tested}
-% DONE Describe how the system was tested
 The testing frameworks \texttt{GoogleTest} and \texttt{GoogleMock} were used to
 run tests on the code base, and these tests were integrated with the existing
 \texttt{CMake} files so that tests are compiled automatically and can be run
@@ -652,7 +638,6 @@ break existing functionality.
 
 
 \subsection{How we know the system works}
-% DONE Describe why we think the system works
 The RoboViz team has confidence that the existing system works due to the tests
 that have been put in place to assure us of this. If something were incorrect,
 the tests would pick it up automatically. Since the test run automatically,
@@ -660,7 +645,6 @@ there is no scope for human error or judgement which can sometimes cause errors
 to creep in.
 
 \subsection{Type of testing, and method of test execution}
-% DONE Describe the type of testing, and how the tests were performed.
 The existing code base was not structured to allow for easy testing. The levels
 of coupling between different objects was very high and there exist many
 methods which have a large number of side effects, reducing the atomicity of
@@ -671,7 +655,6 @@ framework, and were integrated with \texttt{CMake} so that they would compile
 and run automatically.
 
 \subsection{Justification of the chosen testing plan}
-% DONE justify why the selected testing plan was chosen
 The testing plan was chosen to be effective yet efficient, given that complete
 test coverage was infeasible due to the size of the project and the duration of
 time given to complete the project. The existing test were written to cover the
@@ -680,21 +663,17 @@ as well as to cover the newly written code so that problems have the greatest
 likelihood of causing a test to fail.
 
 \subsection{Use of mock data in the tests}
-% DONE If mock data was used for testing, explain why that data was used.
 Mock data was used in the form of valid or invalid input files, stored in
 \texttt{examples/test\_cases/} as files named like the tests that use them.
 These data provide common mistakes made when specifying the input files, and
 the tests are written to check against these common errors.
 
 \subsection{Full detail of the test runs}
-% DONE Append the full detail of the test runs to the report.
 The full details of the test runs can be found in the Appendix, section
 \ref{s:full-test-runs}.
 
 
 \subsection{Usefulness of the system based on the unit tests}
-% DONE Describe how useful and usable the system is based on the success of the
-% unit tests.
 The system is considered by the authors to be more useful and more error-save
 (thereby more usable) than the original project for various reasons. Firstly,
 the addition of the tests and the setup of the testing framework means that any
@@ -819,8 +798,6 @@ TODO [jesse]
 % achieve the objective of creating a well-structured, modular, and
 % robust system?  Please summarize the design features and test results
 % that show this.
-% DONE Revisit the aims put out at at the beginning, and discuss if they were
-% achieved or not
 This project aimed to convert the existing code base of the RoboGen project
 into a form that would allow the visualisation of a collection of robots,
 called a swarm. This objective was achieved on time and as per schedule. The
@@ -828,7 +805,6 @@ project satisfies the client's primary requirements and has extensive
 documentation with which the client can modify the project according to their
 future needs.
 
-% DONE Discuss: is the system well-structured, modular, robust.
 One large difficulty with modifying a large existing code base like RoboGen is
 that there are many places which are (unfortunately) not well-structured and
 there is not enough scope to refactor the entire project. However, where
@@ -837,22 +813,47 @@ we learnt in Advanced Software Development, while still conforming with the
 code style of the existing project.
 
 \section{Limitations}
-% TODO
+The major limitation for this project was the lack of documentation for the
+pre-existing code base. Personal problems included the June exams being
+postponed to a week before the (original) final hand-in, and the template-style
+rubrics not applying well to our project. Due to the structure of the initial
+hand ins, the full scope of the project only became apparent 4 weeks into
+`starting' the project, when we finished with creating UML diagrams and started
+having to edit the code base. By this time it was apparent that the full
+requirements which included:
+
+\begin{itemize}
+    \item Multi-threading the physics and initialisation computations.
+    \item Creating new resource blocks to exist in the world.
+    \item Creating a gathering zone in the world.
+    \item Rewriting the code base to use Swarms instead of robots.
+\end{itemize}
+
+Would require far more than 4 weeks of work which coincided with the 4 week
+build up to exams.
 
 \section{Bibliography}
-% DONE Add references.
 \printbibliography
 
 \appendix
-
-\section{Full Test Runs}
-\label{s:full-test-runs}
-\verbatiminput{TestRuns.txt}
-
 \section{User Manual}
 \label{s:user-manual}
 \input{RoboVizUserManual.tex}
+
 \section{Full Test Runs}
+What follows are the full, unabridged test runs. They can be executed manually
+by building the project and then running the tests with ctest, like so:
+
+\begin{verbatim}
+    cd roboviz/build && rm -rf *
+    cmake -DCMAKE_BUILD_TYPE=Release -G"Unix Makefiles" ../src
+    time make -j2
+    cp -r ../models ./
+    ctest --verbose
+\end{verbatim}
+
+
 \label{s:full-test-runs}
 \verbatiminput{TestRuns.txt}
+
 \end{document}
