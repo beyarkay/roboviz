@@ -281,10 +281,19 @@ RoboGen users to easily learn to use the RoboViz project.
 % TODO Add layered architecture diagram to present the overall architecture of
 % the system.
 \subsection{Swarm Class}
-% TODO Cover (in subsections) the algorithms and data structures used, any why
+
+The starting point of our design process was the Swarm Class. 
+This is a class that acts as a container of Robot objects. By implementing such a class, 
+we were able to store multiple instances of Robot objects and then alter the codebase to 
+reference Robot objects through the Swarm class, which was integral to obtaining swarm functionality.
+
+% DONE Cover (in subsections) the algorithms and data structures used, any why
 % they were best.
 \subsection{SwarmPositionsConfig Class}
-% TODO Cover (in subsections) the algorithms and data structures used, any why
+
+This class is responsible for initializing the position of each robot in the swarm in the environment. 
+It also creates a message containing these coordinates.
+% DONE Cover (in subsections) the algorithms and data structures used, any why
 % they were best.
 
 \subsection{Analysis Class Diagram}
@@ -437,9 +446,56 @@ and was extended to allow the swarm class to be serialised.
 \subsection{Most Significant Methods of Each Class}
 % TODO Discuss most significant methods of each class, including
 % flowcharts/sequence diagrams.
+
+\begin{itemize}
+    \item Swarm Class
+    The getRobot(int i) method returns a pointer to the i’th robot in the swarm. 
+    The addRobot (boost::shared_ptr<Robot> robot) adds a robot to the swarm, by pushing it to the back of the vector of robots.
+
+    RobogenCollision Class
+    
+    The prune() method resets the environment and all of the robots to their initial states.
+    The getSwarm() method returns a pointer to the swarm of robots.
+    The Scenario constructor sets up the environment for a given scenario by initializing objects such as lightSources, 
+    obstacles, and robots.
+
+ChasingScenario Class
+
+    The setupSimulation() method initializes the distances in the distances vector to 0. 
+    This is the first step to calculating the fitness of the swarm.
+    The afterSimulationStep() method evaluates the distance of each robot from its corresponding light source
+    at the end of the current trial, and updates this value in the distances vector.
+    The endSimulation() method increments the trial counter and resets the starting positiong for the next trial.
+    The getFitness() method calculates the fitness of the swarm for the chasing scenario by calculating the average distance 
+    from a robot to its corresponding light source.
+
+JSScenario Class
+	The printRobotPosition() method prints out the position of the robots at the current trial.
+
+QScriptScenario Class
+
+    The getFitness() method calculates the fitness of the swarm for the QScriptScenario case.
+
+RacingScenario Class
+
+    The endSimulation() method evaluates the distance of each robot from its starting position and updates this value in 
+    the distances vector.
+    The getFitness() method evaluates the fitness of the swarm for the Racing Scenario by calculating the 
+    average distance that each robot has moved from its starting position.
+
+
+WebGLLogger Class
+
+    The generateBodyCollection(int s) method creates a BodyDescriptor struct for every body part of robot s and adds 
+    this to a bodies vector. The bodies vector of each robot is then added to the vectorOfBodies, which holds bodies 
+    vectors for each robot in the swarm.
+
+
 \subsection{Special Relationships between Classes}
 % TODO Describe special relationships between classes and why those
 % relationships exist
+
+
 
 \section{Program Validation and Verification}
 \label{s:progr-valid-verif}

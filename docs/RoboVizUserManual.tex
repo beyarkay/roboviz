@@ -9,4 +9,79 @@
 % TODO discuss the level at which the user manual is to be pitched
 % TODO If the system is to be extended, add an API manual
 
-This is the User manual
+
+
+
+\begin{table}[h!]
+    \centering
+    \caption{Overview of User Manual}
+    \begin{tabular}[t]{|p{8cm}|p{7cm}|} \hline
+        \textbf{Section} & \textbf{Description} \\
+        \hline 1. Introduction
+                         & \\
+        \hline 2. Definitions
+                            & Description of the tools involved when running the program. \\
+        \hline 3. Installation 
+                            & Instructions on installing the software. \\ 
+        \hline 4.  Running RoboViz
+                            & Instructions on running the code. \\
+        \hline 5.  Using the Visualiser
+                            & Description of controls used to navigate the visualiser. \\
+        \hline
+    \end{tabular}
+    \label{tab:T}
+\end{table}
+
+\subsection{Introduction}
+\label{s:introduction}
+
+The purpose of the modified version of RoboViz is to enable the visualisation of multiple robots in the task environment, as opposed to
+a single robot. The number of robots that can be held in a swarm depends on how powerful the system that is running it.
+
+
+
+\subsection{Definitions}
+\label{s:definitions}
+
+Robot File - A file that defines a robot and its composition.
+
+Configuration File - File that defines the behaviour of the robots when being visualised.
+
+Robot FileViewer or Visualier - The window where the user will be able to view the robots performing.
+
+
+
+\subsection{Installation}
+\label{s:installation}
+
+1. Open the RoboViz folder
+2. Navigate to the build folder, if there is no build folder, open the terminal in that location and type \texttt{cd build}
+3. %Open terminal, if you haven't already, and type \textt{ cmake -DCMAKE_BUILD_TYPE=Release -G"Unix Makefiles" ../src/ }
+4. Type \texttt{make -j3}
+5. Once that is done, you should see the following message \texttt{Linking CXX executable robogen-server}
+
+
+ 
+
+
+\subsection{Running RoboViz}
+\label{s:runningroboviz}
+
+To start viewing the robot in the task environment, you'll need to enter the commands displayed in the pictures below.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{run}
+    \caption{commands in terminal }
+    \label{fig:commands-in-terminal}
+\end{figure}
+
+Once entered, the follwing screen should be displayed.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{visual1}
+    \caption{Robots in Visualiser}
+    \label{fig:robots-in-visualiser}
+\end{figure}
+
