@@ -360,7 +360,7 @@ On completion of the simulation, the memory required by the dynamics engine
 \cite{ODE} and the RoboViz swarm is freed.
 
 \subsection{Data Structures Used}
-% TODO Describe data structures, with diagrams for illustration
+% DONE Describe data structures, with diagrams for illustration
 \subsubsection{Swarm Class}
 The Swarm class ( \texttt{src/Swarm} ) is the internal representation of a
 collection of robots. The members of the swarm are assumed to be attempting to
@@ -444,8 +444,101 @@ and was extended to allow the swarm class to be serialised.
 % TODO Brief overview of the user interface (don't need to go in depth, it
 % wasn't a major part of the system)
 \subsection{Most Significant Methods of Each Class}
-% TODO Discuss most significant methods of each class, including
+% DONE Discuss most significant methods of each class, including
 % flowcharts/sequence diagrams.
+Note that, due to the immense size of the existing code base, only classes
+to which substantial changes were made are included in this subsection.
+
+\subsubsection{Configuration Reader and RobogenConfig}
+The configuration reader (\texttt{src/config/ConfigurationReader.cpp}) is in
+responsible for receiving a file name with configurations and parsing them into
+a \texttt{RobogenConfig} object (\texttt{src/config/RobogenConfig.h}). The
+configuration reader has one primary method \texttt{parseConfigurationFile}
+which receives the file name and returns a properly formatted
+\texttt{RobogenConfig} object. This method and the header file for the
+\texttt{RobogenConfig} object had to be extensively reworked to allow for
+specification of the swarm size, the gathering zone size, the gathering zone
+position, the swarm positions, the file containing the swarm positions, and the
+file containing the resources configuration.
+
+The obstacles, light sources, and swarm start positions are all specified in
+separate files, and so there are separate methods to parse those files and
+return pointers to the appropriately named configuration objects. The methods
+are \texttt{parseObstaclesFile}, \texttt{parseStartPositionFile}, and
+\texttt{parseLightSourcesFile}.
+
+\subsubsection{Simulator}
+The simulator (\texttt{src/Simulator.cpp}) contains just one (overloaded)
+method, \texttt{runSimulations}. This made testing this class exceedingly
+difficult, and highlighted the importance of not having `god classes' as
+mentions in our Advanced Software Development lectures. This methods receives a
+scenario, a configuration, a swarm, and optionally a viewing window. It is in
+charge of running a certain number of trials in a scenario. A trial is one
+iteration of the swarm being initialised and then started to complete it's
+goal. A scenario is the collection of variables that defines the swarms
+surroundings and environment. The simulation can either be done headless
+(without being rendered to a screen for a person to view it) or it can be done
+with a viewer, so that a person can view the simulation as it is running.
+
+Since this method was so tightly coupled with the \texttt{Robot} class, it
+required a lot of work to refactor so that it would work properly and
+efficiently with the new \texttt{Swarm} class.
+
+
+\subsubsection{File Viewer}
+The File Viewer (\texttt{src/viewer/FileViewer.cpp}) has two components which
+are handled by the \texttt{C++} preprocessor, only the second of which was
+modified for this project. The first component takes care of \texttt{emscripten}
+content which is used for when the program is being displayed in a web browser
+via JavaScript, and the second component takes care of the case when the
+program is being run on the desktop via \texttt{C++}. 
+
+Despite the misleading name, this is the main executable which is run after
+compilation in order to view a simulation run, and so has a standard
+\texttt{C++} \texttt{int main()} method, along with some minor utility methods
+to print the usage information for the command line interface (\texttt{void
+printUsage()}), another to print the help information for the configuration
+files (\texttt{void printHelp()}), and some other less important utility
+methods.
+
+The main method parses the commandline arguments, ensures they are properly
+formatted, and then passes the configuration file to the
+\texttt{ConfigurationReader}. There is a lot of error checking to be done for
+the various commandline arguments, but if they are all properly specified and
+there are no illegal combinations (like requesting to record the simulation
+without also specifying that the simulation should be visualised) then a swarm
+is created from the input file specified via a commandline argument and the
+scenario, the logger, and optionally the viewer are all initialised.
+
+Following this, the simulation is started via a method call to
+\texttt{runSimulations}. When the simulation has finished and returned, the
+fitness of the scenario is calculated and displayed to the user. After some
+clean up, the method ends and the program terminates.
+
+\subsubsection{Viewer}
+The viewer (\texttt{src/viewer/Viewer.cpp}) is responsible for rendering a
+scene containing a swarm, obstacles, light sources, and the terrain. This is
+largely a wrapper around OpenSceneGraph, which is where the actual rendering
+and window management takes place. The file's primary method is
+\texttt{configureScene} which will take a scenario and a collection of models
+defining the body parts of the swarm, and link them all together. It will then
+render the terrain, the obstacles, and the light sources, and create the camera
+in the scene so that the user can see how the simulation is progressing.
+
+The other methods in this class are largely utility methods, used to check or
+modify the state of the viewer.
+
+\subsubsection{Obstacles, Swarm Positions, and Light Sources Config}
+There are three types of objects which have configuration parameters specified
+not in the main configuration file, but in separate files which the main
+configuration file contains references to. These are the
+\texttt{src/config/ObstaclesConfig.h}, the \texttt{src/config/LightSourcesConfig.h}
+and the \texttt{src/config/SwarmPositionsConfig.h}. They are all structured
+similarly, with methods to get the relevant configuration parameters (like
+\texttt{getCoordinates()} or \texttt{getDensities()}, etc) and a
+\texttt{serialize()} method which converts the configuration object into a
+Google Protocol Buffer Message.
+
 
 \subsubsection{Swarm Class}
 The getRobot(int i) method returns a pointer to the i’th robot in the swarm.
@@ -491,7 +584,6 @@ The generateBodyCollection(int s) method creates a BodyDescriptor struct for
 every body part of robot s and adds this to a bodies vector. The bodies vector
 of each robot is then added to the vectorOfBodies, which holds bodies vectors
 for each robot in the swarm.
-
 
 \subsection{Special Relationships between Classes}
 % TODO Describe special relationships between classes and why those
@@ -707,7 +799,7 @@ Here we must summarize everything, and provide a conclusion to the project's
 initial aims and goals.
 
 \section{Bibliography}
-% TODO Add references.
+% DONE Add references.
 \printbibliography
 
 \appendix
