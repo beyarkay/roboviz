@@ -282,16 +282,16 @@ RoboGen users to easily learn to use the RoboViz project.
 % the system.
 \subsection{Swarm Class}
 
-The starting point of our design process was the Swarm Class. 
-This is a class that acts as a container of Robot objects. By implementing such a class, 
-we were able to store multiple instances of Robot objects and then alter the codebase to 
+The starting point of our design process was the Swarm Class.
+This is a class that acts as a container of Robot objects. By implementing such a class,
+we were able to store multiple instances of Robot objects and then alter the codebase to
 reference Robot objects through the Swarm class, which was integral to obtaining swarm functionality.
 
 % DONE Cover (in subsections) the algorithms and data structures used, any why
 % they were best.
 \subsection{SwarmPositionsConfig Class}
 
-This class is responsible for initializing the position of each robot in the swarm in the environment. 
+This class is responsible for initializing the position of each robot in the swarm in the environment.
 It also creates a message containing these coordinates.
 % DONE Cover (in subsections) the algorithms and data structures used, any why
 % they were best.
@@ -447,48 +447,50 @@ and was extended to allow the swarm class to be serialised.
 % TODO Discuss most significant methods of each class, including
 % flowcharts/sequence diagrams.
 
-\begin{itemize}
-    \item Swarm Class
-    The getRobot(int i) method returns a pointer to the i’th robot in the swarm. 
-    The addRobot (boost::shared_ptr<Robot> robot) adds a robot to the swarm, by pushing it to the back of the vector of robots.
+\subsubsection{Swarm Class}
+The getRobot(int i) method returns a pointer to the i’th robot in the swarm.
+The addRobot (boost::shared\_ptr<Robot> robot) adds a robot to the swarm, by
+pushing it to the back of the vector of robots.
 
-    RobogenCollision Class
-    
-    The prune() method resets the environment and all of the robots to their initial states.
-    The getSwarm() method returns a pointer to the swarm of robots.
-    The Scenario constructor sets up the environment for a given scenario by initializing objects such as lightSources, 
-    obstacles, and robots.
+\subsubsection{RobogenCollision Class}
 
-ChasingScenario Class
+The prune() method resets the environment and all of the robots to their
+initial states.  The getSwarm() method returns a pointer to the swarm of
+robots.  The Scenario constructor sets up the environment for a given scenario
+by initializing objects such as lightSources, obstacles, and robots.
 
-    The setupSimulation() method initializes the distances in the distances vector to 0. 
-    This is the first step to calculating the fitness of the swarm.
-    The afterSimulationStep() method evaluates the distance of each robot from its corresponding light source
-    at the end of the current trial, and updates this value in the distances vector.
-    The endSimulation() method increments the trial counter and resets the starting positiong for the next trial.
-    The getFitness() method calculates the fitness of the swarm for the chasing scenario by calculating the average distance 
-    from a robot to its corresponding light source.
+\subsubsection{ChasingScenario Class}
 
-JSScenario Class
-	The printRobotPosition() method prints out the position of the robots at the current trial.
+The setupSimulation() method initializes the distances in the distances vector
+to 0.  This is the first step to calculating the fitness of the swarm.  The
+afterSimulationStep() method evaluates the distance of each robot from its
+corresponding light source at the end of the current trial, and updates this
+value in the distances vector.  The endSimulation() method increments the trial
+counter and resets the starting positiong for the next trial.  The getFitness()
+method calculates the fitness of the swarm for the chasing scenario by
+calculating the average distance from a robot to its corresponding light
+source.
 
-QScriptScenario Class
+\subsubsection{JSScenario Class}
+The printRobotPosition() method prints out the position of the robots at the
+current trial.
 
-    The getFitness() method calculates the fitness of the swarm for the QScriptScenario case.
+\subsubsection{QScriptScenario Class}
+The getFitness() method calculates the fitness of the swarm for the
+QScriptScenario case.
 
-RacingScenario Class
+\subsubsection{RacingScenario Class}
+The endSimulation() method evaluates the distance of each robot from its
+starting position and updates this value in the distances vector.  The
+getFitness() method evaluates the fitness of the swarm for the Racing Scenario
+by calculating the average distance that each robot has moved from its starting
+position.
 
-    The endSimulation() method evaluates the distance of each robot from its starting position and updates this value in 
-    the distances vector.
-    The getFitness() method evaluates the fitness of the swarm for the Racing Scenario by calculating the 
-    average distance that each robot has moved from its starting position.
-
-
-WebGLLogger Class
-
-    The generateBodyCollection(int s) method creates a BodyDescriptor struct for every body part of robot s and adds 
-    this to a bodies vector. The bodies vector of each robot is then added to the vectorOfBodies, which holds bodies 
-    vectors for each robot in the swarm.
+\subsubsection{WebGLLogger Class}
+The generateBodyCollection(int s) method creates a BodyDescriptor struct for
+every body part of robot s and adds this to a bodies vector. The bodies vector
+of each robot is then added to the vectorOfBodies, which holds bodies vectors
+for each robot in the swarm.
 
 
 \subsection{Special Relationships between Classes}
@@ -520,15 +522,15 @@ WebGLLogger Class
 
 \subsection{How the system was tested}
 % DONE Describe how the system was tested
-The testing frameworks \texttt{GoogleTest} and \texttt{GoogleMock} were
-used to run tests on the code base, and these tests were integrated with the
-existing \texttt{CMake} files so that tests are compiled automatically and can
-be run via the command \texttt{ctest}. Testing covered some aspects of the
-existing code base but due to it's size (164 thousand source lines of code)
-the primary focus was on the additions made by the RoboViz project in the
-\texttt{Swarm} and \texttt{ConfigurationReader} classes. These test are run
-automatically when the rest of the code base is compiled, so that no changes
-can get through which break existing functionality.
+The testing frameworks \texttt{GoogleTest} and \texttt{GoogleMock} were used to
+run tests on the code base, and these tests were integrated with the existing
+\texttt{CMake} files so that tests are compiled automatically and can be run
+via the command \texttt{ctest}. Testing covered some aspects of the existing
+code base but due to it's size (164 thousand source lines of code) the primary
+focus was on the additions made by the RoboViz project in the \texttt{Swarm}
+and \texttt{ConfigurationReader} classes. These test are run automatically when
+the rest of the code base is compiled, so that no changes can get through which
+break existing functionality.
 
 
 \subsection{How we know the system works}
@@ -709,9 +711,11 @@ initial aims and goals.
 \printbibliography
 
 \appendix
+
 \section{Full Test Runs}
 \label{s:full-test-runs}
 \verbatiminput{TestRuns.txt}
+
 \section{User Manual}
 \label{s:user-manual}
 \input{RoboVizUserManual.tex}
