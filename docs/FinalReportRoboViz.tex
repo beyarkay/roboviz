@@ -8,6 +8,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[11pt,a4paper]{article}
+\usepackage[htt]{hyphenat}
 % Allow verbatim input to be included (for the unit tests)
 \usepackage{verbatim}
 \usepackage{times}
@@ -156,23 +157,20 @@ implementing a specific feature - swarm of robots in the visualiser - this was
 the most appropriate prototype as it tests key components during early stages
 of the project to check key functions.
 
-% TODO: provide reference to the original RoboGen project
+The existing RoboGen \cite{robogen} lacked any sort of automated documentation,
+and so the Doxygen documentation tool \cite{doxygen} was also added to the
+project, in order to automatically generate documentation from the source code
+of the project.  Following this, the source code was annotated with well
+formatted comments that could be parsed by Doxygen. The html documentation can
+be found in \texttt{src/docs/html/index.html} but it is not kept under version
+control. The Doxygen documentation, as well as the final report, can be
+generated with the following command:
 
-The Doxygen documentation tool \cite{doxygen} was also added to the project, in
-order to automatically generate documentation from the source code of the
-project.  Following this, the source code was annotated with well formatted
-comments that could be parsed by Doxygen. The html documentation can be found
-in \texttt{src/docs/html/index.html} (but it is not kept under version
-control).
+\begin{verbatim}
+cd roboviz/src/docs && ./build_docs.sh
+\end{verbatim}
 
 \section{Requirements Captured}
-% (10%) Requirements analysis (functional, non- functional, usability), use cases
-
-% The next section deals with the analysis of your system. Cover the
-% functional, non-functional and usability requirements. This is where
-% you present your use case narratives and diagrams.
-
-
 
 \subsection{Functional Requirements}
 The final project must be able to visualise at least 3 robots simultaneously.
@@ -209,7 +207,7 @@ providing the user with sufficient information to solve the error.
 See Figure \ref{fig:use-case-diagram} for the Use Case Diagram.
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{2}
+    \includegraphics[width=0.5\textwidth]{2}
     \caption{Use Case Diagram}
     \label{fig:use-case-diagram}
 \end{figure}
@@ -264,20 +262,17 @@ time limit specified in the configuration file has passed.
 % You should then (in subsections) cover the algorithms and the data
 % organisation used and why they were considered the best.
 
-% TODO Justify the system design in terms of the expected behaviour of the
-% final product.
 Given that the project authors were extending the existing RoboGen
 \cite{robogen} code base, changing some existing aspects of the existing
 software was considered out of scope due to time constraints and for existing
 RoboGen users to easily learn to use the RoboViz project.
 
 
-% TODO Add design class diagram.
 \subsection{Layered Architecture Diagram}
 % TODO Add layered architecture diagram to present the overall architecture of
 % the system.
-\subsection{Swarm Class}
 
+\subsection{Swarm Class}
 The starting point of our design process was the Swarm Class.
 This is a class that acts as a container of Robot objects. By implementing such a class,
 we were able to store multiple instances of Robot objects and then alter the codebase to
@@ -293,7 +288,7 @@ See the Analysis Class Diagram in Figure \ref{fig:analysis-class-diagram}
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{1}
+    \includegraphics[width=0.5\textwidth]{1}
     \caption{Analysis Class diagram}
     \label{fig:analysis-class-diagram}
 \end{figure}
