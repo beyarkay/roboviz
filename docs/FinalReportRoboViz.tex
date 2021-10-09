@@ -787,20 +787,29 @@ Boyd started the generation of the \LaTeX report and oversaw the changes made
 to it.
 
 \subsection{Imaad Ghoor - GHRIMA002}
-Imaad set up the a shared network folder - google drive - for the team to work 
-on the project documentation. Imaad has contributed to the code base, making changes 
-to the Simulator and Fileviewer class in order to support a Swarm of robots when 
-simulating robots in a Swarm, the changes included adding loops to add the different parts 
+Imaad set up the a shared network folder - google drive - for the team to work
+on the project documentation. Imaad has contributed to the code base, making changes
+to the Simulator and Fileviewer class in order to support a Swarm of robots when
+simulating robots in a Swarm, the changes included adding loops to add the different parts
 of the robots into a swarm. Changes were also made in \texttt{FileViewer.cpp} and \texttt{WebGLLogger.cpp}
-in order to list log details of every robot in the swarm, however, due to time constraints, this wasn not 
-fully functional in time and not added to the master branch. Imaad created the use case narratives, diagram, 
-analysis class diagram and layered architecture diagram, work was also done on setting 
+in order to list log details of every robot in the swarm, however, due to time constraints, this wasn not
+fully functional in time and not added to the master branch. Imaad created the use case narratives, diagram,
+analysis class diagram and layered architecture diagram, work was also done on setting
 up the first draft of the LaTeX report, adding introductionary section, list of modified classes,
 the requirements, design overview diagrams and the user manual. Imaad also recorded the minutes for all the meetings,
 contributed portions of risks to the stage 1 documents as well as UML diagrams for stage 2.
 
-\subsection{Jesse Sarembock - ABCXYZ001}
-TODO [jesse]
+\subsection{Jesse Sarembock - SRMJES001}
+
+Jesse made changes to the code bases as well as added new code in order to implement a swarm.
+He created the Swarm class which was responsible for holding instances of Robot objects.
+He worked on code in the Scenarios source folder to be able to work with swarms instead of robots, and
+to also be able to calculate the fitness of a swarm instead of the fitness of individual robots. He also altered
+code in the utils source folder and the viewer source folder to be compatible with swarms. Throughout the codebase
+he changed calls to robots to be calls to swarms, or robots through the swarm, usually through the use of loops.
+Jesse also changed many vectors to 2-Dimenisional vectors in order for swarm functionality to work properly. Jesse
+also contributed to documentation in weeks 1-3 and to the final report. He described some of the most important
+classes as well as the most important methods in different classes.
 
 \section{Conclusion}
 \label{s:conclusion}

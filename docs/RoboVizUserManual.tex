@@ -163,27 +163,27 @@ The simulation engine is usually invoked in one of two ways: 1. Running
 evolver 2. Running \texttt{build/robogen-file-viewer} to ``play back'' a
 robot as specified in a configuration file.
 
-Important source files and descriptions 
+Important source files and descriptions
 \begin{itemize}
     \item \texttt{src/Simulator.cpp}: The file which actually does the
         simulating. It relies on many pieces of code, but is called via
-        \texttt{Simulator::runSimulations} in these two programs: 
+        \texttt{Simulator::runSimulations} in these two programs:
     \item \texttt{src/RobogenServer.cpp}: Used when the evolver wants
         to perform a fitness evaluation of a certain robot, called via
-        \texttt{build/robogen-server} 
+        \texttt{build/robogen-server}
     \item \texttt{src/viewer/FileFiewer.cpp}: Used by a person to view a robot
         and watch it move in the task environment.  Called via
-        \texttt{build/robogen-file-viewer} 
+        \texttt{build/robogen-file-viewer}
     \item \texttt{src/model/} contains physical models of robots parts,
         obstacles, light sources, and any other physical items in the task
-        environment. 
+        environment.
     \item \texttt{src/model/components/} contains descriptions of the various
         components (Hinges, Actuated components, Passive components, Bricks,
-        etc) 
+        etc)
     \item \texttt{src/model/sensors/} Contains descriptions of AMU sensors,
-        light sensors, touch sensors, sensor groups, etc 
-    \item  \texttt{src/model/motors/} Describes general motors and servo motors. 
-    \item  \texttt{src/model/objects/} Describes light sources and obstacles 
+        light sensors, touch sensors, sensor groups, etc
+    \item  \texttt{src/model/motors/} Describes general motors and servo motors.
+    \item  \texttt{src/model/objects/} Describes light sources and obstacles
     \item  \texttt{src/render/components/} Has renderer friendly versions of
         every model in RoboGen. Note that when the \texttt{robogen-file-viewer}
         is run, you do \emph{not} see the physical model of the robot as the
